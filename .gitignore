@@ -23,3 +23,7 @@ Thumbs.db
 
 # Archivos de Python
 *.egg-info/
+
+# Directorios de medios y archivos estáticos generados
+media/
+staticfiles/
