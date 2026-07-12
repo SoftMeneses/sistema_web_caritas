@@ -1,0 +1,99 @@
+{% extends 'layouts/auth.html' %}
+{% load static %}
+
+{% block title %}
+Iniciar Sesión
+{% endblock %}
+
+{% block content %}
+
+<div class="card login-card">
+
+    <div class="login-header">
+
+        <div class="login-logo">
+
+            <img 
+                src="{% static 'img/logo_caritas_white.png' %}"
+                alt="Logo Cáritas"
+                class="img-fluid">
+
+        </div>
+
+        <h3 class="fw-bold">
+
+            Sistema Web Cáritas
+
+        </h3>
+
+        <p class="mb-0">
+
+            Control Operativo y Seguimiento Administrativo
+
+        </p>
+
+        <small>
+
+            Cáritas San Cristóbal
+
+        </small>
+
+    </div>
+
+    <div class="login-body">
+
+        <form method="post" novalidate>
+
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+
+            <div class="alert alert-danger">
+
+                {{ form.non_field_errors }}
+
+            </div>
+
+            {% endif %}
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    {{ form.username.label }}
+
+                </label>
+
+                {{ form.username }}
+
+            </div>
+
+            <div class="mb-4">
+
+                <label class="form-label">
+
+                    {{ form.password.label }}
+
+                </label>
+
+                {{ form.password }}
+
+            </div>
+
+            <button
+                type="submit"
+                class="btn btn-caritas w-100">
+
+                <i class="bi bi-box-arrow-in-right me-2"></i>
+
+                Iniciar sesión
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

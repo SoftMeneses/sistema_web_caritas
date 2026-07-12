@@ -1,0 +1,157 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="row mb-4">
+
+        <div class="col">
+
+            <h2 class="fw-bold">
+
+                Dashboard
+
+            </h2>
+
+            <p class="text-muted">
+
+                Bienvenido {{ usuario }}
+
+            </p>
+
+        </div>
+
+        <div class="col text-end">
+
+            <p class="mb-0">
+
+                {{ fecha|date:"d/m/Y" }}
+
+            </p>
+
+            <small>
+
+                {{ fecha|date:"H:i" }}
+
+            </small>
+
+        </div>
+
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm">
+
+                <div class="card-body">
+
+                    <h5>
+
+                        <i class="bi bi-journal-check text-primary"></i>
+
+                        Programas
+
+                    </h5>
+
+                    <h2>
+
+                        {{ programas }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm">
+
+                <div class="card-body">
+
+                    <h5>
+
+                        <i class="bi bi-calendar-event text-success"></i>
+
+                        Actividades
+
+                    </h5>
+
+                    <h2>
+
+                        {{ actividades }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm">
+
+                <div class="card-body">
+
+                    <h5>
+
+                        <i class="bi bi-heart-pulse text-danger"></i>
+
+                        Beneficiarios
+
+                    </h5>
+
+                    <h2>
+
+                        {{ beneficiarios }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm">
+
+                <div class="card-body">
+
+                    <h5>
+
+                        <i class="bi bi-box-seam text-warning"></i>
+
+                        Inventario
+
+                    </h5>
+
+                    <h2>
+
+                        {{ inventario }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

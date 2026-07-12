@@ -1,0 +1,130 @@
+/*====================================
+  LAYOUT
+====================================*/
+
+body{
+
+    background:var(--color-background);
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    min-height:100vh;
+
+}
+
+/*====================================
+  TARJETA LOGIN
+====================================*/
+
+.login-card{
+
+    width:430px;
+
+    border:none;
+
+    border-radius:15px;
+
+    box-shadow:0 15px 35px rgba(0,0,0,.18);
+
+    animation:fadeIn .4s ease;
+
+}
+
+.login-header{
+
+    background:var(--color-primary);
+
+    color:white;
+
+    text-align:center;
+
+    padding:30px;
+
+    border-top-left-radius:15px;
+
+    border-top-right-radius:15px;
+
+}
+
+.login-header h3{
+
+    margin-top: 15px;
+
+}
+
+.login-header p{
+
+    margin-top: 15px;
+
+    margin-bottom: 5px;
+
+}
+
+.login-header i{
+
+    font-size:3rem;
+
+}
+
+.login-body{
+
+    padding:30px;
+
+    background: white;
+
+    border-bottom-left-radius:15px;
+
+    border-bottom-right-radius:15px;
+
+}
+
+.login-body label{
+
+    font-weight:600;
+}
+
+/*====================================
+  LOGO
+====================================*/
+
+.login-logo{
+
+    margin-bottom:15px;
+
+}
+
+.login-logo img{
+
+    width:90px;
+
+    height:auto;
+
+}
+
+/*====================================
+  ANIMACIONES
+====================================*/
+
+@keyframes fadeIn{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(20px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}

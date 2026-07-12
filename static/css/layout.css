@@ -1,0 +1,238 @@
+/*==============================
+LAYOUT GENERAL
+==============================*/
+
+body{
+
+    display:flex;
+
+    flex-direction:column;
+
+    min-height:100vh;
+
+}
+
+.container-fluid{
+
+    --bs-gutter-x:0;
+
+    padding-left:0;
+
+    padding-right:0;
+
+}
+
+.row{
+
+    --bs-gutter-x:0;
+
+    margin:0;
+
+}
+
+#sidebar-container{
+
+    width:260px;
+
+    transition:.35s;
+
+    flex-shrink:0;
+
+}
+
+#main-content{
+
+    flex:1;
+
+    padding:25px;
+
+    background:var(--color-background);
+
+    min-height:calc(100vh - 56px);
+
+    transition:.35s;
+
+}
+
+.container-fluid>.row{
+
+    display:flex;
+
+}
+
+/*====================================
+  NAVBAR
+====================================*/
+
+.navbar{
+
+    background: var(--color-primary) !important;
+
+}
+
+.navbar-brand{
+
+    font-size:1.2rem;
+
+    font-weight: 600;
+
+    color: var(--color-white) !important;
+
+}
+
+/*====================================
+  SIDEBAR
+====================================*/
+
+.sidebar{
+
+    background:var(--color-sidebar);
+
+    min-height:calc(100vh - 56px);
+
+}
+
+.sidebar-header{
+
+    border-bottom:1px solid rgba(255,255,255,.15);
+
+}
+
+.sidebar-title{
+
+    color:#bcbcbc;
+
+    font-size:.72rem;
+
+    font-weight:700;
+
+    letter-spacing:1px;
+
+    padding-left:20px;
+
+    margin-top:15px;
+
+    margin-bottom:8px;
+
+    text-transform:uppercase;
+
+}
+
+.sidebar hr{
+
+    margin:.6rem 0;
+
+    opacity:.15;
+
+}
+
+.sidebar .nav-link{
+
+    color:white;
+
+    padding:10px 18px;
+
+    border-radius:8px;
+
+    margin:2px 10px;
+
+    transition:all .25s ease;
+
+}
+
+.sidebar .nav-link:hover{
+
+    background:var(--color-hover);
+
+    color:white;
+
+}
+
+.sidebar .nav-link.active{
+
+    background:var(--color-primary);
+
+    color:white;
+
+}
+
+.sidebar i{
+
+    width:20px;
+
+    text-align:center;
+
+}
+
+/*====================================
+  FOOTER
+====================================*/
+
+footer{
+
+    background: var(--color-primary);
+
+    color: var(--color-white);
+
+    border-top: 1px solid rgba(255,255,255,.15);
+
+    padding: 12px 0;
+
+}
+
+/*====================================
+  RESPONSIVE
+====================================*/
+
+@media (max-width: 768px) {
+
+
+}
+
+/*====================================
+  SIDEBAR COLAPSABLE    
+====================================*/
+
+.sidebar-collapsed{
+
+    width:80px !important;
+
+}
+
+.sidebar-collapsed .sidebar-title{
+
+    display:none;
+
+}
+
+.sidebar-collapsed h5{
+
+    display:none;
+
+}
+
+.sidebar-collapsed small{
+
+    display:none;
+
+}
+
+.sidebar-collapsed .nav-link{
+
+    text-align:center;
+
+}
+
+.sidebar-collapsed .nav-link span{
+
+    display:none;
+
+}
+
+.sidebar-collapsed .nav-link i{
+
+    font-size:1.3rem;
+
+    margin-right:0 !important;
+
+}

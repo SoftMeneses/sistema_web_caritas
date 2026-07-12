@@ -1,0 +1,101 @@
+*{
+
+    margin:0;
+
+    padding:0;
+
+    box-sizing:border-box;
+
+}
+
+:root{
+
+    /* Colores Institucionales */
+
+    --color-primary:#660821;
+
+    --color-sidebar:#343A40;
+
+    --color-background:#DFDCBD;
+
+    --color-white:#FFFFFF;
+
+    --color-hover:#660821;
+
+    --color-text:#212529;
+
+}
+
+body{
+
+    background:var(--color-background);
+
+    color:var(--color-text);
+
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+}
+
+/*====================================
+  COMPONENTES
+====================================*/
+
+/* Botón institucional */
+
+.btn-caritas{
+
+    background:var(--color-primary);
+
+    color:white;
+
+    border:none;
+
+    border-radius:8px;
+
+    padding:10px;
+
+    font-weight:600;
+
+    transition:all .25s ease;
+
+}
+
+.btn-caritas:hover{
+
+    background:#4d0618;
+
+    transform:translateY(-1px);
+
+    color:white;
+
+}
+
+/* Inputs */
+
+.input-caritas{
+
+    border-radius:8px;
+
+    padding:.75rem;
+
+}
+
+.input-caritas:focus{
+
+    border-color:var(--color-primary);
+
+    box-shadow:0 0 0 .2rem rgba(102,8,33,.20);
+
+}
+
+/* Tarjetas */
+
+.card-caritas{
+
+    border:none;
+
+    border-radius:16px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.10);
+
+}
