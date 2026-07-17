@@ -1,4 +1,5 @@
 from django.contrib.auth.base_user import BaseUserManager
+from django.apps import apps
 
 
 class UsuarioManager(BaseUserManager):
@@ -53,6 +54,18 @@ class UsuarioManager(BaseUserManager):
             raise ValueError(
                 "El superusuario debe tener is_superuser=True."
             )
+        
+        Rol = apps.get_model("seguridad", "Rol")
+        
+        try:
+            rol_admin = Rol.objects.get(nombre="Administrador")
+        except Rol.DoesNotExist:
+            raise ValueError(
+                "No existe el rol 'Administrador'. "
+                "Ejecute primero las migraciones del sistema."
+            )
+
+        extra_fields.setdefault("rol", rol_admin)
 
         return self.create_user(
             username,
