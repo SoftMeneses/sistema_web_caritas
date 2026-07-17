@@ -23,15 +23,17 @@ DROP TABLE IF EXISTS `actividad_usuario`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `actividad_usuario` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
   `id_actividad` int NOT NULL,
   `id_usuario` int NOT NULL,
   `rol_en_actividad` varchar(50) NOT NULL,
   `fecha_asignacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id_actividad`,`id_usuario`),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_actividad_usuario` (`id_actividad`,`id_usuario`),
   KEY `idx_actividad_usuario_usuario` (`id_usuario`),
   CONSTRAINT `fk_actividad_usuario_actividad` FOREIGN KEY (`id_actividad`) REFERENCES `actividades` (`id_actividad`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `fk_actividad_usuario_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT `chk_rol_en_actividad_no_vacio` CHECK ((`rol_en_actividad` <> _utf8mb3''))
+  CONSTRAINT `chk_rol_en_actividad_no_vacio` CHECK ((`rol_en_actividad` <> _utf8mb4''))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -150,10 +152,12 @@ DROP TABLE IF EXISTS `detalle_actividad_insumo`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `detalle_actividad_insumo` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
   `id_actividad` int NOT NULL,
   `id_insumo` int NOT NULL,
   `cantidad_usada` decimal(10,2) NOT NULL,
-  PRIMARY KEY (`id_actividad`,`id_insumo`),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_detalle_actividad_insumo` (`id_actividad`,`id_insumo`),
   KEY `idx_detalle_actividad_insumo_insumo` (`id_insumo`),
   CONSTRAINT `fk_detalle_actividad_insumo_actividad` FOREIGN KEY (`id_actividad`) REFERENCES `actividades` (`id_actividad`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `fk_detalle_actividad_insumo_insumo` FOREIGN KEY (`id_insumo`) REFERENCES `insumos` (`id_insumo`) ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -241,11 +245,13 @@ DROP TABLE IF EXISTS `programa_beneficiario`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `programa_beneficiario` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
   `id_programa` int NOT NULL,
   `id_beneficiario` int NOT NULL,
   `fecha_asignacion` date NOT NULL DEFAULT (curdate()),
   `estado` tinyint(1) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id_programa`,`id_beneficiario`),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_programa_beneficiario` (`id_programa`,`id_beneficiario`),
   KEY `idx_programa_beneficiario_beneficiario` (`id_beneficiario`),
   CONSTRAINT `fk_programa_beneficiario_beneficiario` FOREIGN KEY (`id_beneficiario`) REFERENCES `beneficiarios` (`id_beneficiario`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `fk_programa_beneficiario_programa` FOREIGN KEY (`id_programa`) REFERENCES `programas` (`id_programa`) ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -270,15 +276,17 @@ DROP TABLE IF EXISTS `programa_usuario`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `programa_usuario` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
   `id_programa` int NOT NULL,
   `id_usuario` int NOT NULL,
   `rol_en_programa` varchar(50) NOT NULL,
   `fecha_asignacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id_programa`,`id_usuario`),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_programa_usuario` (`id_programa`,`id_usuario`),
   KEY `idx_programa_usuario_usuario` (`id_usuario`),
   CONSTRAINT `fk_programa_usuario_programa` FOREIGN KEY (`id_programa`) REFERENCES `programas` (`id_programa`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `fk_programa_usuario_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT `chk_rol_en_programa_no_vacio` CHECK ((`rol_en_programa` <> _utf8mb3''))
+  CONSTRAINT `chk_rol_en_programa_no_vacio` CHECK ((`rol_en_programa` <> _utf8mb4''))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -399,4 +407,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-07-12 18:23:32
+-- Dump completed on 2026-07-16 21:17:24

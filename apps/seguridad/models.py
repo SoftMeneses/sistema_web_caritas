@@ -1,6 +1,6 @@
 from django.db import models
-
 from django.contrib.auth.models import AbstractUser
+from .managers import UsuarioManager
 
 
 class Rol(models.Model):
@@ -14,8 +14,7 @@ class Rol(models.Model):
         unique=True
     )
 
-    descripcion = models.CharField(
-        max_length=200,
+    descripcion = models.TextField(
         blank=True
     )
 
@@ -44,13 +43,26 @@ class Usuario(AbstractUser):
         primary_key=True
     )
 
+    first_name = models.CharField(
+        max_length=150
+    )
+
+    last_name = models.CharField(
+        max_length=150
+    )
+
+    email = models.EmailField(
+        max_length=254,
+        unique=True
+    )
+
     cedula = models.CharField(
         max_length=20,
         unique=True
     )
 
     telefono = models.CharField(
-        max_length=20,
+        max_length=25,
         blank=True
     )
 
@@ -60,6 +72,8 @@ class Usuario(AbstractUser):
         db_column="id_rol",
         related_name="usuarios"
     )
+
+    objects = UsuarioManager()
 
     class Meta:
 
