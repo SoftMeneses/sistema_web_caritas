@@ -1,11 +1,10 @@
 from django.db import models
 
+from .base import AsignacionBase # Modelo abstracto con campos comunes de las asignaciones.
+from .beneficiario import Beneficiario
 from .programa import Programa
 
-from .beneficiario import Beneficiario
-
-
-class ProgramaBeneficiario(models.Model):
+class ProgramaBeneficiario(AsignacionBase):
 
     programa = models.ForeignKey(
         Programa,
@@ -21,10 +20,6 @@ class ProgramaBeneficiario(models.Model):
         related_name="programas_asignados"
     )
 
-    fecha_asignacion = models.DateField(
-        auto_now_add=True
-    )
-
     estado = models.BooleanField(
         default=True
     )
@@ -37,11 +32,11 @@ class ProgramaBeneficiario(models.Model):
 
         verbose_name_plural = "Asignaciones de Beneficiarios"
 
-        ordering = [
-            "-fecha_asignacion"
-        ]
-
+        ordering = ("-fecha_asignacion",)
+        
         constraints = [
+
+            # Emula la clave primaria compuesta del diseño original.
 
             models.UniqueConstraint(
 

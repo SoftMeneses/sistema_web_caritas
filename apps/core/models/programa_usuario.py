@@ -1,11 +1,11 @@
-from django.db import models
+from django.db import models 
 
-from apps.seguridad.models import Usuario
+from apps.seguridad.models import Usuario 
 
-from .programa import Programa
+from .base import AsignacionBase # Modelo abstracto con campos comunes de las asignaciones.
+from .programa import Programa 
 
-
-class ProgramaUsuario(models.Model):
+class ProgramaUsuario(AsignacionBase): 
 
     programa = models.ForeignKey(
         Programa,
@@ -25,11 +25,8 @@ class ProgramaUsuario(models.Model):
         max_length=50
     )
 
-    fecha_asignacion = models.DateTimeField(
-        auto_now_add=True
-    )
 
-    class Meta:
+    class Meta: 
 
         db_table = "programa_usuario"
 
@@ -37,13 +34,13 @@ class ProgramaUsuario(models.Model):
 
         verbose_name_plural = "Asignaciones de Programas"
 
-        ordering = [
-            "-fecha_asignacion"
-        ]
+        ordering = ("-fecha_asignacion",)
 
         constraints = [
 
-            models.UniqueConstraint(
+            # Emula la clave primaria compuesta del diseño original.
+
+            models.UniqueConstraint( 
 
                 fields=[
 
@@ -61,4 +58,4 @@ class ProgramaUsuario(models.Model):
 
     def __str__(self):
 
-        return f"{self.usuario} - {self.programa}"
+        return f"{self.usuario} - {self.programa}" # retorna el nombre del usuario y el programa

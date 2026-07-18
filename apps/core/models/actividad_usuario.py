@@ -3,9 +3,9 @@ from django.db import models
 from apps.seguridad.models import Usuario
 
 from .actividad import Actividad
+from .base import AsignacionBase # Modelo abstracto con campos comunes de las asignaciones.
 
-
-class ActividadUsuario(models.Model):
+class ActividadUsuario(AsignacionBase):
 
     actividad = models.ForeignKey(
         Actividad,
@@ -25,9 +25,6 @@ class ActividadUsuario(models.Model):
         max_length=50
     )
 
-    fecha_asignacion = models.DateTimeField(
-        auto_now_add=True
-    )
 
     class Meta:
 
@@ -37,11 +34,11 @@ class ActividadUsuario(models.Model):
 
         verbose_name_plural = "Asignaciones de Actividades"
 
-        ordering = [
-            "-fecha_asignacion"
-        ]
-
+        ordering = ("-fecha_asignacion",)
+        
         constraints = [
+
+            # Emula la clave primaria compuesta del diseño original.
 
             models.UniqueConstraint(
 

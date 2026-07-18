@@ -3,7 +3,6 @@ from django.db import models
 from .actividad import Actividad
 from .insumo import Insumo
 
-
 class DetalleActividadInsumo(models.Model):
 
     actividad = models.ForeignKey(
@@ -33,11 +32,11 @@ class DetalleActividadInsumo(models.Model):
 
         verbose_name_plural = "Insumos Utilizados"
 
-        ordering = [
-            "actividad"
-        ]
-
+        ordering = ("actividad",)
+        
         constraints = [
+
+            # Emula la clave primaria compuesta del diseño original.
 
             models.UniqueConstraint(
 
