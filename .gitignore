@@ -1,9 +1,7 @@
-# ignora archivos temporales, compilados, etc para evitar que el repositorio pese más
-
 # Entorno virtual
 venv/
 
-# Archivos compilados de Python
+# Caché de Python
 __pycache__/
 *.py[cod]
 *$py.class
@@ -11,8 +9,9 @@ __pycache__/
 # Variables de entorno
 .env
 
-# VS Code
+# IDEs
 .vscode/
+.idea/
 
 # Archivos del sistema
 .DS_Store
@@ -21,9 +20,21 @@ Thumbs.db
 # Logs
 *.log
 
-# Archivos de Python
+# Distribución
 *.egg-info/
+dist/
+build/
 
-# Directorios de medios y archivos estáticos generados
+# Archivos estáticos y medios
 media/
 staticfiles/
+
+# Caché de pruebas
+.pytest_cache/
+
+# Caché de type checkers
+.mypy_cache/
+
+# Cobertura
+.coverage
+htmlcov/
