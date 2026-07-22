@@ -3,7 +3,7 @@ from django.db import models
 from apps.seguridad.models import Usuario
 
 from .actividad import Actividad
-from .base import AsignacionBase # Modelo abstracto con campos comunes de las asignaciones.
+from .base import AsignacionBase
 
 class ActividadUsuario(AsignacionBase):
 
@@ -25,7 +25,6 @@ class ActividadUsuario(AsignacionBase):
         max_length=50
     )
 
-
     class Meta:
 
         db_table = "actividad_usuario"
@@ -42,18 +41,10 @@ class ActividadUsuario(AsignacionBase):
 
             models.UniqueConstraint(
 
-                fields=[
+                fields= ("actividad", "usuario"),
 
-                    "actividad",
-
-                    "usuario"
-
-                ],
-
-                name="pk_actividad_usuario"
-
+                name="pk_actividad_usuario",
             )
-
         ]
 
     def __str__(self):

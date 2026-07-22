@@ -1,4 +1,5 @@
 from django.db import models
+
 from .choices import UnidadMedida
 
 class Insumo(models.Model):
@@ -12,8 +13,7 @@ class Insumo(models.Model):
     )
 
     descripcion = models.TextField(
-        blank=True,
-        null=True
+        blank=True
     )
 
     stock_actual = models.DecimalField(
@@ -39,9 +39,8 @@ class Insumo(models.Model):
 
         verbose_name_plural = "Insumos"
 
-        ordering = [
-            "nombre"
-        ]
+        ordering = ("nombre",)
+        
 
     def __str__(self):
 

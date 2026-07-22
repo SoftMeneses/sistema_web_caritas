@@ -32,7 +32,7 @@ class DetalleActividadInsumo(models.Model):
 
         verbose_name_plural = "Insumos Utilizados"
 
-        ordering = ("actividad",)
+        ordering = ("actividad", "insumo")
         
         constraints = [
 
@@ -40,17 +40,16 @@ class DetalleActividadInsumo(models.Model):
 
             models.UniqueConstraint(
 
-                fields=[
-                    "actividad",
-                    "insumo"
-                ],
+                fields= ("actividad", "insumo"),
 
-                name="pk_detalle_actividad_insumo"
-
+                name="pk_detalle_actividad_insumo",
             )
 
         ]
 
     def __str__(self):
 
-        return f"{self.actividad} - {self.insumo}"
+        return (
+            f"{self.actividad} - "
+            f"{self.insumo} ({self.cantidad_usada})"
+        )

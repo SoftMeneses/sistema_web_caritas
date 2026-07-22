@@ -1,6 +1,6 @@
 from django.db import models
 
-from .base import AsignacionBase # Modelo abstracto con campos comunes de las asignaciones.
+from .base import AsignacionBase
 from .beneficiario import Beneficiario
 from .programa import Programa
 
@@ -40,16 +40,9 @@ class ProgramaBeneficiario(AsignacionBase):
 
             models.UniqueConstraint(
 
-                fields=[
-
-                    "programa",
-
-                    "beneficiario"
-
-                ],
+                fields=("programa", "beneficiario"),
 
                 name="pk_programa_beneficiario"
-
             )
 
         ]

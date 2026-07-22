@@ -2,7 +2,7 @@ from django.db import models
 
 from apps.seguridad.models import Usuario 
 
-from .base import AsignacionBase # Modelo abstracto con campos comunes de las asignaciones.
+from .base import AsignacionBase
 from .programa import Programa 
 
 class ProgramaUsuario(AsignacionBase): 
@@ -25,7 +25,6 @@ class ProgramaUsuario(AsignacionBase):
         max_length=50
     )
 
-
     class Meta: 
 
         db_table = "programa_usuario"
@@ -42,20 +41,11 @@ class ProgramaUsuario(AsignacionBase):
 
             models.UniqueConstraint( 
 
-                fields=[
-
-                    "programa",
-
-                    "usuario"
-
-                ],
-
-                name="pk_programa_usuario"
-
+                fields=("programa","usuario"),
+                name="pk_programa_usuario",
             )
-
         ]
 
     def __str__(self):
 
-        return f"{self.usuario} - {self.programa}" # retorna el nombre del usuario y el programa
+        return f"{self.usuario} - {self.programa}"

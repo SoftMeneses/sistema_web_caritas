@@ -1,11 +1,8 @@
 from django.db import models
 
 from apps.seguridad.models import Usuario
-
 from .choices import TipoMovimiento
-
 from .insumo import Insumo
-
 
 class MovimientoInsumo(models.Model):
 
@@ -29,8 +26,7 @@ class MovimientoInsumo(models.Model):
 
     observacion = models.CharField(
         max_length=200,
-        blank=True,
-        null=True
+        blank=True
     )
 
     insumo = models.ForeignKey(
@@ -55,10 +51,12 @@ class MovimientoInsumo(models.Model):
 
         verbose_name_plural = "Movimientos de Insumos"
 
-        ordering = [
-            "-fecha_movimiento"
-        ]
+        ordering = ("-fecha_movimiento",)
+        
 
     def __str__(self):
 
-        return f"{self.get_tipo_movimiento_display()} - {self.insumo}"
+        return (
+            f"{self.get_tipo_movimiento_display()} - "
+            f"{self.insumo.nombre} ({self.cantidad})"
+        )

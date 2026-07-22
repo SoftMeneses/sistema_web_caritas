@@ -22,13 +22,11 @@ class Beneficiario(models.Model):
 
     telefono = models.CharField(
         max_length=25,
-        blank=True,
-        null=True
+        blank=True
     )
 
     direccion = models.TextField(
-        blank=True,
-        null=True
+        blank=True
     )
 
     fecha_registro = models.DateField(
@@ -47,10 +45,10 @@ class Beneficiario(models.Model):
 
         verbose_name_plural = "Beneficiarios"
 
-        ordering = [
+        ordering = (
             "apellido",
-            "nombre"
-        ]
+            "nombre",
+        )
 
     def __str__(self):
 

@@ -21,9 +21,21 @@ class RolAdmin(admin.ModelAdmin):
         "nombre",
     )
 
+    ordering = (
+        "nombre",
+    )
+
+    list_per_page = 20
+
 
 @admin.register(Usuario)
 class UsuarioAdmin(UserAdmin):
+    
+    """
+    Personalización del panel de administración para el modelo Usuario.
+    Conserva toda la funcionalidad de UserAdmin e incorpora los campos
+    adicionales definidos en el modelo personalizado.
+    """
 
     model = Usuario
 
@@ -35,13 +47,29 @@ class UsuarioAdmin(UserAdmin):
         "cedula",
         "rol",
         "is_active",
+        "is_staff",
     )
 
     list_filter = (
         "rol",
         "is_active",
         "is_staff",
+        "is_superuser",
     )
+
+    search_fields = (
+        "username",
+        "first_name",
+        "last_name",
+        "email",
+        "cedula",
+    )
+
+    ordering = (
+        "username",
+    )
+
+    list_per_page = 20
 
     fieldsets = UserAdmin.fieldsets + (
 

@@ -1,9 +1,7 @@
 from django.db import models
 
 from apps.seguridad.models import Usuario
-
 from .programa import Programa
-
 
 class Actividad(models.Model):
 
@@ -21,13 +19,14 @@ class Actividad(models.Model):
     )
 
     fecha_actividad = models.DateTimeField(
-        auto_now_add=True
+        verbose_name="Fecha y hora de la actividad"
     )
 
     estado = models.BooleanField(
         default=True
     )
 
+    # Programa al que pertenece la actividad.
     programa = models.ForeignKey(
         Programa,
         on_delete=models.PROTECT,
@@ -35,6 +34,7 @@ class Actividad(models.Model):
         related_name="actividades"
     )
 
+    # Usuario que registró la actividad en el sistema.
     usuario_creador = models.ForeignKey(
         Usuario,
         on_delete=models.PROTECT,
@@ -50,9 +50,7 @@ class Actividad(models.Model):
 
         verbose_name_plural = "Actividades"
 
-        ordering = [
-            "-fecha_actividad"
-        ]
+        ordering = ("-fecha_actividad",)
 
     def __str__(self):
 

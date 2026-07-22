@@ -23,8 +23,7 @@ class Auditoria(models.Model):
     id_registro = models.IntegerField()
 
     descripcion = models.TextField(
-        blank=True,
-        null=True
+        blank=True
     )
 
     fecha_auditoria = models.DateTimeField(
@@ -46,9 +45,8 @@ class Auditoria(models.Model):
 
         verbose_name_plural = "Auditorías"
 
-        ordering = [
-            "-fecha_auditoria"
-        ]
+        ordering = ("-fecha_auditoria",)
+        
 
     def __str__(self):
 

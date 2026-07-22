@@ -29,6 +29,7 @@ class Programa(models.Model):
         default=True
     )
 
+    # Usuario encargado de la gestión del programa.
     usuario_responsable = models.ForeignKey(
         Usuario,
         on_delete=models.PROTECT,
@@ -44,9 +45,7 @@ class Programa(models.Model):
 
         verbose_name_plural = "Programas"
 
-        ordering = [
-            "nombre"
-        ]
+        ordering = ("nombre",)
 
     def __str__(self):
 
