@@ -75,13 +75,19 @@ y completar las credenciales de conexión a MySQL.
 python manage.py migrate
 ```
 
-8. Crear un superusuario
+8. Importar los triggers.
+
+```
+database/triggers/triggers.sql
+```
+
+9. Crear un superusuario
 
 ```bash
 python manage.py createsuperuser
 ```
 
-9. Ejecutar el servidor.
+10. Ejecutar el servidor.
 
 ```bash
 python manage.py runserver

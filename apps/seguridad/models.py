@@ -43,25 +43,36 @@ class Usuario(AbstractUser):
         primary_key=True
     )
 
+    username = models.CharField(
+        "Nombre de Usuario",
+        max_length=150,
+        unique=True
+    )
+
     first_name = models.CharField(
+        "Nombre",
         max_length=150
     )
 
     last_name = models.CharField(
+        "Apellido",
         max_length=150
     )
 
     email = models.EmailField(
+        "Correo Electronico",
         max_length=254,
         unique=True
     )
 
     cedula = models.CharField(
+        "Cédula",
         max_length=20,
         unique=True
     )
 
     telefono = models.CharField(
+        "Teléfono",
         max_length=25,
         blank=True
     )
