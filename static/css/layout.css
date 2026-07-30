@@ -1,3 +1,45 @@
+/*==============================================================================
+    Sistema Web para el Control Operativo y Seguimiento Administrativo
+    de Programas en la Organización Cáritas San Cristóbal
+
+    Archivo      : layout.css
+    Descripción  : Define la estructura general del sistema, incluyendo
+                   navbar, sidebar, contenedor principal, footer y la
+                   distribución responsive de la aplicación.
+
+    Autor        : Equipo de Desarrollo
+    Framework    : Django 5 + Bootstrap 5
+==============================================================================*/
+
+
+/*==============================
+ENCABEZADO DE PÁGINA
+==============================*/
+
+.page-header{
+
+    margin-bottom:2rem;
+
+}
+
+.page-title{
+
+    font-size:1.8rem;
+
+    font-weight:600;
+
+    color:var(--color-primary);
+
+    margin-bottom:.25rem;
+
+}
+
+.page-content{
+
+    width:100%;
+
+}
+
 /*==============================
 LAYOUT GENERAL
 ==============================*/
@@ -32,9 +74,9 @@ body{
 
 #sidebar-container{
 
-    width:260px;
+    width:var(--sidebar-width);
 
-    transition:.35s;
+    transition:width .35s ease;
 
     flex-shrink:0;
 
@@ -44,13 +86,15 @@ body{
 
     flex:1;
 
-    padding:25px;
+    padding:var(--page-padding);
 
     background:var(--color-background);
 
-    min-height:calc(100vh - 56px);
+    min-height:calc(100vh - var(--navbar-height));
 
-    transition:.35s;
+    transition:
+        margin .35s ease,
+        padding .35s ease;
 
 }
 
@@ -66,7 +110,9 @@ body{
 
 .navbar{
 
-    background: var(--color-primary) !important;
+    background:var(--color-primary) !important;
+
+    height:var(--navbar-height);
 
 }
 
@@ -86,9 +132,13 @@ body{
 
 .sidebar{
 
+    display:flex;
+
+    flex-direction:column;
+
     background:var(--color-sidebar);
 
-    min-height:calc(100vh - 56px);
+    min-height:calc(100vh - var(--navbar-height));
 
 }
 
@@ -136,7 +186,10 @@ body{
 
     margin:2px 10px;
 
-    transition:all .25s ease;
+    transition:
+        background-color .25s ease,
+        color .25s ease,
+        transform .25s ease;
 
 }
 
@@ -176,26 +229,32 @@ footer{
 
     border-top: 1px solid rgba(255,255,255,.15);
 
-    padding: 12px 0;
+    flex-shrink:0;
 
 }
 
-/*====================================
-  RESPONSIVE
-====================================*/
+/*==============================================================================
+  DISEÑO RESPONSIVO
+
+  Las reglas específicas para dispositivos móviles se incorporarán
+  progresivamente conforme se desarrollen los distintos módulos del sistema.
+==============================================================================*/
 
 @media (max-width: 768px) {
 
 
 }
 
-/*====================================
-  SIDEBAR COLAPSABLE    
-====================================*/
+/*==============================================================================
+   SIDEBAR EN MODO COLAPSADO
+
+  Reduce el ancho del menú lateral y oculta elementos secundarios para
+  maximizar el espacio disponible en el área de trabajo.
+==============================================================================*/
 
 .sidebar-collapsed{
 
-    width:80px !important;
+    width:var(--sidebar-collapsed-width)!important;
 
 }
 

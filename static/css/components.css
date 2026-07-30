@@ -1,0 +1,155 @@
+/*==============================================================================
+    Sistema Web para el Control Operativo y Seguimiento Administrativo
+    de Programas en la Organización Cáritas San Cristóbal
+
+    Archivo      : components.css
+    Descripción  : Define los estilos reutilizables de los componentes
+                   visuales del sistema, garantizando una apariencia
+                   uniforme en todos los módulos.
+
+    Autor        : Equipo de Desarrollo
+    Framework    : Django 5 + Bootstrap 5
+==============================================================================*/
+
+
+/*==============================================================================
+  TARJETAS (CARDS)
+==============================================================================*/
+
+.app-card{
+
+    border:none;
+
+    border-radius:var(--radius-md);
+
+    box-shadow:0 .125rem .5rem rgba(0,0,0,.08);
+
+    overflow:hidden;
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease;
+
+}
+
+.app-card:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:0 .5rem 1rem rgba(0,0,0,.12);
+
+}
+
+.app-card .card-header{
+
+    background:var(--color-white);
+
+    border-bottom:1px solid rgba(0,0,0,.08);
+
+    font-weight:600;
+
+}
+
+.app-card .card-body{
+
+    padding:1.5rem;
+
+}
+
+/*==============================================================================
+  BOTONES
+==============================================================================*/
+
+.btn.btn-primary{
+
+    background:var(--color-primary);
+
+    border-color:var(--color-primary);
+
+    border-radius:var(--radius-sm);
+
+    font-weight:600;
+
+    transition:
+        background-color .25s ease,
+        transform .25s ease;
+
+}
+
+.btn.btn-primary:hover{
+
+    background:#4d0618;
+
+    border-color:#4d0618;
+
+    transform:translateY(-1px);
+
+}
+
+.btn-icon{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:.5rem;
+
+}
+
+
+/*==============================================================================
+  FORMULARIOS
+==============================================================================*/
+.form-control{
+
+    border-radius:var(--radius-sm);
+
+    padding:.75rem;
+
+    transition:
+        border-color .25s ease,
+        box-shadow .25s ease;
+
+}
+
+.form-control:focus{
+
+    border-color:var(--color-primary);
+
+    box-shadow:0 0 0 .2rem rgba(102,8,33,.20);
+
+}
+
+/*==============================================================================
+  TABLAS
+==============================================================================*/
+
+
+/*==============================================================================
+  BADGES
+==============================================================================*/
+
+
+/*==============================================================================
+  ALERTAS
+==============================================================================*/
+
+
+/*==============================================================================
+  BREADCRUMB
+==============================================================================*/
+
+
+/*==============================================================================
+  PAGINACIÓN
+==============================================================================*/
+
+
+/*==============================================================================
+  MODALES
+==============================================================================*/
+
+
+/*==============================================================================
+  SPINNER
+==============================================================================*/
