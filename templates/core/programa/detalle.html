@@ -1,0 +1,233 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}
+
+Detalle del Programa
+
+{% endblock %}
+
+{% block page_title %}
+
+Detalle del Programa
+
+{% endblock %}
+
+{% block breadcrumb %}
+
+<nav aria-label="breadcrumb">
+
+    <ol class="breadcrumb">
+
+        <li class="breadcrumb-item">
+
+            <a href="{% url 'core:dashboard' %}">
+
+                Dashboard
+
+            </a>
+
+        </li>
+
+        <li class="breadcrumb-item">
+
+            <a href="{% url 'core:programa_lista' %}">
+
+                Programas
+
+            </a>
+
+        </li>
+
+        <li class="breadcrumb-item active">
+
+            Detalle
+
+        </li>
+
+    </ol>
+
+</nav>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="card app-card">
+
+    <div class="card-header">
+
+        Información del programa
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <div class="col-md-6">
+
+                <span class="detail-label">
+
+                    <i class="bi bi-tag me-1"></i>
+                    
+                    Nombre
+                
+                </span>
+
+                <p class="detail-value">
+                    
+                    {{ programa.nombre }}
+                
+                </p>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <span class="detail-label">
+                    
+                    <i class="bi bi-person me-1"></i>
+                    
+                    Responsable
+                
+                </span>
+
+                <p class="detail-value">
+
+                    {{ programa.usuario_responsable.get_full_name|default:programa.usuario_responsable.username }}
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="row mt-3">
+
+            <div class="col-md-6">
+
+                <span class="detail-label">
+
+                    <i class="bi bi-calendar-event me-1"></i>
+                    
+                    Fecha de inicio
+
+                </span>
+
+                <p class="detail-value">
+                    
+                    {{ programa.fecha_inicio|date:"d/m/Y" }}
+                
+                </p>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <span class="detail-label">
+                    
+                    <i class="bi bi-calendar-check me-1"></i>
+                    
+                    Fecha de finalización
+                
+                </span>
+
+                <p class="detail-value">
+                    
+                    {{ programa.fecha_fin|date:"d/m/Y"|default:"No definida" }}
+                
+                </p>
+            
+            </div>
+        
+        </div>
+
+        <div class="row mt-3">
+            
+            <div class="col-md-6">
+
+                <span class="detail-label">
+
+                    <i class="bi bi-toggle-on me-1"></i>
+
+                    Estado
+
+                </span>
+                
+                <p class="detail-value">
+                    
+                    {% if programa.estado %}
+
+                        <span class="badge app-badge-active">
+                            
+                            Activo
+                        
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge app-badge-inactive">
+                            
+                            Inactivo
+                        
+                        </span>
+
+                    {% endif %}
+                
+                </p>
+            
+            </div>
+        
+        </div>
+
+        <div class="row mt-3">
+            
+            <div class="col-12">
+
+                <span class="detail-label">
+
+                    <i class="bi bi-info-circle me-1"></i>
+                
+                    Descripción
+
+                </span>
+                
+                <p class="detail-value">
+                    
+                    {{ programa.descripcion|default:"Sin descripción registrada." }}
+                
+                </p>
+            
+            </div>
+        
+        </div>
+
+        <hr>
+
+        <div class="d-flex justify-content-end gap-2">
+
+            <a href="{% url 'core:programa_lista' %}"
+                class="btn btn-secondary">
+
+                <i class="bi bi-arrow-left me-1"></i>
+
+                Volver
+            
+            </a>
+
+            <a href="#"
+                class="btn btn-primary btn-icon">
+
+                <i class="bi bi-pencil-square"></i>
+
+                Editar
+
+            </a>
+        
+        </div>  
+
+    </div>
+
+</div>
+
+{% endblock %}

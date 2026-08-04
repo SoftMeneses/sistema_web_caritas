@@ -78,9 +78,9 @@
 
 .btn.btn-primary:hover{
 
-    background:#4d0618;
+    background:var(--color-primary-dark);
 
-    border-color:#4d0618;
+    border-color:var(--color-primary-dark);
 
     transform:translateY(-1px);
 
@@ -100,11 +100,10 @@
 /*==============================================================================
   FORMULARIOS
 ==============================================================================*/
-.form-control{
+.form-control,
+.form-select{
 
     border-radius:var(--radius-sm);
-
-    padding:.75rem;
 
     transition:
         border-color .25s ease,
@@ -112,22 +111,79 @@
 
 }
 
-.form-control:focus{
+.form-control:focus,
+.form-select:focus{
 
     border-color:var(--color-primary);
 
-    box-shadow:0 0 0 .2rem rgba(102,8,33,.20);
+    box-shadow:var(--shadow-focus);
 
 }
+
+.form-check-input:checked{
+
+    background-color:var(--color-primary);
+
+    border-color:var(--color-primary);
+
+}
+
 
 /*==============================================================================
   TABLAS
 ==============================================================================*/
+.app-table{
 
+    margin-bottom:0;
+
+}
+
+.app-table tbody tr{
+
+    transition:
+        background-color .2s ease;
+
+}
+
+.app-table tbody tr:hover{
+
+    background:rgba(102,8,33,.03);
+
+}
+
+.app-table thead th{
+
+    background:var(--color-primary);
+
+    color:var(--color-white);
+
+    font-weight:600;
+
+    vertical-align:middle;
+
+}
+
+.app-table td{
+
+    vertical-align:middle;
+
+}
 
 /*==============================================================================
   BADGES
 ==============================================================================*/
+
+.app-badge-active{
+
+    background:#198754;
+
+}
+
+.app-badge-inactive{
+
+    background:#6c757d;
+
+}
 
 
 /*==============================================================================
@@ -136,20 +192,209 @@
 
 
 /*==============================================================================
-  BREADCRUMB
-==============================================================================*/
-
-
-/*==============================================================================
   PAGINACIÓN
 ==============================================================================*/
+
+.app-pagination{
+
+    margin-top:2rem;
+
+}
+
+.app-pagination .page-link{
+
+    color:var(--color-primary);
+
+    border-radius:var(--radius-sm);
+
+    margin:0 .2rem;
+
+    transition:
+        background-color .25s ease,
+        color .25s ease;
+
+}
+
+.app-pagination .page-link:hover{
+
+    background:var(--color-primary);
+
+    color:var(--color-white);
+
+}
+
+.app-pagination .page-item.active .page-link{
+
+    background:var(--color-primary);
+
+    border-color:var(--color-primary);
+
+    color:var(--color-white);
+
+}
 
 
 /*==============================================================================
   MODALES
 ==============================================================================*/
 
+.app-modal{
+
+    border:none;
+
+    border-radius:var(--radius-md);
+
+    overflow:hidden;
+
+}
+
+.app-modal .modal-header{
+
+    background:var(--color-primary);
+
+    color:var(--color-white);
+
+    border-bottom:none;
+
+}
+
+.app-modal .modal-title{
+
+    font-weight:600;
+
+}
+
+.app-modal .btn-close{
+
+    filter:invert(1);
+
+}
+
+.app-modal .modal-footer{
+
+    border-top:1px solid rgba(0,0,0,.08);
+
+}
+
+
+/*==============================================================================
+  SEARCH BAR
+==============================================================================*/
+
+.search-bar{
+
+    margin-bottom:1.5rem;
+
+}
+
+.search-bar .input-group{
+
+    box-shadow:0 .125rem .25rem rgba(0,0,0,.05);
+
+}
+
+.search-bar .input-group-text{
+
+    background:var(--color-white);
+
+    border-right:none;
+
+}
+
+.search-bar .form-control{
+
+    border-left:none;
+
+}
+
+.search-bar .form-control:focus{
+
+    box-shadow:none;
+
+}
+
+
+/*==============================================================================
+  EMPTY STATE
+==============================================================================*/
+
+.empty-state{
+
+    padding:4rem 2rem;
+
+    text-align:center;
+
+}
+
+.empty-state i{
+
+    font-size:4rem;
+
+    color:#adb5bd;
+
+}
+
+.empty-state h4{
+
+    margin-top:1rem;
+
+    font-weight:600;
+
+}
+
+.empty-state p{
+
+    color:#6c757d;
+
+    margin-bottom:1.5rem;
+
+}
+
+
+/*==============================================================================
+  DETAIL VIEW
+==============================================================================*/
+
+.detail-label{
+
+    display:block;
+
+    margin-bottom:.35rem;
+
+    font-size:.80rem;
+
+    font-weight:700;
+
+    letter-spacing:.06em;
+
+    text-transform:uppercase;
+
+    color:var(--color-primary);
+
+}
+
+.detail-value{
+
+    margin-bottom:1.75rem;
+
+    margin-left:1.4rem;
+
+    font-size:1rem;
+
+    font-weight:400;
+
+    color:var(--color-text);
+
+    text-transform:none;
+
+}
+
 
 /*==============================================================================
   SPINNER
+==============================================================================*/
+
+
+/*==============================================================================
+  BREADCRUMB
 ==============================================================================*/

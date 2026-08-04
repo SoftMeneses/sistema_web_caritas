@@ -1,0 +1,53 @@
+<!--
+==============================================================================
+Componente: Empty State
+
+Descripción:
+Muestra un mensaje amigable cuando una vista no posee información para
+mostrar al usuario.
+
+Parámetros esperados:
+
+title         : Título principal.
+message       : Mensaje descriptivo.
+icon          : Clase Bootstrap Icons.
+button_url    : URL del botón (opcional).
+button_text   : Texto del botón (opcional).
+button_icon   : Icono Bootstrap para el botón (opcional).
+==============================================================================
+-->
+
+<div class="empty-state">
+
+    <i class="{{ icon|default:'bi bi-inbox' }}"
+        aria-hidden="true">
+    </i>
+
+    <h4>
+
+        {{ title|default:"Sin información disponible" }}
+
+    </h4>
+
+    <p>
+
+        {{ message|default:"No existen registros para mostrar." }}
+
+    </p>
+
+    {% if button_url and button_text %}
+
+        <a href="{{ button_url }}"
+           class="btn btn-primary btn-icon">
+
+            <i class="{{ button_icon|default:'bi bi-plus-circle' }}"
+               aria-hidden="true">
+            </i>
+
+            {{ button_text }}
+
+        </a>
+
+    {% endif %}
+
+</div>

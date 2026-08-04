@@ -54,7 +54,13 @@ body{
 
 }
 
-.container-fluid{
+.app-layout{
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
 
     --bs-gutter-x:0;
 
@@ -80,6 +86,8 @@ body{
 
     flex-shrink:0;
 
+    display:flex;
+
 }
 
 #main-content{
@@ -90,17 +98,19 @@ body{
 
     background:var(--color-background);
 
-    min-height:calc(100vh - var(--navbar-height));
-
     transition:
         margin .35s ease,
         padding .35s ease;
 
 }
 
-.container-fluid>.row{
+.app-layout >.row{
+
+    flex:1;
 
     display:flex;
+
+    align-items:stretch;
 
 }
 
@@ -136,9 +146,9 @@ body{
 
     flex-direction:column;
 
-    background:var(--color-sidebar);
+    flex:1;
 
-    min-height:calc(100vh - var(--navbar-height));
+    background:var(--color-sidebar);
 
 }
 

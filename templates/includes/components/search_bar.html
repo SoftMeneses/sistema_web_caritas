@@ -1,0 +1,77 @@
+<!--
+==============================================================================
+Componente: Search Bar
+
+Descripción:
+Barra de búsqueda reutilizable para los listados del sistema.
+
+Parámetros:
+
+placeholder : Texto del input.
+button_url  : URL del botón principal (opcional).
+button_text : Texto del botón principal.
+button_icon : Icono Bootstrap.
+==============================================================================
+-->
+
+<div class="search-bar">
+
+    <form method="get"
+          class="row g-3 align-items-center"
+          action="">
+
+        <div class="col">
+
+            <div class="input-group">
+
+                <span class="input-group-text">
+
+                    <i class="bi bi-search"
+                       aria-hidden="true">
+                    </i>
+
+                </span>
+
+                <label for="{{ search_id|default:'search_input' }}"
+                       class="visually-hidden">
+
+                    Buscar
+
+                </label>
+
+                <input
+                    id="{{ search_id|default:'search_input' }}"
+                    type="search"
+                    name="{{ search_name|default:'q' }}"
+                    class="form-control"
+                    aria-label="Buscar"
+                    autocomplete="off"
+                    placeholder="{{ placeholder|default:'Buscar...' }}"
+                    value="{{ search_value | default:'' }}">
+
+            </div>
+
+        </div>
+
+        {% if button_url %}
+
+        <div class="col-auto">
+
+            <a href="{{ button_url }}"
+               class="btn btn-primary btn-icon">
+
+                <i class="{{ button_icon|default:'bi bi-plus-circle' }}"
+                   aria-hidden="true">
+                </i>
+
+                {{ button_text|default:"Nuevo" }}
+
+            </a>
+
+        </div>
+
+        {% endif %}
+
+    </form>
+
+</div>

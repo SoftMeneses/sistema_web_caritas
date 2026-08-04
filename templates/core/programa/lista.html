@@ -1,0 +1,181 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}
+
+Programas
+
+{% endblock %}
+
+{% block page_title %}
+
+Programas
+
+{% endblock %}
+
+{% block breadcrumb %}
+
+<nav aria-label="breadcrumb">
+
+    <ol class="breadcrumb">
+
+        <li class="breadcrumb-item">
+
+            <a href="{% url 'core:dashboard' %}">
+
+                Dashboard
+
+            </a>
+
+        </li>
+
+        <li class="breadcrumb-item active">
+
+            Programas
+
+        </li>
+
+    </ol>
+
+</nav>
+
+{% endblock %}
+
+{% block content %}
+
+{% url 'core:programa_crear' as programa_crear_url %}
+
+{% include "includes/components/search_bar.html" with placeholder="Buscar programa..." button_url=programa_crear_url button_text="Nuevo Programa" button_icon="bi bi-plus-circle" %}
+
+<div class="card app-card">
+
+    <div class="card-body">
+
+        {% if programas %}
+
+            <div class="table-responsive">
+                
+                <table class="table table-hover app-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th style="width: 60px;">#</th>
+
+                            <th scope="col">Programa</th>
+
+                            <th scope="col">Responsable</th>
+
+                            <th scope="col">Fecha Inicio</th>
+
+                            <th scope="col">Estado</th>
+
+                            <th scope="col" class="text-center" style="width: 170px;">Acciones</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for programa in programas %}
+
+                            <tr>
+
+                                <td>
+
+                                    {{ programas.start_index|add:forloop.counter0 }}
+
+                                </td>
+
+                                <td>
+
+                                    {{ programa.nombre }}
+
+                                </td>
+
+                                <td>
+
+                                    {{ programa.usuario_responsable.get_full_name|default:programa.usuario_responsable.username }}
+
+                                </td>
+
+                                <td>
+
+                                    {{ programa.fecha_inicio|date:"d/m/Y" }}
+
+                                </td>
+
+                                <td>
+
+                                    {% if programa.estado %}
+
+                                        <span class="badge bg-success">Activo</span>
+
+                                    {% else %}
+
+                                        <span class="badge bg-secondary">Inactivo</span>
+
+                                    {% endif %}
+
+                                </td>
+
+                                <td class="text-center">
+
+                                    <div class="btn-group btn-group-sm">
+
+                                        <a href="{% url 'core:programa_detalle' programa.pk %}"
+                                        class="btn btn-outline-primary"
+                                        title="Ver"
+                                        aria-label="Ver programa">
+
+                                            <i class="bi bi-eye"></i>
+
+                                        </a>
+
+                                        <a href="#"
+                                        class="btn btn-outline-warning"
+                                        title="Editar"
+                                        aria-label="Editar programa">
+
+                                            <i class="bi bi-pencil-square"></i>
+
+                                        </a>
+
+                                        <button
+                                        type="button"
+                                        class="btn btn-outline-danger"
+                                        title="Eliminar"
+                                        aria-label="Eliminar programa">
+
+                                            <i class="bi bi-trash"></i>
+
+                                        </button>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+            
+            </div>
+
+            {% include "includes/components/pagination.html" %}
+
+        {% else %}
+
+        {% include "includes/components/empty_state.html" with title="No existen programas registrados." message="Comience creando el primer programa del sistema." button_url=programa_crear_url button_text="Nuevo Programa" button_icon="bi bi-plus-circle" %}
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}
