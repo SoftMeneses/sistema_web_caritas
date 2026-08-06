@@ -18,17 +18,11 @@
 
 .app-card{
 
-    border:none;
+    display:flex;
 
-    border-radius:var(--radius-md);
+    flex-direction:column;
 
-    box-shadow:0 .125rem .5rem rgba(0,0,0,.08);
-
-    overflow:hidden;
-
-    transition:
-        transform .25s ease,
-        box-shadow .25s ease;
+    flex:1;
 
 }
 
@@ -52,9 +46,16 @@
 
 .app-card .card-body{
 
+    display:flex;
+
+    flex-direction:column;
+
+    flex:1;
+
     padding:1.5rem;
 
 }
+
 
 /*==============================================================================
   BOTONES
@@ -100,6 +101,7 @@
 /*==============================================================================
   FORMULARIOS
 ==============================================================================*/
+
 .form-control,
 .form-select{
 
@@ -130,8 +132,34 @@
 
 
 /*==============================================================================
+  FORMULARIOS DE MANTENIMIENTO
+==============================================================================*/
+
+.app-form{
+
+    display:flex;
+
+    flex-direction:column;
+
+    height:100%;
+
+}
+
+.app-form-actions{
+
+    margin-top:auto;
+
+    padding-top:1.5rem;
+
+    border-top:1px solid var(--bs-border-color);
+
+}
+
+
+/*==============================================================================
   TABLAS
 ==============================================================================*/
+
 .app-table{
 
     margin-bottom:0;
@@ -168,6 +196,7 @@
     vertical-align:middle;
 
 }
+
 
 /*==============================================================================
   BADGES

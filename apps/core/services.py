@@ -1,8 +1,11 @@
 from datetime import datetime
 
 from django.core.paginator import Paginator
+from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+
+from urllib.parse import urlencode
 
 from apps.core.models import Programa
 
@@ -31,6 +34,7 @@ def obtener_programas(request):
     """
     Obtiene el listado de programas aplicando:
 
+    - filtro por estado
     - búsqueda
     - ordenamiento
     - paginación
@@ -38,16 +42,51 @@ def obtener_programas(request):
     Retorna el contexto requerido por la vista lista.html.
     """
 
+    params = request.GET.copy()
+
+    params.pop(
+
+        "page", 
+
+        None,
+
+    )
+
+    status = request.GET.get(
+
+        "status",
+
+        "activo",
+
+    )
+
     queryset = (
 
         Programa.objects
 
         .select_related("usuario_responsable")
 
-        .all()
-
-        .order_by("nombre")
     )
+
+    if status == "activo":
+
+        queryset = queryset.filter(
+
+            estado=True,
+
+        )
+
+    elif status == "inactivo":
+
+        queryset = queryset.filter(
+
+            estado=False,
+
+        )
+
+    elif status == "todos":
+
+        pass
 
     q = request.GET.get(
 
@@ -81,6 +120,12 @@ def obtener_programas(request):
 
         )
 
+    queryset = queryset.order_by(
+    
+        "nombre",
+    
+    )
+
     paginator = Paginator(
 
         queryset,
@@ -98,7 +143,11 @@ def obtener_programas(request):
 
         "search_value": q,
 
+        "status_value": status,
+
         "visible_pages": obtener_paginas_visibles(page_obj),
+
+        "query_string": params.urlencode(),
 
     }
 
@@ -174,3 +223,33 @@ def obtener_programa(pk):
         pk=pk,
 
     )
+
+
+@transaction.atomic
+def actualizar_programa(formulario):
+    """"
+    Actualiza un programa existente.
+    """
+
+    programa = formulario.save()
+
+    return programa
+
+
+@transaction.atomic
+def desactivar_programa(programa):
+    """
+    Realiza la desactivación lógica del programa.
+    """
+
+    programa.estado = False
+
+    programa.save(
+
+        update_fields=[
+            
+            "estado",
+        ]
+    )
+
+    return programa

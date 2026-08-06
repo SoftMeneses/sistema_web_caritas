@@ -40,7 +40,7 @@ Detalle del Programa
 
         <li class="breadcrumb-item active">
 
-            Detalle
+            {{ programa.nombre }}
 
         </li>
 
@@ -58,9 +58,19 @@ Detalle del Programa
 
         Información del programa
 
+        {% if not programa.estado %}
+
+            <span class="badge app-badge-inactive float-end">
+                
+                Inactivo
+            
+            </span>
+
+        {% endif %}
+
     </div>
 
-    <div class="card-body">
+    <div class="card-body app-form">
 
         <div class="row">
 
@@ -202,9 +212,7 @@ Detalle del Programa
         
         </div>
 
-        <hr>
-
-        <div class="d-flex justify-content-end gap-2">
+        <div class="app-form-actions d-flex justify-content-end gap-2">
 
             <a href="{% url 'core:programa_lista' %}"
                 class="btn btn-secondary">
@@ -215,7 +223,7 @@ Detalle del Programa
             
             </a>
 
-            <a href="#"
+            <a href="{% url 'core:programa_editar' programa.pk %}"
                 class="btn btn-primary btn-icon">
 
                 <i class="bi bi-pencil-square"></i>

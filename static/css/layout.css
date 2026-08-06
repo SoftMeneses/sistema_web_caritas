@@ -36,6 +36,12 @@ ENCABEZADO DE PÁGINA
 
 .page-content{
 
+    display:flex;
+
+    flex-direction:column;
+
+    flex:1;
+
     width:100%;
 
 }
@@ -91,6 +97,10 @@ body{
 }
 
 #main-content{
+
+    display:flex;
+
+    flex-direction:column;
 
     flex:1;
 

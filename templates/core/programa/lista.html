@@ -44,7 +44,7 @@ Programas
 
 {% url 'core:programa_crear' as programa_crear_url %}
 
-{% include "includes/components/search_bar.html" with placeholder="Buscar programa..." button_url=programa_crear_url button_text="Nuevo Programa" button_icon="bi bi-plus-circle" %}
+{% include "includes/components/search_bar.html" with placeholder="Buscar programa..." button_url=programa_crear_url button_text="Nuevo Programa" button_icon="bi bi-plus-circle" show_status_filter=True status_value=status_value %}
 
 <div class="card app-card">
 
@@ -52,7 +52,7 @@ Programas
 
         {% if programas %}
 
-            <div class="table-responsive">
+            <div class="table-responsive flex-grow-1">
                 
                 <table class="table table-hover app-table">
 
@@ -110,11 +110,11 @@ Programas
 
                                     {% if programa.estado %}
 
-                                        <span class="badge bg-success">Activo</span>
+                                        <span class="badge app-badge-active">Activo</span>
 
                                     {% else %}
 
-                                        <span class="badge bg-secondary">Inactivo</span>
+                                        <span class="badge app-badge-inactive">Inactivo</span>
 
                                     {% endif %}
 
@@ -125,32 +125,53 @@ Programas
                                     <div class="btn-group btn-group-sm">
 
                                         <a href="{% url 'core:programa_detalle' programa.pk %}"
-                                        class="btn btn-outline-primary"
-                                        title="Ver"
-                                        aria-label="Ver programa">
+                                            class="btn btn-outline-primary"
+                                            title="Ver"
+                                            aria-label="Ver programa">
 
                                             <i class="bi bi-eye"></i>
 
                                         </a>
 
-                                        <a href="#"
-                                        class="btn btn-outline-warning"
-                                        title="Editar"
-                                        aria-label="Editar programa">
+                                        <a href="{% url 'core:programa_editar' programa.pk %}"
+                                            class="btn btn-outline-warning"
+                                            title="Editar"
+                                            aria-label="Editar programa">
 
                                             <i class="bi bi-pencil-square"></i>
 
                                         </a>
 
-                                        <button
-                                        type="button"
-                                        class="btn btn-outline-danger"
-                                        title="Eliminar"
-                                        aria-label="Eliminar programa">
+                                        {% if programa.estado %}
 
-                                            <i class="bi bi-trash"></i>
+                                            <button
+                                                type="button"
+                                                class="btn btn-outline-danger btn-desactivar"
+                                                title="Desactivar"
+                                                aria-label="Desactivar programa"
 
-                                        </button>
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#confirmModal"
+
+                                                data-url="{% url 'core:programa_desactivar' programa.pk %}"
+                                                data-name="{{ programa.nombre }}">
+
+                                                <i class="bi bi-trash"></i>
+
+                                            </button>
+
+                                        {% else %}
+
+                                            <button
+                                                class="btn btn-outline-secondary"
+                                                disabled
+                                                title="Programa inactivo">
+
+                                                <i class="bi bi-trash"></i>
+
+                                            </button>
+
+                                        {% endif %}
 
                                     </div>
 
@@ -177,5 +198,7 @@ Programas
     </div>
 
 </div>
+
+{% include "includes/components/confirm_modal.html" with confirm_url="#" title="Desactivar programa" message="" confirm_text="Desactivar" confirm_class="btn-danger" confirm_icon="bi bi-exclamation-triangle-fill text-warning fs-1" %}
 
 {% endblock %}

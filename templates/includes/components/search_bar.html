@@ -53,6 +53,45 @@ button_icon : Icono Bootstrap.
 
         </div>
 
+        {% if show_status_filter %}
+
+        <div class="col-md-3">
+        
+            <select
+                name="status"
+                class="form-select"
+                onchange="this.form.submit()">
+        
+                <option
+                    value="activo"
+                    {% if status_value == "activo" %}selected{% endif %}>
+        
+                    Activos
+        
+                </option>
+            
+                <option
+                    value="inactivo"
+                    {% if status_value == "inactivo" %}selected{% endif %}>
+            
+                    Inactivos
+            
+                </option>
+            
+                <option
+                    value="todos"
+                    {% if status_value == "todos" %}selected{% endif %}>
+            
+                    Todos
+            
+                </option>
+            
+            </select>
+        
+        </div>
+        
+        {% endif %}
+
         {% if button_url %}
 
         <div class="col-auto">

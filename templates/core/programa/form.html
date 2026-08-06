@@ -1,11 +1,31 @@
 {% extends "layouts/base.html" %}
 
 {% block title %}
+
+{% if modo == "editar" %}
+
+Editar Programa
+
+{% else %}
+
 Nuevo Programa
+
+{% endif %}
+
 {% endblock %}
 
 {% block page_title %}
+
+{% if modo == "editar" %}
+
+Editar Programa
+
+{% else %}
+
 Nuevo Programa
+
+{% endif %}
+
 {% endblock %}
 
 {% block breadcrumb %}
@@ -27,7 +47,17 @@ Nuevo Programa
         </li>
 
         <li class="breadcrumb-item active">
-            Nuevo
+
+            {% if modo == "editar" %}
+
+                Editar
+            
+            {% else %}
+
+                Nuevo
+            
+            {% endif %}
+
         </li>
 
     </ol>
@@ -42,14 +72,23 @@ Nuevo Programa
 
     <div class="card-header">
 
-        Información del programa
+        {% if modo == "editar" %}
+
+            Editar información del programa
+            
+        {% else %}
+
+            Información del nuevo programa
+            
+        {% endif %}
 
     </div>
 
     <div class="card-body">
 
         <form method="post"
-              autocomplete="off">
+              autocomplete="off"
+              class="app-form">
 
             {% csrf_token %}
 
@@ -177,9 +216,7 @@ Nuevo Programa
 
             </div>
 
-            <hr>
-
-            <div class="d-flex justify-content-end gap-2">
+            <div class="app-form-actions d-flex justify-content-end gap-2">
 
                 <a href="{% url 'core:programa_lista' %}"
                    class="btn btn-secondary">
@@ -193,9 +230,19 @@ Nuevo Programa
                 <button type="submit"
                         class="btn btn-primary btn-icon">
 
-                    <i class="bi bi-floppy"></i>
+                    {% if modo == "editar" %}
 
-                    Guardar Programa
+                        <i class="bi bi-pencil-square"></i>
+
+                        Actualizar Programa
+
+                    {% else %}
+
+                        <i class="bi bi-floppy"></i>
+
+                        Guardar Programa
+
+                    {% endif %}
 
                 </button>
 

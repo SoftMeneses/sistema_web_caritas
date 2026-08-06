@@ -7,7 +7,6 @@ Modal reutilizable para confirmar acciones críticas del sistema.
 
 Parámetros esperados:
 
-modal_id      : Identificador único del modal.
 title         : Título del modal.
 message       : Mensaje de confirmación.
 confirm_url   : URL de la acción.
@@ -18,10 +17,10 @@ confirm_class : Clase Bootstrap del botón.
 -->
 
 <div class="modal fade"
-     id="{{ modal_id|default:'confirmModal' }}"
+     id="confirmModal"
      tabindex="-1"
-     aria-labelledby="{{ modal_id|default:'confirmModal' }}Label"
-     aria-describedby="{{ modal_id|default:'confirmModal' }}Description"
+     aria-labelledby="confirmModalLabel"
+     aria-describedby="confirmModalDescription"
      aria-hidden="true">
 
     <div class="modal-dialog modal-dialog-centered">
@@ -31,7 +30,7 @@ confirm_class : Clase Bootstrap del botón.
             <div class="modal-header">
 
                 <h5 class="modal-title"
-                    id="{{ modal_id|default:'confirmModal' }}Label">
+                    id="confirmModalLabel">
 
                     {{ title|default:"Confirmar acción" }}
 
@@ -49,55 +48,63 @@ confirm_class : Clase Bootstrap del botón.
 
             <div class="modal-body">
 
-                <p  id="{{ modal_id|default:'confirmModal' }}Description"
+                {% if confirm_icon %}
+
+                    <div class="text-center mb-3">
+
+                        <i class="{{ confirm_icon }}"
+                           aria-hidden="true">
+                        </i>
+                    
+                    </div>
+
+                {% endif %}
+
+                <p  id="confirmModalDescription"
                     class="mb-0">
 
-                    {{ message|default:"¿Está seguro de continuar?" }}
+                    ¿Está seguro de desactivar este programa?
+
+                    <br><br>
+
+                    <strong id="entityName">
+
+                    </strong>
 
                 </p>
 
             </div>
 
-            <div class="modal-footer">
+            <form 
+                id="confirmForm"
+                action="#"
+                method="post"
+                autocomplete="off">
 
-                <button
-                    type="button"
-                    class="btn btn-secondary"
-                    data-bs-dismiss="modal">
+                {% csrf_token %}
 
-                    Cancelar
+                <div class="modal-footer">
 
-                </button>
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
 
-                <form action="{{ confirm_url }}"
-                      method="post"
-                      autocomplete="off">
+                        Cancelar
 
-                    <input type="hidden"
-                           name="{{ hidden_name|default:'id' }}"
-                           value="{{ hidden_value|default:object_id }}">
-
-                    {% csrf_token %}
-
+                    </button>
+                
                     <button
                         type="submit"
                         class="btn btn-icon {{ confirm_class|default:'btn-danger' }}">
-
-                        {% if confirm_icon %}
-
-                            <i class="{{ confirm_icon }}"
-                            aria-hidden="true">
-                            </i>
-
-                        {% endif %}
-
+                
                         {{ confirm_text|default:"Confirmar" }}
-
+                
                     </button>
+                
+                </div>
 
-                </form>
-
-            </div>
+            </form>
 
         </div>
 
