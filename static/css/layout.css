@@ -84,6 +84,11 @@ body{
 
 }
 
+.app-form .row{
+
+    --bs-gutter-x:3rem;
+}
+
 #sidebar-container{
 
     width:var(--sidebar-width);

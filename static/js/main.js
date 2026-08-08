@@ -22,9 +22,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const name = trigger.dataset.name;
 
+        const entity = trigger.dataset.entity || "elemento";
+
         document
             .getElementById("confirmForm")
             .action = url;
+
+        document
+            .getElementById("entityType")
+            .textContent = entity;
 
         document
             .getElementById("entityName")

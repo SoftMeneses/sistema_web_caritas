@@ -1,0 +1,267 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}
+
+Detalle del Usuario
+
+{% endblock %}
+
+{% block page_title %}
+
+Detalle del Usuario
+
+{% endblock %}
+
+{% block breadcrumb %}
+
+<nav aria-label="breadcrumb">
+
+    <ol class="breadcrumb">
+
+        <li class="breadcrumb-item">
+
+            <a href="{% url 'core:dashboard' %}">
+
+                Dashboard
+
+            </a>
+
+        </li>
+
+        <li class="breadcrumb-item">
+
+            <a href="{% url 'seguridad:usuario_lista' %}">
+
+                Usuarios
+
+            </a>
+
+        </li>
+
+        <li class="breadcrumb-item active">
+
+            {{ usuario.username }}
+
+        </li>
+
+    </ol>
+
+</nav>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="card app-card">
+
+    <div class="card-header">
+
+        Información del usuario
+
+    </div>
+
+    <div class="card-body app-form">
+
+        <div class="row gx-5 gy-4 mt-1">
+
+            <div class="col-md-6">
+
+                <span class="detail-label">
+
+                    <i class="bi bi-person me-1"></i>
+
+                    Nombre
+
+                </span>
+
+                <p class="detail-value">
+
+                    {{ usuario.first_name|default:"No registrado" }}
+
+                </p>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <span class="detail-label">
+
+                    <i class="bi bi-person me-1"></i>
+
+                    Apellido
+
+                </span>
+
+                <p class="detail-value">
+
+                    {{ usuario.last_name|default:"No registrado" }}
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="row gx-5 gy-4 mt-1">
+
+            <div class="col-md-6">
+
+                <span class="detail-label">
+
+                    <i class="bi bi-person-badge me-1"></i>
+
+                    Usuario
+
+                </span>
+
+                <p class="detail-value">
+
+                    {{ usuario.username }}
+
+                </p>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <span class="detail-label">
+
+                    <i class="bi bi-envelope me-1"></i>
+
+                    Correo electrónico
+
+                </span>
+
+                <p class="detail-value">
+
+                    {{ usuario.email }}
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="row gx-5 gy-4 mt-1">
+
+            <div class="col-md-6">
+
+                <span class="detail-label">
+
+                    <i class="bi bi-card-text me-1"></i>
+
+                    Cédula
+
+                </span>
+
+                <p class="detail-value">
+
+                    {{ usuario.cedula|default:"No registrado" }}
+
+                </p>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <span class="detail-label">
+
+                    <i class="bi bi-telephone me-1"></i>
+
+                    Teléfono
+
+                </span>
+
+                <p class="detail-value">
+
+                    {{ usuario.telefono|default:"No registrado" }}
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="row gx-5 gy-4 mt-1">
+
+            <div class="col-md-6">
+
+                <span class="detail-label">
+
+                    <i class="bi bi-shield-check me-1"></i>
+
+                    Rol
+
+                </span>
+
+                <p class="detail-value">
+
+                    {{ usuario.rol.nombre }}
+
+                </p>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <span class="detail-label">
+
+                    <i class="bi bi-toggle-on me-1"></i>
+
+                    Estado
+
+                </span>
+
+                <p class="detail-value">
+
+                    {% if usuario.is_active %}
+
+                        <span class="badge app-badge-active">
+
+                            Activo
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge app-badge-inactive">
+
+                            Inactivo
+
+                        </span>
+
+                    {% endif %}
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="app-form-actions d-flex justify-content-end gap-2 mt-3">
+
+            <a href="{% url 'seguridad:usuario_lista' %}"
+               class="btn btn-secondary">
+
+                <i class="bi bi-arrow-left me-1"></i>
+
+                Volver
+
+            </a>
+
+            <a href="{% url 'seguridad:usuario_editar' usuario.pk %}"
+               class="btn btn-primary btn-icon">
+
+                <i class="bi bi-pencil-square"></i>
+
+                Editar
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

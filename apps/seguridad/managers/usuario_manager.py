@@ -1,4 +1,5 @@
 from django.contrib.auth.base_user import BaseUserManager
+from django.db import transaction
 from django.apps import apps
 
 
@@ -6,11 +7,24 @@ class UsuarioManager(BaseUserManager):
 
     use_in_migrations = True
 
+    # ==============================================================
+    # Creación de usuarios
+    # ==============================================================
+
+    @transaction.atomic
     def create_user(self, username, password=None, **extra_fields):
 
         if not username:
             raise ValueError(
                 "El nombre de usuario es obligatorio."
+            )
+
+        if not extra_fields.get("email"):
+
+            raise ValueError(
+
+                "El correo electrónico es obligatorio."
+
             )
 
         username = self.model.normalize_username(
@@ -28,6 +42,11 @@ class UsuarioManager(BaseUserManager):
 
         return user
 
+    # ==============================================================
+    # Creación de superusuarios
+    # ==============================================================
+
+    @transaction.atomic
     def create_superuser(self, username, password=None, **extra_fields):
 
         extra_fields.setdefault(
@@ -56,10 +75,18 @@ class UsuarioManager(BaseUserManager):
             )
         
         Rol = apps.get_model("seguridad", "Rol")
+
+        ADMIN_ROLE_NAME = "Administrador"
         
         try:
-            rol_admin = Rol.objects.get(nombre="Administrador")
+            rol_admin = Rol.objects.get(
+
+                nombre=ADMIN_ROLE_NAME
+
+            )
+
         except Rol.DoesNotExist:
+
             raise ValueError(
                 "No existe el rol 'Administrador'. "
                 "Ejecute primero las migraciones del sistema."

@@ -14,7 +14,7 @@
 ==============================================================================
 -->
 
-{% if programas.has_other_pages %}
+{% if page_obj.has_other_pages %}
 
 {% with params=query_string %}
 
@@ -23,7 +23,7 @@
     <ul class="pagination justify-content-center app-pagination">
 
         <!-- Navegación hacia atrás -->
-        {% if programas.has_previous %}
+        {% if page_obj.has_previous %}
 
             <li class="page-item">
 
@@ -43,7 +43,7 @@
 
                 <a class="page-link"
                    aria-label="Página anterior"
-                   href="?page={{ programas.previous_page_number }}{% if params %}&{{ params }}{% endif %}">
+                   href="?page={{ page_obj.previous_page_number }}{% if params %}&{{ params }}{% endif %}">
 
                     <i class="bi bi-chevron-left"
                        aria-hidden="true">
@@ -61,7 +61,7 @@
         {% for page in visible_pages %} 
 
 
-            <li class="page-item {% if page == programas.number %}active{% endif %}">
+            <li class="page-item {% if page == page_obj.number %}active{% endif %}">
                 <a class="page-link"
                    aria-label="Página {{ page }}"
                    href="?page={{ page }}{% if params %}&{{ params }}{% endif %}">
@@ -75,13 +75,13 @@
         {% endfor %}
 
         <!-- Navegación hacia adelante -->
-        {% if programas.has_next %}
+        {% if page_obj.has_next %}
 
             <li class="page-item">
 
                 <a class="page-link"
                    aria-label="Página siguiente"
-                   href="?page={{ programas.next_page_number }}{% if params %}&{{ params }}{% endif %}">
+                   href="?page={{ page_obj.next_page_number }}{% if params %}&{{ params }}{% endif %}">
 
                     <i class="bi bi-chevron-right"
                        aria-hidden="true"> 
@@ -95,7 +95,7 @@
 
                 <a class="page-link"
                    aria-label="Última página"
-                   href="?page={{ programas.paginator.num_pages }}{% if params %}&{{ params }}{% endif %}">
+                   href="?page={{ page_obj.paginator.num_pages }}{% if params %}&{{ params }}{% endif %}">
 
                     <i class="bi bi-chevron-double-right"
                        aria-hidden="true">

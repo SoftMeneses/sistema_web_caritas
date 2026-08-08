@@ -2,13 +2,13 @@
 
 {% block title %}
 
-Programas
+Usuarios
 
 {% endblock %}
 
 {% block page_title %}
 
-Programas
+Usuarios
 
 {% endblock %}
 
@@ -30,7 +30,7 @@ Programas
 
         <li class="breadcrumb-item active">
 
-            Programas
+            Usuarios
 
         </li>
 
@@ -42,15 +42,15 @@ Programas
 
 {% block content %}
 
-{% url 'core:programa_crear' as programa_crear_url %}
+{% url 'seguridad:usuario_crear' as usuario_crear_url %}
 
-{% include "includes/components/search_bar.html" with placeholder="Buscar programa..." button_url=programa_crear_url button_text="Nuevo Programa" button_icon="bi bi-plus-circle" show_status_filter=True status_value=status_value %}
+{% include "includes/components/search_bar.html" with placeholder="Buscar usuario..." button_url=usuario_crear_url button_text="Nuevo Usuario" button_icon="bi bi-person-plus" show_status_filter=True status_value=status_value %}
 
 <div class="card app-card">
 
     <div class="card-body">
 
-        {% if programas %}
+        {% if usuarios %}
 
             <div class="table-responsive flex-grow-1">
                 
@@ -62,11 +62,11 @@ Programas
 
                             <th style="width: 60px;">#</th>
 
-                            <th scope="col">Programa</th>
+                            <th scope="col">Nombre</th>
 
-                            <th scope="col">Responsable</th>
+                            <th scope="col">Usuario</th>
 
-                            <th scope="col">Fecha Inicio</th>
+                            <th scope="col">Rol</th>
 
                             <th scope="col">Estado</th>
 
@@ -78,37 +78,37 @@ Programas
 
                     <tbody>
 
-                        {% for programa in programas %}
+                        {% for usuario in usuarios %}
 
                             <tr>
 
                                 <td>
 
-                                    {{ programas.start_index|add:forloop.counter0 }}
+                                    {{ usuarios.start_index|add:forloop.counter0 }}
 
                                 </td>
 
                                 <td>
 
-                                    {{ programa.nombre }}
+                                    {{ usuario.get_full_name|default:usuario.username }}
 
                                 </td>
 
                                 <td>
 
-                                    {{ programa.usuario_responsable.get_full_name|default:programa.usuario_responsable.username }}
+                                    {{ usuario.username }}
 
                                 </td>
 
                                 <td>
 
-                                    {{ programa.fecha_inicio|date:"d/m/Y" }}
+                                    {{ usuario.rol.nombre }}
 
                                 </td>
 
                                 <td>
 
-                                    {% if programa.estado %}
+                                    {% if usuario.is_active %}
 
                                         <span class="badge app-badge-active">Activo</span>
 
@@ -124,38 +124,38 @@ Programas
 
                                     <div class="btn-group btn-group-sm">
 
-                                        <a href="{% url 'core:programa_detalle' programa.pk %}"
+                                        <a href="{% url 'seguridad:usuario_detalle' usuario.pk %}"
                                             class="btn btn-outline-primary"
                                             title="Ver"
-                                            aria-label="Ver programa">
+                                            aria-label="Ver usuario">
 
                                             <i class="bi bi-eye"></i>
 
                                         </a>
 
-                                        <a href="{% url 'core:programa_editar' programa.pk %}"
+                                        <a href="{% url 'seguridad:usuario_editar' usuario.pk %}"
                                             class="btn btn-outline-warning"
                                             title="Editar"
-                                            aria-label="Editar programa">
+                                            aria-label="Editar usuario">
 
                                             <i class="bi bi-pencil-square"></i>
 
                                         </a>
 
-                                        {% if programa.estado %}
+                                        {% if usuario.is_active and usuario.pk != request.user.pk %}
 
                                             <button
                                                 type="button"
                                                 class="btn btn-outline-danger btn-desactivar"
                                                 title="Desactivar"
-                                                aria-label="Desactivar programa"
+                                                aria-label="Desactivar usuario"
 
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#confirmModal"
 
-                                                data-url="{% url 'core:programa_desactivar' programa.pk %}"
-                                                data-name="{{ programa.nombre }}"
-                                                data-entity="programa">
+                                                data-url="{% url 'seguridad:usuario_desactivar' usuario.pk %}"
+                                                data-name="{{ usuario.get_full_name|default:usuario.username }}"
+                                                data-entity="usuario">
 
                                                 <i class="bi bi-trash"></i>
 
@@ -166,7 +166,7 @@ Programas
                                             <button
                                                 class="btn btn-outline-secondary"
                                                 disabled
-                                                title="Programa inactivo">
+                                                title="Usuario inactivo">
 
                                                 <i class="bi bi-trash"></i>
 
@@ -192,7 +192,7 @@ Programas
 
         {% else %}
 
-        {% include "includes/components/empty_state.html" with title="No existen programas registrados." message="Comience creando el primer programa del sistema." button_url=programa_crear_url button_text="Nuevo Programa" button_icon="bi bi-plus-circle" %}
+        {% include "includes/components/empty_state.html" with title="No existen usuarios registrados." message="Comience creando el primer usuario del sistema." button_url=usuario_crear_url button_text="Nuevo Usuario" button_icon="bi bi-person-plus" %}
 
         {% endif %}
 
@@ -200,6 +200,6 @@ Programas
 
 </div>
 
-{% include "includes/components/confirm_modal.html" with confirm_url="#" title="Desactivar programa" message="" confirm_text="Desactivar" confirm_class="btn-danger" confirm_icon="bi bi-exclamation-triangle-fill text-warning fs-1" %}
+{% include "includes/components/confirm_modal.html" with confirm_url="#" title="Desactivar usuario" message="" confirm_text="Desactivar" confirm_class="btn-danger" confirm_icon="bi bi-exclamation-triangle-fill text-warning fs-1" %}
 
 {% endblock %}

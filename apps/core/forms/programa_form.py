@@ -2,9 +2,10 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 
+from apps.core.forms.base_form import BaseStyledModelForm
 from apps.core.models import Programa
 
-class ProgramaForm(forms.ModelForm):
+class ProgramaForm(BaseStyledModelForm):
     """
     Formulario para la creación y edición de programas.
     """
@@ -36,65 +37,11 @@ class ProgramaForm(forms.ModelForm):
 
         }
 
-
     def __init__(self, *args, **kwargs):
-
+        
         super().__init__(*args, **kwargs)
-
-        for field in self.fields.values():
-
-            widget = field.widget
-
-            # Select
-            if isinstance(widget, forms.Select):
-
-                css_class = "form-select"
-
-            # Checkbox
-            elif isinstance(widget, forms.CheckboxInput):
-
-                css_class = "form-check-input"
-
-            # Textarea
-            elif isinstance(widget, forms.Textarea):
-
-                css_class = "form-control"
-
-                widget.attrs["rows"] = 4
-
-            # DateInput
-            elif isinstance(widget, forms.DateInput):
-
-                css_class = "form-control"
-
-                widget.input_type = "date"
-
-            # Resto de campos
-            else:
-
-                css_class = "form-control"
-
-            widget.attrs.setdefault(
-
-                "autocomplete",
-
-                "off",
-
-            )
-
-            widget.attrs["class"] = (
-
-                widget.attrs.get("class", "") + f" {css_class}"
-                
-            ).strip()
-
-        for nombre, field in self.fields.items():
-
-            if nombre in self.errors:
-
-                css = field.widget.attrs.get("class", "")
-
-                field.widget.attrs["class"] = f"{css} is-invalid"
+        
+        self.fields["usuario_responsable"].empty_label = "Seleccione un responsable"
                 
 
     def clean_nombre(self):

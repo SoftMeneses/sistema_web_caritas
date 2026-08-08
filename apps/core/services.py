@@ -141,6 +141,8 @@ def obtener_programas(request):
 
         "programas": page_obj,
 
+        "page_obj": page_obj,
+
         "search_value": q,
 
         "status_value": status,
