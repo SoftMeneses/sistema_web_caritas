@@ -56,25 +56,31 @@
 
     <ul class="nav flex-column">
 
+        {% if es_administrador %}
+
+            <li class="nav-item">
+
+                <a class="nav-link" 
+                    href="{% url 'seguridad:usuario_lista' %}">
+
+                    <i class="bi bi-people-fill me-2"></i>
+
+                    <span>
+
+                    Usuarios
+
+                    </span>
+
+                </a>
+
+            </li>
+
+        {% endif %}
+
         <li class="nav-item">
 
-            <a class="nav-link" href="#">
-
-                <i class="bi bi-people-fill me-2"></i>
-
-                <span>
-
-                Usuarios
-
-                </span>
-
-            </a>
-
-        </li>
-
-        <li class="nav-item">
-
-            <a class="nav-link" href="#">
+            <a class="nav-link" 
+                href="{% url 'core:programa_lista' %}">
 
                 <i class="bi bi-journal-check me-2"></i>
 

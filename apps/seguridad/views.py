@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
 
+from apps.seguridad.decorators import administrador_required
 from apps.seguridad.forms import UsuarioForm
 from apps.seguridad.services import (
     autenticar_usuario,
@@ -56,6 +57,7 @@ def logout_view(request):
 
 
 @login_required
+@administrador_required
 def usuario_lista(request):
     """
     Muestra el listado paginado de usuarios.
@@ -77,6 +79,7 @@ def usuario_lista(request):
 
 
 @login_required
+@administrador_required
 def usuario_crear(request):
     """
     Muestra el formulario para registrar un nuevo usuario.
@@ -130,6 +133,7 @@ def usuario_crear(request):
 
 
 @login_required
+@administrador_required
 def usuario_detalle(request, pk):
     """
     Muestra el detalle de un usuario.
@@ -155,6 +159,7 @@ def usuario_detalle(request, pk):
 
 
 @login_required
+@administrador_required
 def usuario_editar(request, pk):
     """
     Actualiza la información de un usuario existente.
@@ -227,6 +232,7 @@ def usuario_editar(request, pk):
 
 
 @login_required
+@administrador_required
 @require_POST
 def usuario_desactivar(request, pk):
     """
