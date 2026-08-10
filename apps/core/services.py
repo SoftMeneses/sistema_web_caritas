@@ -7,7 +7,12 @@ from django.shortcuts import get_object_or_404
 
 from urllib.parse import urlencode
 
+from apps.core.audit_service import registrar_auditoria
 from apps.core.models import Programa
+from apps.core.models.choices import (
+    OperacionAuditoria,
+    AccionAuditoria,
+)
 
 
 def obtener_dashboard():
@@ -193,18 +198,31 @@ def obtener_paginas_visibles(page_obj):
     )
 
 
-def crear_programa(formulario):
+@transaction.atomic
+def crear_programa(formulario, usuario_actual):
     """
-    Guarda un nuevo programa en la base de datos.
-
-    Parámetros:
-        formulario (ProgramaForm): formulario validado.
-
-    Retorna:
-        Programa: instancia creada.
+    Guarda un nuevo programa y registra la acción realizada por el usuario.
     """
 
     programa = formulario.save()
+
+    registrar_auditoria(
+
+        usuario=usuario_actual,
+
+        tabla="programas",
+
+        operacion=OperacionAuditoria.INSERT,
+
+        accion=AccionAuditoria.CREAR_PROGRAMA,
+
+        id_registro=programa.pk,
+
+        descripcion=(
+            f'Programa "{programa.nombre}" creado.'
+        ),
+
+    )
 
     return programa
 
@@ -228,20 +246,36 @@ def obtener_programa(pk):
 
 
 @transaction.atomic
-def actualizar_programa(formulario):
+def actualizar_programa(formulario, usuario_actual):
     """"
-    Actualiza un programa existente.
+    Actualiza un programa existente y registra la acción realizada por el usuario.
     """
 
     programa = formulario.save()
+
+    registrar_auditoria(
+
+        usuario=usuario_actual,
+
+        tabla="programas",
+
+        operacion=OperacionAuditoria.UPDATE,
+
+        accion=AccionAuditoria.EDITAR_PROGRAMA,
+
+        id_registro=programa.pk,
+
+        descripcion=(f'Programa "{programa.nombre}" actualizado.'),
+
+    )
 
     return programa
 
 
 @transaction.atomic
-def desactivar_programa(programa):
+def desactivar_programa(programa, usuario_actual):
     """
-    Realiza la desactivación lógica del programa.
+    Realiza la desactivación lógica del programa y registra la accion realizada por el usuario.
     """
 
     programa.estado = False
@@ -252,6 +286,22 @@ def desactivar_programa(programa):
             
             "estado",
         ]
+    )
+
+    registrar_auditoria(
+
+        usuario=usuario_actual,
+
+        tabla="programas",
+
+        operacion=OperacionAuditoria.UPDATE,
+
+        accion=AccionAuditoria.DESACTIVAR_PROGRAMA,
+
+        id_registro=programa.pk,
+
+        descripcion=(f'Programa "{programa.nombre}" desactivado.'),
+
     )
 
     return programa

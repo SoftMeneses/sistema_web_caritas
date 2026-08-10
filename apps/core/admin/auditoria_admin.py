@@ -13,6 +13,7 @@ class AuditoriaAdmin(admin.ModelAdmin):
         "fecha_auditoria",
         "tabla_afectada",
         "operacion",
+        "accion",
         "id_registro",
         "usuario_responsable",
     )
@@ -31,6 +32,7 @@ class AuditoriaAdmin(admin.ModelAdmin):
 
     list_filter = (
         "operacion",
+        "accion",
         "tabla_afectada",
         "fecha_auditoria",
     )
@@ -50,6 +52,7 @@ class AuditoriaAdmin(admin.ModelAdmin):
     readonly_fields = (
         "tabla_afectada",
         "operacion",
+        "accion",
         "id_registro",
         "descripcion",
         "fecha_auditoria",
@@ -69,6 +72,7 @@ class AuditoriaAdmin(admin.ModelAdmin):
                 "fields": (
                     "tabla_afectada",
                     "operacion",
+                    "accion",
                     "id_registro",
                     "descripcion",
                 ),

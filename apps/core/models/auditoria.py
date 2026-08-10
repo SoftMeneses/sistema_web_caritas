@@ -2,7 +2,10 @@ from django.db import models
 
 from apps.seguridad.models import Usuario
 
-from .choices import OperacionAuditoria
+from .choices import(
+    OperacionAuditoria,
+    AccionAuditoria,
+) 
 
 
 class Auditoria(models.Model):
@@ -18,6 +21,11 @@ class Auditoria(models.Model):
     operacion = models.CharField(
         max_length=10,
         choices=OperacionAuditoria.choices
+    )
+
+    accion = models.CharField(
+        max_length=50,
+        choices=AccionAuditoria.choices
     )
 
     id_registro = models.IntegerField()

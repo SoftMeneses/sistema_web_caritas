@@ -35,3 +35,25 @@ class OperacionAuditoria(models.TextChoices):
     UPDATE = "UPDATE", "Actualización"
 
     DELETE = "DELETE", "Eliminación"
+
+class AccionAuditoria(models.TextChoices):
+
+    CREAR_PROGRAMA = (
+        "CREAR_PROGRAMA",
+        "Crear programa",
+    )
+
+    EDITAR_PROGRAMA = (
+        "EDITAR_PROGRAMA",
+        "Editar programa",
+    )
+
+    DESACTIVAR_PROGRAMA = (
+        "DESACTIVAR_PROGRAMA",
+        "Desactivar programa",
+    )
+
+    ELIMINAR_PROGRAMA = (
+        "ELIMINAR_PROGRAMA",
+        "Eliminar programa",
+    )

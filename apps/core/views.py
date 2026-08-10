@@ -80,7 +80,7 @@ def programa_crear(request):
 
         if formulario.is_valid():
 
-            crear_programa(formulario)
+            crear_programa(formulario, request.user)
 
             messages.success(
 
@@ -160,7 +160,7 @@ def programa_editar(request, pk):
 
         if formulario.is_valid():
 
-            actualizar_programa(formulario)
+            actualizar_programa(formulario, request.user)
 
             messages.success(
 
@@ -210,7 +210,7 @@ def programa_desactivar(request, pk):
 
     programa = obtener_programa(pk)
 
-    desactivar_programa(programa)
+    desactivar_programa(programa, request.user)
 
     messages.success(
 
