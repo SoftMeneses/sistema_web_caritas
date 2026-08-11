@@ -25,6 +25,16 @@ class ProgramaForm(BaseStyledModelForm):
 
         ]
 
+        error_messages = {
+
+            "nombre": {
+
+                "required": "El nombre del programa es obligatorio.",
+
+            },
+
+        }
+
         widgets = {
 
             "nombre": forms.TextInput(attrs={"placeholder": "Ingrese el nombre del programa"}),
@@ -54,11 +64,23 @@ class ProgramaForm(BaseStyledModelForm):
 
         nombre = self.cleaned_data["nombre"].strip()
 
+        if not nombre:
+
+            raise ValidationError(
+                "El nombre del programa es obligatorio."
+            )
+
+        if not any(caracter.isalnum() for caracter in nombre):
+
+            raise ValidationError(
+                "El nombre del programa debe contener "
+                "al menos una letra o número."
+            )
+
         queryset = Programa.objects.filter(
             nombre__iexact=nombre
         )
 
-        # Si estamos editando, excluir el propio registro
         if self.instance.pk:
 
             queryset = queryset.exclude(

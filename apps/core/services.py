@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 from urllib.parse import urlencode
 
 from apps.core.audit_service import registrar_auditoria
-from apps.core.models import Programa
+from apps.core.models import Actividad, Programa
 from apps.core.models.choices import (
     OperacionAuditoria,
     AccionAuditoria,
@@ -33,6 +33,10 @@ def obtener_dashboard():
 
     }
 
+
+# ==============================================================================
+# Programas
+# ==============================================================================
 
 def obtener_programas(request):
 
@@ -305,3 +309,276 @@ def desactivar_programa(programa, usuario_actual):
     )
 
     return programa
+
+
+# ==============================================================================
+# Actividades
+# ==============================================================================
+
+def obtener_actividades(request):
+    """
+    Obtiene el listado de actividades aplicando:
+
+    - filtro por estado
+    - búsqueda
+    - ordenamiento
+    - paginación
+
+    Retorna el contexto requerido por la vista lista.html.
+    """
+
+    params = request.GET.copy()
+
+    params.pop(
+        "page",
+        None,
+    )
+
+    status = request.GET.get(
+        "status",
+        "activo",
+    )
+
+    queryset = (
+        Actividad.objects
+        .select_related(
+            "programa",
+            "usuario_creador",
+        )
+    )
+
+    if status == "activo":
+
+        queryset = queryset.filter(
+            estado=True,
+        )
+
+    elif status == "inactivo":
+
+        queryset = queryset.filter(
+            estado=False,
+        )
+
+    elif status == "todos":
+
+        pass
+
+    q = request.GET.get(
+        "q",
+        "",
+    ).strip()
+
+    if q:
+
+        queryset = queryset.filter(
+
+            Q(nombre__icontains=q)
+
+            |
+
+            Q(descripcion__icontains=q)
+
+            |
+
+            Q(programa__nombre__icontains=q)
+
+            |
+
+            Q(usuario_creador__first_name__icontains=q)
+
+            |
+
+            Q(usuario_creador__last_name__icontains=q)
+
+            |
+
+            Q(usuario_creador__username__icontains=q)
+
+        )
+
+    queryset = queryset.order_by(
+        "-fecha_actividad",
+    )
+
+    paginator = Paginator(
+        queryset,
+        10,
+    )
+
+    page_number = request.GET.get(
+        "page",
+    )
+
+    page_obj = paginator.get_page(
+        page_number,
+    )
+
+    return {
+
+        "actividades": page_obj,
+
+        "page_obj": page_obj,
+
+        "search_value": q,
+
+        "status_value": status,
+
+        "visible_pages": obtener_paginas_visibles(
+            page_obj
+        ),
+
+        "query_string": params.urlencode(),
+
+    }
+
+
+@transaction.atomic
+def crear_actividad(formulario, usuario_actual):
+    """
+    Guarda una nueva actividad y registra la acción
+    realizada por el usuario.
+    """
+
+    actividad = formulario.save(
+        commit=False
+    )
+
+    actividad.usuario_creador = usuario_actual
+
+    actividad.save()
+
+    registrar_auditoria(
+
+        usuario=usuario_actual,
+
+        tabla="actividades",
+
+        operacion=OperacionAuditoria.INSERT,
+
+        accion=AccionAuditoria.CREAR_ACTIVIDAD,
+
+        id_registro=actividad.pk,
+
+        descripcion=(
+            f'Actividad "{actividad.nombre}" creada.'
+        ),
+
+    )
+
+    return actividad
+
+
+def obtener_actividad(pk):
+    """
+    Obtiene una actividad por su identificador.
+    """
+
+    return get_object_or_404(
+
+        Actividad.objects.select_related(
+
+            "programa",
+
+            "usuario_creador",
+
+        ),
+
+        pk=pk,
+
+    )
+
+
+@transaction.atomic
+def actualizar_actividad(formulario, usuario_actual):
+    """
+    Actualiza una actividad existente y registra la acción
+    realizada por el usuario.
+    """
+
+    actividad = formulario.instance
+
+    if not actividad.programa.estado:
+
+        raise ValueError(
+
+            "No puede modificar esta actividad porque "
+            "pertenece a un programa inactivo."
+
+        )
+
+    actividad = formulario.save()
+
+    registrar_auditoria(
+
+        usuario=usuario_actual,
+
+        tabla="actividades",
+
+        operacion=OperacionAuditoria.UPDATE,
+
+        accion=AccionAuditoria.EDITAR_ACTIVIDAD,
+
+        id_registro=actividad.pk,
+
+        descripcion=(
+            f'Actividad "{actividad.nombre}" actualizada.'
+        ),
+
+    )
+
+    return actividad
+
+
+@transaction.atomic
+def desactivar_actividad(actividad, usuario_actual):
+    """
+    Realiza la desactivación lógica de una actividad
+    y registra la acción realizada por el usuario.
+    """
+
+    if not actividad.programa.estado:
+
+        raise ValueError(
+
+            "No puede desactivar esta actividad porque "
+            "pertenece a un programa inactivo."
+
+        )
+
+    if not actividad.estado:
+
+        raise ValueError(
+
+            "La actividad ya se encuentra desactivada."
+
+        )
+
+    actividad.estado = False
+
+    actividad.save(
+
+        update_fields=[
+            "estado",
+        ]
+
+    )
+
+    registrar_auditoria(
+
+        usuario=usuario_actual,
+
+        tabla="actividades",
+
+        operacion=OperacionAuditoria.UPDATE,
+
+        accion=AccionAuditoria.DESACTIVAR_ACTIVIDAD,
+
+        id_registro=actividad.pk,
+
+        descripcion=(
+            f'Actividad "{actividad.nombre}" desactivada.'
+        ),
+
+    )
+
+    return actividad

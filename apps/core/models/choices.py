@@ -57,3 +57,18 @@ class AccionAuditoria(models.TextChoices):
         "ELIMINAR_PROGRAMA",
         "Eliminar programa",
     )
+
+    CREAR_ACTIVIDAD = (
+        "CREAR_ACTIVIDAD",
+        "Crear actividad",
+    )
+
+    EDITAR_ACTIVIDAD = (
+        "EDITAR_ACTIVIDAD",
+        "Editar actividad",
+    )
+
+    DESACTIVAR_ACTIVIDAD = (
+        "DESACTIVAR_ACTIVIDAD",
+        "Desactivar actividad",
+    )

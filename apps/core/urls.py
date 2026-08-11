@@ -3,11 +3,18 @@ from django.urls import path
 from .views import (
 
     dashboard,
+
     programa_lista,
     programa_crear,
     programa_detalle,
     programa_editar,
     programa_desactivar,
+
+    actividad_lista,
+    actividad_crear,
+    actividad_detalle,
+    actividad_editar,
+    actividad_desactivar,
 
 )
 
@@ -24,6 +31,7 @@ urlpatterns = [
         dashboard,
         name="dashboard",
     ),
+
 
     # ==========================================================================
     # Programas
@@ -57,6 +65,41 @@ urlpatterns = [
         "programas/<int:pk>/desactivar/",
         programa_desactivar,
         name="programa_desactivar",
+    ),
+
+
+    # ==============================================================================
+    # Actividades
+    # ==============================================================================
+    
+    path(
+        "actividades/",
+        actividad_lista,
+        name="actividad_lista",
+    ),
+    
+    path(
+        "actividades/nuevo/",
+        actividad_crear,
+        name="actividad_crear",
+    ),
+    
+    path(
+        "actividades/<int:pk>/",
+        actividad_detalle,
+        name="actividad_detalle",
+    ),
+    
+    path(
+        "actividades/<int:pk>/editar/",
+        actividad_editar,
+        name="actividad_editar",
+    ),
+    
+    path(
+        "actividades/<int:pk>/desactivar/",
+        actividad_desactivar,
+        name="actividad_desactivar",
     ),
 
 ]

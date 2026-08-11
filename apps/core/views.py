@@ -5,16 +5,28 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_POST
 
-from apps.core.forms import ProgramaForm
+from apps.core.forms import (
+
+    ProgramaForm,
+    ActividadForm,
+
+)
 
 from .services import ( 
 
     obtener_dashboard,
+
     obtener_programas,
     crear_programa,
     obtener_programa,
     actualizar_programa,
     desactivar_programa,
+
+    obtener_actividades,
+    crear_actividad,
+    obtener_actividad,
+    actualizar_actividad,
+    desactivar_actividad,
 
 )
 
@@ -223,5 +235,262 @@ def programa_desactivar(request, pk):
     return redirect(
 
         "core:programa_lista"
+
+    )
+
+
+# ==============================================================================
+# Actividades
+# ==============================================================================
+
+@login_required
+def actividad_lista(request):
+    """
+    Muestra el listado paginado de actividades.
+    """
+
+    contexto = obtener_actividades(request)
+
+    contexto["usuario"] = request.user
+
+    return render(
+
+        request,
+
+        "core/actividad/lista.html",
+
+        contexto,
+
+    )
+
+
+@login_required
+def actividad_crear(request):
+    """
+    Gestiona la creación de una nueva actividad.
+    """
+
+    if request.method == "POST":
+
+        formulario = ActividadForm(
+
+            request.POST
+
+        )
+
+        if formulario.is_valid():
+
+            crear_actividad(
+
+                formulario,
+
+                request.user,
+
+            )
+
+            messages.success(
+
+                request,
+
+                "Actividad registrada correctamente."
+
+            )
+
+            return redirect(
+
+                "core:actividad_lista"
+
+            )
+
+    else:
+
+        formulario = ActividadForm()
+
+    contexto = {
+
+        "form": formulario,
+
+        "modo": "crear",
+
+    }
+
+    return render(
+
+        request,
+
+        "core/actividad/form.html",
+
+        contexto,
+
+    )
+
+
+@login_required
+def actividad_detalle(request, pk):
+    """
+    Muestra el detalle de una actividad.
+    """
+
+    actividad = obtener_actividad(pk)
+
+    contexto = {
+
+        "actividad": actividad,
+
+    }
+
+    return render(
+
+        request,
+
+        "core/actividad/detalle.html",
+
+        contexto,
+
+    )
+
+
+@login_required
+def actividad_editar(request, pk):
+    """
+    Gestiona la edición de una actividad existente.
+    """
+
+    actividad = obtener_actividad(pk)
+
+    if not actividad.programa.estado:
+
+        messages.error(
+
+            request,
+
+            "No puede modificar esta actividad porque "
+            "pertenece a un programa inactivo."
+
+        )
+
+        return redirect(
+
+            "core:actividad_detalle",
+
+            pk=actividad.pk,
+
+        )
+
+    if request.method == "POST":
+
+        formulario = ActividadForm(
+
+            request.POST,
+
+            instance=actividad,
+
+        )
+
+        if formulario.is_valid():
+
+            try:
+
+                actualizar_actividad(
+
+                    formulario,
+
+                    request.user,
+
+                )
+
+                messages.success(
+
+                    request,
+
+                    "Actividad actualizada correctamente."
+
+                )
+
+                return redirect(
+
+                    "core:actividad_lista"
+
+                )
+
+            except ValueError as error:
+
+                messages.error(
+
+                    request,
+
+                    str(error),
+
+                )
+
+    else:
+
+        formulario = ActividadForm(
+
+            instance=actividad,
+
+        )
+
+    contexto = {
+
+        "form": formulario,
+
+        "modo": "editar",
+
+        "actividad": actividad,
+
+    }
+
+    return render(
+
+        request,
+
+        "core/actividad/form.html",
+
+        contexto,
+
+    )
+
+
+@login_required
+@require_POST
+def actividad_desactivar(request, pk):
+    """
+    Realiza la desactivación lógica de una actividad.
+    """
+
+    actividad = obtener_actividad(pk)
+
+    try:
+
+        desactivar_actividad(
+
+            actividad,
+
+            request.user,
+
+        )
+
+        messages.success(
+
+            request,
+
+            "Actividad desactivada correctamente."
+
+        )
+
+    except ValueError as error:
+
+        messages.error(
+
+            request,
+
+            str(error),
+
+        )
+
+    return redirect(
+
+        "core:actividad_lista"
 
     )

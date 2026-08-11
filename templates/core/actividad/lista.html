@@ -1,0 +1,243 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}
+
+Actividades
+
+{% endblock %}
+
+{% block page_title %}
+
+Actividades
+
+{% endblock %}
+
+{% block breadcrumb %}
+
+<nav aria-label="breadcrumb">
+
+    <ol class="breadcrumb">
+
+        <li class="breadcrumb-item">
+
+            <a href="{% url 'core:dashboard' %}">
+
+                Dashboard
+
+            </a>
+
+        </li>
+
+        <li class="breadcrumb-item active">
+
+            Actividades
+
+        </li>
+
+    </ol>
+
+</nav>
+
+{% endblock %}
+
+{% block content %}
+
+{% url 'core:actividad_crear' as actividad_crear_url %}
+
+{% include "includes/components/search_bar.html" with placeholder="Buscar actividad..." button_url=actividad_crear_url button_text="Nueva Actividad" button_icon="bi bi-plus-circle" show_status_filter=True status_value=status_value %}
+
+<div class="card app-card">
+
+    <div class="card-body">
+
+        {% if actividades %}
+
+            <div class="table-responsive flex-grow-1">
+
+                <table class="table table-hover app-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th style="width: 60px;">#</th>
+
+                            <th scope="col">Actividad</th>
+
+                            <th scope="col">Programa</th>
+
+                            <th scope="col">Fecha y hora</th>
+
+                            <th scope="col">Creador</th>
+
+                            <th scope="col">Estado</th>
+
+                            <th scope="col"
+                                class="text-center"
+                                style="width: 170px;">
+
+                                Acciones
+
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for actividad in actividades %}
+
+                            <tr>
+
+                                <td>
+
+                                    {{ actividades.start_index|add:forloop.counter0 }}
+
+                                </td>
+
+                                <td>
+
+                                    {{ actividad.nombre }}
+
+                                </td>
+
+                                <td>
+
+                                    {{ actividad.programa.nombre }}
+
+                                </td>
+
+                                <td>
+
+                                    {{ actividad.fecha_actividad|date:"d/m/Y H:i" }}
+
+                                </td>
+
+                                <td>
+
+                                    {{ actividad.usuario_creador.get_full_name|default:actividad.usuario_creador.username }}
+
+                                </td>
+
+                                <td>
+
+                                    {% if actividad.estado %}
+
+                                        <span class="badge app-badge-active">
+
+                                            Activo
+
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="badge app-badge-inactive">
+
+                                            Inactivo
+
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                                <td class="text-center">
+
+                                    <div class="btn-group btn-group-sm">
+
+                                        <a href="{% url 'core:actividad_detalle' actividad.pk %}"
+                                           class="btn btn-outline-primary"
+                                           title="Ver"
+                                           aria-label="Ver actividad">
+
+                                            <i class="bi bi-eye"></i>
+
+                                        </a>
+
+                                        {% if actividad.programa.estado %}
+
+                                            <a href="{% url 'core:actividad_editar' actividad.pk %}"
+                                               class="btn btn-outline-warning"
+                                               title="Editar"
+                                               aria-label="Editar actividad">
+
+                                                <i class="bi bi-pencil-square"></i>
+
+                                            </a>
+
+                                        {% else %}
+
+                                            <button
+                                                class="btn btn-outline-secondary"
+                                                disabled
+                                                title="Programa inactivo"
+                                                aria-label="Actividad no editable">
+
+                                                <i class="bi bi-pencil-square"></i>
+
+                                            </button>
+
+                                        {% endif %}
+
+                                        {% if actividad.estado and actividad.programa.estado %}
+
+                                            <button
+                                                type="button"
+                                                class="btn btn-outline-danger btn-desactivar"
+                                                title="Desactivar"
+                                                aria-label="Desactivar actividad"
+
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#confirmModal"
+
+                                                data-url="{% url 'core:actividad_desactivar' actividad.pk %}"
+                                                data-name="{{ actividad.nombre }}"
+                                                data-entity="actividad">
+
+                                                <i class="bi bi-trash"></i>
+
+                                            </button>
+
+                                        {% else %}
+
+                                            <button
+                                                class="btn btn-outline-secondary"
+                                                disabled
+                                                title="Actividad no disponible para desactivación">
+
+                                                <i class="bi bi-trash"></i>
+
+                                            </button>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% include "includes/components/pagination.html" %}
+
+        {% else %}
+
+            {% include "includes/components/empty_state.html" with title="No existen actividades registradas." message="Comience creando la primera actividad del sistema." button_url=actividad_crear_url button_text="Nueva Actividad" button_icon="bi bi-plus-circle" %}
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% include "includes/components/confirm_modal.html" with confirm_url="#" title="Desactivar actividad" message="" confirm_text="Desactivar" confirm_class="btn-danger" confirm_icon="bi bi-exclamation-triangle-fill text-warning fs-1" %}
+
+{% endblock %}

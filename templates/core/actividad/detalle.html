@@ -1,0 +1,293 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}
+
+Detalle de la Actividad
+
+{% endblock %}
+
+{% block page_title %}
+
+Detalle de la Actividad
+
+{% endblock %}
+
+{% block breadcrumb %}
+
+<nav aria-label="breadcrumb">
+
+    <ol class="breadcrumb">
+
+        <li class="breadcrumb-item">
+
+            <a href="{% url 'core:dashboard' %}">
+
+                Dashboard
+
+            </a>
+
+        </li>
+
+        <li class="breadcrumb-item">
+
+            <a href="{% url 'core:actividad_lista' %}">
+
+                Actividades
+
+            </a>
+
+        </li>
+
+        <li class="breadcrumb-item active">
+
+            {{ actividad.nombre }}
+
+        </li>
+
+    </ol>
+
+</nav>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="card app-card">
+
+    <div class="card-header">
+
+        Información de la actividad
+
+        {% if not actividad.estado %}
+
+            <span class="badge app-badge-inactive float-end">
+
+                Inactivo
+
+            </span>
+
+        {% endif %}
+
+    </div>
+
+    <div class="card-body app-form">
+
+        <div class="row">
+
+            <div class="col-md-6">
+
+                <span class="detail-label">
+
+                    <i class="bi bi-tag me-1"></i>
+
+                    Nombre
+
+                </span>
+
+                <p class="detail-value">
+
+                    {{ actividad.nombre }}
+
+                </p>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <span class="detail-label">
+
+                    <i class="bi bi-journal-check me-1"></i>
+
+                    Programa
+
+                </span>
+
+                <p class="detail-value">
+
+                    {{ actividad.programa.nombre }}
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="row mt-3">
+
+            <div class="col-md-6">
+
+                <span class="detail-label">
+
+                    <i class="bi bi-calendar-event me-1"></i>
+
+                    Fecha y hora
+
+                </span>
+
+                <p class="detail-value">
+
+                    {{ actividad.fecha_actividad|date:"d/m/Y H:i" }}
+
+                </p>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <span class="detail-label">
+
+                    <i class="bi bi-person me-1"></i>
+
+                    Registrada por
+
+                </span>
+
+                <p class="detail-value">
+
+                    {{ actividad.usuario_creador.get_full_name|default:actividad.usuario_creador.username }}
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="row mt-3">
+
+            <div class="col-md-6">
+
+                <span class="detail-label">
+
+                    <i class="bi bi-toggle-on me-1"></i>
+
+                    Estado
+
+                </span>
+
+                <p class="detail-value">
+
+                    {% if actividad.estado %}
+
+                        <span class="badge app-badge-active">
+
+                            Activo
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge app-badge-inactive">
+
+                            Inactivo
+
+                        </span>
+
+                    {% endif %}
+
+                </p>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <span class="detail-label">
+
+                    <i class="bi bi-diagram-3 me-1"></i>
+
+                    Estado del programa
+
+                </span>
+
+                <p class="detail-value">
+
+                    {% if actividad.programa.estado %}
+
+                        <span class="badge app-badge-active">
+
+                            Programa activo
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge app-badge-inactive">
+
+                            Programa inactivo
+
+                        </span>
+
+                    {% endif %}
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="row mt-3">
+
+            <div class="col-12">
+
+                <span class="detail-label">
+
+                    <i class="bi bi-info-circle me-1"></i>
+
+                    Descripción
+
+                </span>
+
+                <p class="detail-value">
+
+                    {{ actividad.descripcion|default:"Sin descripción registrada." }}
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="app-form-actions d-flex justify-content-end gap-2">
+
+            <a href="{% url 'core:actividad_lista' %}"
+               class="btn btn-secondary">
+
+                <i class="bi bi-arrow-left me-1"></i>
+
+                Volver
+
+            </a>
+
+            {% if actividad.programa.estado %}
+
+                <a href="{% url 'core:actividad_editar' actividad.pk %}"
+                   class="btn btn-primary btn-icon">
+
+                    <i class="bi bi-pencil-square"></i>
+
+                    Editar
+
+                </a>
+
+            {% else %}
+
+                <button
+                    type="button"
+                    class="btn btn-secondary btn-icon"
+                    disabled
+                    title="El programa está inactivo">
+
+                    <i class="bi bi-pencil-square"></i>
+
+                    Editar
+
+                </button>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
