@@ -1,0 +1,295 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}
+
+{% if modo == "editar" %}
+
+Editar Beneficiario
+
+{% else %}
+
+Nuevo Beneficiario
+
+{% endif %}
+
+{% endblock %}
+
+{% block page_title %}
+
+{% if modo == "editar" %}
+
+Editar Beneficiario
+
+{% else %}
+
+Nuevo Beneficiario
+
+{% endif %}
+
+{% endblock %}
+
+{% block breadcrumb %}
+
+<nav aria-label="breadcrumb">
+
+    <ol class="breadcrumb">
+
+        <li class="breadcrumb-item">
+
+            <a href="{% url 'core:dashboard' %}">
+
+                Dashboard
+
+            </a>
+
+        </li>
+
+        <li class="breadcrumb-item">
+
+            <a href="{% url 'core:beneficiario_lista' %}">
+
+                Beneficiarios
+
+            </a>
+
+        </li>
+
+        <li class="breadcrumb-item active">
+
+            {% if modo == "editar" %}
+
+                Editar
+
+            {% else %}
+
+                Nuevo
+
+            {% endif %}
+
+        </li>
+
+    </ol>
+
+</nav>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="card app-card">
+
+    <div class="card-header">
+
+        {% if modo == "editar" %}
+
+            Editar información del beneficiario
+
+        {% else %}
+
+            Información del nuevo beneficiario
+
+        {% endif %}
+
+    </div>
+
+    <div class="card-body">
+
+        <form method="post"
+              autocomplete="off"
+              class="app-form">
+
+            {% csrf_token %}
+
+            <div class="row g-4">
+
+                <div class="col-md-6">
+
+                    <label for="{{ form.cedula.id_for_label }}"
+                           class="form-label">
+
+                        Cédula
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    {{ form.cedula }}
+
+                    {% if form.cedula.errors %}
+
+                        <div class="invalid-feedback d-block">
+
+                            {{ form.cedula.errors.0 }}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <label for="{{ form.telefono.id_for_label }}"
+                           class="form-label">
+
+                        Teléfono
+
+                    </label>
+
+                    {{ form.telefono }}
+
+                    {% if form.telefono.errors %}
+
+                        <div class="invalid-feedback d-block">
+
+                            {{ form.telefono.errors.0 }}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            <div class="row g-4 mt-1">
+
+                <div class="col-md-6">
+
+                    <label for="{{ form.nombre.id_for_label }}"
+                           class="form-label">
+
+                        Nombre
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    {{ form.nombre }}
+
+                    {% if form.nombre.errors %}
+
+                        <div class="invalid-feedback d-block">
+
+                            {{ form.nombre.errors.0 }}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <label for="{{ form.apellido.id_for_label }}"
+                           class="form-label">
+
+                        Apellido
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    {{ form.apellido }}
+
+                    {% if form.apellido.errors %}
+
+                        <div class="invalid-feedback d-block">
+
+                            {{ form.apellido.errors.0 }}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            <div class="row mt-3">
+
+                <div class="col-12">
+
+                    <label for="{{ form.direccion.id_for_label }}"
+                           class="form-label">
+
+                        Dirección
+
+                    </label>
+
+                    {{ form.direccion }}
+
+                    {% if form.direccion.errors %}
+
+                        <div class="invalid-feedback d-block">
+
+                            {{ form.direccion.errors.0 }}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            <div class="row mt-3">
+
+                <div class="col-12">
+
+                    <div class="form-check">
+
+                        {{ form.estado }}
+
+                        <label class="form-check-label"
+                               for="{{ form.estado.id_for_label }}">
+
+                            Beneficiario activo
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="app-form-actions d-flex justify-content-end gap-2">
+
+                <a href="{% url 'core:beneficiario_lista' %}"
+                   class="btn btn-secondary">
+
+                    <i class="bi bi-x-circle me-1"></i>
+
+                    Cancelar
+
+                </a>
+
+                <button type="submit"
+                        class="btn btn-primary btn-icon">
+
+                    {% if modo == "editar" %}
+
+                        <i class="bi bi-pencil-square"></i>
+
+                        Actualizar Beneficiario
+
+                    {% else %}
+
+                        <i class="bi bi-floppy"></i>
+
+                        Guardar Beneficiario
+
+                    {% endif %}
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

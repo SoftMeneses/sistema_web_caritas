@@ -8,7 +8,11 @@ from django.shortcuts import get_object_or_404
 from urllib.parse import urlencode
 
 from apps.core.audit_service import registrar_auditoria
-from apps.core.models import Actividad, Programa
+from apps.core.models import (
+     Actividad, 
+     Beneficiario,
+     Programa,
+)
 from apps.core.models.choices import (
     OperacionAuditoria,
     AccionAuditoria,
@@ -582,3 +586,241 @@ def desactivar_actividad(actividad, usuario_actual):
     )
 
     return actividad
+
+
+# ==============================================================================
+# Beneficiarios
+# ==============================================================================
+
+def obtener_beneficiarios(request):
+    """
+    Obtiene el listado de beneficiarios aplicando:
+
+    - filtro por estado
+    - búsqueda
+    - ordenamiento
+    - paginación
+
+    Retorna el contexto requerido por la vista lista.html.
+    """
+
+    params = request.GET.copy()
+
+    params.pop(
+        "page",
+        None,
+    )
+
+    status = request.GET.get(
+        "status",
+        "activo",
+    )
+
+    queryset = Beneficiario.objects.all()
+
+    if status == "activo":
+
+        queryset = queryset.filter(
+            estado=True,
+        )
+
+    elif status == "inactivo":
+
+        queryset = queryset.filter(
+            estado=False,
+        )
+
+    elif status == "todos":
+
+        pass
+
+    q = request.GET.get(
+        "q",
+        "",
+    ).strip()
+
+    if q:
+
+        queryset = queryset.filter(
+
+            Q(cedula__icontains=q)
+
+            |
+
+            Q(nombre__icontains=q)
+
+            |
+
+            Q(apellido__icontains=q)
+
+            |
+
+            Q(telefono__icontains=q)
+
+            |
+
+            Q(direccion__icontains=q)
+
+        )
+
+    queryset = queryset.order_by(
+        "apellido",
+        "nombre",
+    )
+
+    paginator = Paginator(
+        queryset,
+        10,
+    )
+
+    page_number = request.GET.get(
+        "page",
+    )
+
+    page_obj = paginator.get_page(
+        page_number,
+    )
+
+    return {
+
+        "beneficiarios": page_obj,
+
+        "page_obj": page_obj,
+
+        "search_value": q,
+
+        "status_value": status,
+
+        "visible_pages": obtener_paginas_visibles(
+            page_obj
+        ),
+
+        "query_string": params.urlencode(),
+
+    }
+
+
+@transaction.atomic
+def crear_beneficiario(formulario, usuario_actual):
+    """
+    Guarda un nuevo beneficiario y registra la acción
+    realizada por el usuario.
+    """
+
+    beneficiario = formulario.save()
+
+    registrar_auditoria(
+
+        usuario=usuario_actual,
+
+        tabla="beneficiarios",
+
+        operacion=OperacionAuditoria.INSERT,
+
+        accion=AccionAuditoria.CREAR_BENEFICIARIO,
+
+        id_registro=beneficiario.pk,
+
+        descripcion=(
+            f'Beneficiario "{beneficiario.nombre} '
+            f'{beneficiario.apellido}" creado.'
+        ),
+
+    )
+
+    return beneficiario
+
+
+def obtener_beneficiario(pk):
+    """
+    Obtiene un beneficiario por su identificador.
+    """
+
+    return get_object_or_404(
+
+        Beneficiario,
+
+        pk=pk,
+
+    )
+
+
+@transaction.atomic
+def actualizar_beneficiario(formulario, usuario_actual):
+    """
+    Actualiza un beneficiario existente y registra
+    la acción realizada por el usuario.
+    """
+
+    beneficiario = formulario.save()
+
+    registrar_auditoria(
+
+        usuario=usuario_actual,
+
+        tabla="beneficiarios",
+
+        operacion=OperacionAuditoria.UPDATE,
+
+        accion=AccionAuditoria.EDITAR_BENEFICIARIO,
+
+        id_registro=beneficiario.pk,
+
+        descripcion=(
+            f'Beneficiario "{beneficiario.nombre} '
+            f'{beneficiario.apellido}" actualizado.'
+        ),
+
+    )
+
+    return beneficiario
+
+
+@transaction.atomic
+def desactivar_beneficiario(
+    beneficiario,
+    usuario_actual,
+):
+    """
+    Realiza la desactivación lógica de un beneficiario
+    y registra la acción realizada por el usuario.
+    """
+
+    if not beneficiario.estado:
+
+        raise ValueError(
+
+            "El beneficiario ya se encuentra desactivado."
+
+        )
+
+    beneficiario.estado = False
+
+    beneficiario.save(
+
+        update_fields=[
+            "estado",
+        ]
+
+    )
+
+    registrar_auditoria(
+
+        usuario=usuario_actual,
+
+        tabla="beneficiarios",
+
+        operacion=OperacionAuditoria.UPDATE,
+
+        accion=AccionAuditoria.DESACTIVAR_BENEFICIARIO,
+
+        id_registro=beneficiario.pk,
+
+        descripcion=(
+            f'Beneficiario "{beneficiario.nombre} '
+            f'{beneficiario.apellido}" desactivado.'
+        ),
+
+    )
+
+    return beneficiario

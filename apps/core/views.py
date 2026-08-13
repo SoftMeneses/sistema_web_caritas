@@ -9,6 +9,7 @@ from apps.core.forms import (
 
     ProgramaForm,
     ActividadForm,
+    BeneficiarioForm,
 
 )
 
@@ -27,6 +28,12 @@ from .services import (
     obtener_actividad,
     actualizar_actividad,
     desactivar_actividad,
+
+    obtener_beneficiarios,
+    crear_beneficiario,
+    obtener_beneficiario,
+    actualizar_beneficiario,
+    desactivar_beneficiario,
 
 )
 
@@ -492,5 +499,210 @@ def actividad_desactivar(request, pk):
     return redirect(
 
         "core:actividad_lista"
+
+    )
+
+
+# ==============================================================================
+# Beneficiarios
+# ==============================================================================
+
+@login_required
+def beneficiario_lista(request):
+    """
+    Muestra el listado paginado de beneficiarios.
+    """
+
+    contexto = obtener_beneficiarios(request)
+
+    contexto["usuario"] = request.user
+
+    return render(
+
+        request,
+
+        "core/beneficiario/lista.html",
+
+        contexto,
+
+    )
+
+
+@login_required
+def beneficiario_crear(request):
+    """
+    Gestiona la creación de un nuevo beneficiario.
+    """
+
+    if request.method == "POST":
+
+        formulario = BeneficiarioForm(
+            request.POST
+        )
+
+        if formulario.is_valid():
+
+            crear_beneficiario(
+                formulario,
+                request.user,
+            )
+
+            messages.success(
+
+                request,
+
+                "Beneficiario registrado correctamente."
+
+            )
+
+            return redirect(
+                "core:beneficiario_lista"
+            )
+
+    else:
+
+        formulario = BeneficiarioForm()
+
+    contexto = {
+
+        "form": formulario,
+
+        "modo": "crear",
+
+    }
+
+    return render(
+
+        request,
+
+        "core/beneficiario/form.html",
+
+        contexto,
+
+    )
+
+
+@login_required
+def beneficiario_detalle(request, pk):
+    """
+    Muestra el detalle de un beneficiario.
+    """
+
+    beneficiario = obtener_beneficiario(pk)
+
+    contexto = {
+
+        "beneficiario": beneficiario,
+
+    }
+
+    return render(
+
+        request,
+
+        "core/beneficiario/detalle.html",
+
+        contexto,
+
+    )
+
+
+@login_required
+def beneficiario_editar(request, pk):
+    """
+    Gestiona la edición de un beneficiario existente.
+    """
+
+    beneficiario = obtener_beneficiario(pk)
+
+    if request.method == "POST":
+
+        formulario = BeneficiarioForm(
+
+            request.POST,
+
+            instance=beneficiario,
+
+        )
+
+        if formulario.is_valid():
+
+            actualizar_beneficiario(
+
+                formulario,
+
+                request.user,
+
+            )
+
+            messages.success(
+
+                request,
+
+                "Beneficiario actualizado correctamente."
+
+            )
+
+            return redirect(
+                "core:beneficiario_lista"
+            )
+
+    else:
+
+        formulario = BeneficiarioForm(
+
+            instance=beneficiario,
+
+        )
+
+    contexto = {
+
+        "form": formulario,
+
+        "modo": "editar",
+
+        "beneficiario": beneficiario,
+
+    }
+
+    return render(
+
+        request,
+
+        "core/beneficiario/form.html",
+
+        contexto,
+
+    )
+
+
+@login_required
+@require_POST
+def beneficiario_desactivar(request, pk):
+    """
+    Realiza la desactivación lógica de un beneficiario.
+    """
+
+    beneficiario = obtener_beneficiario(pk)
+
+    desactivar_beneficiario(
+
+        beneficiario,
+
+        request.user,
+
+    )
+
+    messages.success(
+
+        request,
+
+        "Beneficiario desactivado correctamente."
+
+    )
+
+    return redirect(
+
+        "core:beneficiario_lista"
 
     )

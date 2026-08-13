@@ -16,6 +16,12 @@ from .views import (
     actividad_editar,
     actividad_desactivar,
 
+    beneficiario_lista,
+    beneficiario_crear,
+    beneficiario_detalle,
+    beneficiario_editar,
+    beneficiario_desactivar,
+
 )
 
 app_name = "core"
@@ -100,6 +106,41 @@ urlpatterns = [
         "actividades/<int:pk>/desactivar/",
         actividad_desactivar,
         name="actividad_desactivar",
+    ),
+
+
+    # ==============================================================================
+    # Beneficiarios
+    # ==============================================================================
+    
+    path(
+        "beneficiarios/",
+        beneficiario_lista,
+        name="beneficiario_lista",
+    ),
+    
+    path(
+        "beneficiarios/nuevo/",
+        beneficiario_crear,
+        name="beneficiario_crear",
+    ),
+    
+    path(
+        "beneficiarios/<int:pk>/",
+        beneficiario_detalle,
+        name="beneficiario_detalle",
+    ),
+    
+    path(
+        "beneficiarios/<int:pk>/editar/",
+        beneficiario_editar,
+        name="beneficiario_editar",
+    ),
+    
+    path(
+        "beneficiarios/<int:pk>/desactivar/",
+        beneficiario_desactivar,
+        name="beneficiario_desactivar",
     ),
 
 ]

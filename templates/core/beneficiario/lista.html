@@ -1,0 +1,223 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}
+
+Beneficiarios
+
+{% endblock %}
+
+{% block page_title %}
+
+Beneficiarios
+
+{% endblock %}
+
+{% block breadcrumb %}
+
+<nav aria-label="breadcrumb">
+
+    <ol class="breadcrumb">
+
+        <li class="breadcrumb-item">
+
+            <a href="{% url 'core:dashboard' %}">
+
+                Dashboard
+
+            </a>
+
+        </li>
+
+        <li class="breadcrumb-item active">
+
+            Beneficiarios
+
+        </li>
+
+    </ol>
+
+</nav>
+
+{% endblock %}
+
+{% block content %}
+
+{% url 'core:beneficiario_crear' as beneficiario_crear_url %}
+
+{% include "includes/components/search_bar.html" with placeholder="Buscar beneficiario..." button_url=beneficiario_crear_url button_text="Nuevo Beneficiario" button_icon="bi bi-plus-circle" show_status_filter=True status_value=status_value %}
+
+<div class="card app-card">
+
+    <div class="card-body">
+
+        {% if beneficiarios %}
+
+            <div class="table-responsive flex-grow-1">
+
+                <table class="table table-hover app-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th style="width: 60px;">#</th>
+
+                            <th scope="col">Cédula</th>
+
+                            <th scope="col">Beneficiario</th>
+
+                            <th scope="col">Teléfono</th>
+
+                            <th scope="col">Fecha de Registro</th>
+
+                            <th scope="col">Estado</th>
+
+                            <th scope="col" class="text-center" style="width: 170px;">
+                                Acciones
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for beneficiario in beneficiarios %}
+
+                            <tr>
+
+                                <td>
+
+                                    {{ beneficiarios.start_index|add:forloop.counter0 }}
+
+                                </td>
+
+                                <td>
+
+                                    {{ beneficiario.cedula }}
+
+                                </td>
+
+                                <td>
+
+                                    {{ beneficiario.apellido }}, {{ beneficiario.nombre }}
+
+                                </td>
+
+                                <td>
+
+                                    {{ beneficiario.telefono|default:"No registrado" }}
+
+                                </td>
+
+                                <td>
+
+                                    {{ beneficiario.fecha_registro|date:"d/m/Y" }}
+
+                                </td>
+
+                                <td>
+
+                                    {% if beneficiario.estado %}
+
+                                        <span class="badge app-badge-active">
+
+                                            Activo
+
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="badge app-badge-inactive">
+
+                                            Inactivo
+
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                                <td class="text-center">
+
+                                    <div class="btn-group btn-group-sm">
+
+                                        <a href="{% url 'core:beneficiario_detalle' beneficiario.pk %}"
+                                           class="btn btn-outline-primary"
+                                           title="Ver"
+                                           aria-label="Ver beneficiario">
+
+                                            <i class="bi bi-eye"></i>
+
+                                        </a>
+
+                                        <a href="{% url 'core:beneficiario_editar' beneficiario.pk %}"
+                                           class="btn btn-outline-warning"
+                                           title="Editar"
+                                           aria-label="Editar beneficiario">
+
+                                            <i class="bi bi-pencil-square"></i>
+
+                                        </a>
+
+                                        {% if beneficiario.estado %}
+
+                                            <button
+                                                type="button"
+                                                class="btn btn-outline-danger btn-desactivar"
+                                                title="Desactivar"
+                                                aria-label="Desactivar beneficiario"
+
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#confirmModal"
+
+                                                data-url="{% url 'core:beneficiario_desactivar' beneficiario.pk %}"
+                                                data-name="{{ beneficiario.nombre }} {{ beneficiario.apellido }}"
+                                                data-entity="beneficiario">
+
+                                                <i class="bi bi-trash"></i>
+
+                                            </button>
+
+                                        {% else %}
+
+                                            <button
+                                                class="btn btn-outline-secondary"
+                                                disabled
+                                                title="Beneficiario inactivo">
+
+                                                <i class="bi bi-trash"></i>
+
+                                            </button>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% include "includes/components/pagination.html" %}
+
+        {% else %}
+
+            {% include "includes/components/empty_state.html" with title="No existen beneficiarios registrados." message="Comience registrando el primer beneficiario del sistema." button_url=beneficiario_crear_url button_text="Nuevo Beneficiario" button_icon="bi bi-plus-circle" %}
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% include "includes/components/confirm_modal.html" with confirm_url="#" title="Desactivar beneficiario" message="" confirm_text="Desactivar" confirm_class="btn-danger" confirm_icon="bi bi-exclamation-triangle-fill text-warning fs-1" %}
+
+{% endblock %}

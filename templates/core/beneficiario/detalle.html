@@ -1,0 +1,241 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}
+
+Detalle del Beneficiario
+
+{% endblock %}
+
+{% block page_title %}
+
+Detalle del Beneficiario
+
+{% endblock %}
+
+{% block breadcrumb %}
+
+<nav aria-label="breadcrumb">
+
+    <ol class="breadcrumb">
+
+        <li class="breadcrumb-item">
+
+            <a href="{% url 'core:dashboard' %}">
+
+                Dashboard
+
+            </a>
+
+        </li>
+
+        <li class="breadcrumb-item">
+
+            <a href="{% url 'core:beneficiario_lista' %}">
+
+                Beneficiarios
+
+            </a>
+
+        </li>
+
+        <li class="breadcrumb-item active">
+
+            {{ beneficiario.nombre }} {{ beneficiario.apellido }}
+
+        </li>
+
+    </ol>
+
+</nav>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="card app-card">
+
+    <div class="card-header">
+
+        Información del beneficiario
+
+        {% if not beneficiario.estado %}
+
+            <span class="badge app-badge-inactive float-end">
+
+                Inactivo
+
+            </span>
+
+        {% endif %}
+
+    </div>
+
+    <div class="card-body app-form">
+
+        <div class="row">
+
+            <div class="col-md-6">
+
+                <span class="detail-label">
+
+                    <i class="bi bi-person-vcard me-1"></i>
+
+                    Cédula
+
+                </span>
+
+                <p class="detail-value">
+
+                    {{ beneficiario.cedula }}
+
+                </p>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <span class="detail-label">
+
+                    <i class="bi bi-person me-1"></i>
+
+                    Nombre completo
+
+                </span>
+
+                <p class="detail-value">
+
+                    {{ beneficiario.nombre }} {{ beneficiario.apellido }}
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="row mt-3">
+
+            <div class="col-md-6">
+
+                <span class="detail-label">
+
+                    <i class="bi bi-telephone me-1"></i>
+
+                    Teléfono
+
+                </span>
+
+                <p class="detail-value">
+
+                    {{ beneficiario.telefono|default:"No registrado" }}
+
+                </p>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <span class="detail-label">
+
+                    <i class="bi bi-calendar-event me-1"></i>
+
+                    Fecha de registro
+
+                </span>
+
+                <p class="detail-value">
+
+                    {{ beneficiario.fecha_registro|date:"d/m/Y" }}
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="row mt-3">
+
+            <div class="col-md-6">
+
+                <span class="detail-label">
+
+                    <i class="bi bi-toggle-on me-1"></i>
+
+                    Estado
+
+                </span>
+
+                <p class="detail-value">
+
+                    {% if beneficiario.estado %}
+
+                        <span class="badge app-badge-active">
+
+                            Activo
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge app-badge-inactive">
+
+                            Inactivo
+
+                        </span>
+
+                    {% endif %}
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="row mt-3">
+
+            <div class="col-12">
+
+                <span class="detail-label">
+
+                    <i class="bi bi-geo-alt me-1"></i>
+
+                    Dirección
+
+                </span>
+
+                <p class="detail-value">
+
+                    {{ beneficiario.direccion|default:"Sin dirección registrada." }}
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="app-form-actions d-flex justify-content-end gap-2">
+
+            <a href="{% url 'core:beneficiario_lista' %}"
+               class="btn btn-secondary">
+
+                <i class="bi bi-arrow-left me-1"></i>
+
+                Volver
+
+            </a>
+
+            <a href="{% url 'core:beneficiario_editar' beneficiario.pk %}"
+               class="btn btn-primary btn-icon">
+
+                <i class="bi bi-pencil-square"></i>
+
+                Editar
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

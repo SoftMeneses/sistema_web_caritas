@@ -72,3 +72,18 @@ class AccionAuditoria(models.TextChoices):
         "DESACTIVAR_ACTIVIDAD",
         "Desactivar actividad",
     )
+
+    CREAR_BENEFICIARIO = (
+        "CREAR_BENEFICIARIO",
+        "Crear beneficiario",
+    )
+
+    EDITAR_BENEFICIARIO = (
+        "EDITAR_BENEFICIARIO",
+        "Editar beneficiario",
+    )
+
+    DESACTIVAR_BENEFICIARIO = (
+        "DESACTIVAR_BENEFICIARIO",
+        "Desactivar beneficiario",
+    )
