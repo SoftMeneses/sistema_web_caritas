@@ -24,18 +24,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const entity = trigger.dataset.entity || "elemento";
 
+        const message = (
+            trigger.dataset.message
+            || `¿Está seguro de desactivar este ${entity}?`
+        );
+
         document
             .getElementById("confirmForm")
             .action = url;
 
         document
-            .getElementById("entityType")
-            .textContent = entity;
+            .getElementById("confirmModalMessage")
+            .textContent = message;
 
         document
             .getElementById("entityName")
             .textContent = `"${name}"`;
 
-    });
+   });
 
 });

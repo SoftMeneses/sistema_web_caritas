@@ -12,7 +12,9 @@ from apps.core.models import (
      Actividad, 
      Beneficiario,
      Programa,
+     ProgramaBeneficiario,
 )
+
 from apps.core.models.choices import (
     OperacionAuditoria,
     AccionAuditoria,
@@ -824,3 +826,168 @@ def desactivar_beneficiario(
     )
 
     return beneficiario
+
+
+# ==============================================================================
+# Asignación de beneficiarios a programas
+# ==============================================================================
+
+@transaction.atomic
+def asignar_beneficiario(
+    formulario,
+    beneficiario,
+    usuario_actual,
+):
+    """
+    Asigna un beneficiario a un programa.
+
+    Si la relación ya existe pero se encuentra inactiva,
+    la reactiva en lugar de crear un nuevo registro.
+    """
+
+    programa = formulario.cleaned_data["programa"]
+
+    if not beneficiario.estado:
+
+        raise ValueError(
+            "No se puede asignar un programa "
+            "a un beneficiario inactivo."
+        )
+    
+    if not programa.estado:
+    
+        raise ValueError(
+            "No se puede asignar un programa inactivo."
+        )
+
+    asignacion = (
+        ProgramaBeneficiario.objects
+        .filter(
+            programa=programa,
+            beneficiario=beneficiario,
+        )
+        .first()
+    )
+
+    if asignacion:
+
+        asignacion.estado = True
+
+        asignacion.save(
+            update_fields=[
+                "estado",
+            ]
+        )
+
+        operacion = OperacionAuditoria.UPDATE
+
+        descripcion = (
+            f'Asignación del beneficiario '
+            f'"{beneficiario.nombre} {beneficiario.apellido}" '
+            f'al programa "{programa.nombre}" reactivada.'
+        )
+
+    else:
+
+        asignacion = ProgramaBeneficiario.objects.create(
+
+            programa=programa,
+
+            beneficiario=beneficiario,
+
+        )
+
+        operacion = OperacionAuditoria.INSERT
+
+        descripcion = (
+            f'Beneficiario '
+            f'"{beneficiario.nombre} {beneficiario.apellido}" '
+            f'asignado al programa "{programa.nombre}".'
+        )
+
+    registrar_auditoria(
+
+        usuario=usuario_actual,
+
+        tabla="programa_beneficiario",
+
+        operacion=operacion,
+
+        accion=AccionAuditoria.CREAR_ASIGNACION_BENEFICIARIO,
+
+        id_registro=asignacion.pk,
+
+        descripcion=descripcion,
+
+    )
+
+    return asignacion
+
+
+@transaction.atomic
+def desasignar_beneficiario(
+    asignacion,
+    usuario_actual,
+):
+    """
+    Desactiva una asignación existente entre un beneficiario
+    y un programa.
+    """
+
+    if not asignacion.estado:
+
+        raise ValueError(
+            "La asignación ya se encuentra desactivada."
+        )
+
+    asignacion.estado = False
+
+    asignacion.save(
+        update_fields=[
+            "estado",
+        ]
+    )
+
+    registrar_auditoria(
+
+        usuario=usuario_actual,
+
+        tabla="programa_beneficiario",
+
+        operacion=OperacionAuditoria.UPDATE,
+
+        accion=AccionAuditoria.DESASIGNAR_BENEFICIARIO,
+
+        id_registro=asignacion.pk,
+
+        descripcion=(
+            f'Beneficiario '
+            f'"{asignacion.beneficiario.nombre} '
+            f'{asignacion.beneficiario.apellido}" '
+            f'desasignado del programa '
+            f'"{asignacion.programa.nombre}".'
+        ),
+
+    )
+
+    return asignacion
+
+
+def obtener_programas_beneficiario(beneficiario):
+    """
+    Obtiene los programas activos asignados a un beneficiario.
+    """
+
+    return (
+        ProgramaBeneficiario.objects
+        .filter(
+            beneficiario=beneficiario,
+            estado=True,
+        )
+        .select_related(
+            "programa",
+        )
+        .order_by(
+            "programa__nombre",
+        )
+    )

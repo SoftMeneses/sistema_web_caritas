@@ -4,7 +4,7 @@ from .beneficiario import Beneficiario
 from .programa_usuario import ProgramaUsuario
 from .actividad_usuario import ActividadUsuario
 from .programa_beneficiario import ProgramaBeneficiario
-from  .insumo import Insumo
+from .insumo import Insumo
 from .movimiento_insumo import MovimientoInsumo
 from .detalle_actividad_insumo import DetalleActividadInsumo
 from .auditoria import Auditoria

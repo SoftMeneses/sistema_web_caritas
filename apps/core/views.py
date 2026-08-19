@@ -2,14 +2,22 @@
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import (
+    get_object_or_404, 
+    render, 
+    redirect,
+) 
+
 from django.views.decorators.http import require_POST
+
+from apps.core.models import ProgramaBeneficiario
 
 from apps.core.forms import (
 
     ProgramaForm,
     ActividadForm,
     BeneficiarioForm,
+    ProgramaBeneficiarioForm,
 
 )
 
@@ -34,6 +42,10 @@ from .services import (
     obtener_beneficiario,
     actualizar_beneficiario,
     desactivar_beneficiario,
+
+    obtener_programas_beneficiario,
+    asignar_beneficiario,
+    desasignar_beneficiario,
 
 )
 
@@ -585,14 +597,21 @@ def beneficiario_crear(request):
 @login_required
 def beneficiario_detalle(request, pk):
     """
-    Muestra el detalle de un beneficiario.
+    Muestra el detalle de un beneficiario y los programas
+    a los que se encuentra asignado.
     """
 
     beneficiario = obtener_beneficiario(pk)
 
+    programas_asignados = obtener_programas_beneficiario(
+        beneficiario
+    )
+
     contexto = {
 
         "beneficiario": beneficiario,
+
+        "programas_asignados": programas_asignados,
 
     }
 
@@ -704,5 +723,146 @@ def beneficiario_desactivar(request, pk):
     return redirect(
 
         "core:beneficiario_lista"
+
+    )
+
+
+@login_required
+def beneficiario_asignar_programa(request, pk):
+    """
+    Gestiona la asignación de un beneficiario a un programa.
+    """
+
+    beneficiario = obtener_beneficiario(pk)
+
+    if not beneficiario.estado:
+
+        messages.error(
+
+            request,
+
+            "No se pueden asignar programas a un beneficiario inactivo."
+
+        )
+
+        return redirect(
+
+            "core:beneficiario_detalle",
+
+            pk=beneficiario.pk,
+
+        )
+
+    if request.method == "POST":
+
+        formulario = ProgramaBeneficiarioForm(
+            request.POST,
+            beneficiario=beneficiario,
+        )
+
+        if formulario.is_valid():
+
+            asignar_beneficiario(
+
+                formulario,
+
+                beneficiario,
+
+                request.user,
+
+            )
+
+            messages.success(
+
+                request,
+
+                "Programa asignado correctamente."
+
+            )
+
+            return redirect(
+
+                "core:beneficiario_detalle",
+
+                pk=beneficiario.pk,
+
+            )
+
+    else:
+
+        formulario = ProgramaBeneficiarioForm(
+
+            beneficiario=beneficiario,
+        )
+
+    contexto = {
+
+        "form": formulario,
+
+        "beneficiario": beneficiario,
+
+    }
+
+    return render(
+
+        request,
+
+        "core/beneficiario/asignar_programa.html",
+
+        contexto,
+
+    )
+
+
+@login_required
+@require_POST
+def beneficiario_desasignar_programa(
+    request,
+    pk,
+    asignacion_pk,
+):
+    """
+    Realiza la desasignación lógica de un programa
+    perteneciente a un beneficiario.
+    """
+
+    beneficiario = obtener_beneficiario(pk)
+
+    asignacion = get_object_or_404(
+
+        ProgramaBeneficiario.objects.select_related(
+
+            "beneficiario",
+            "programa",
+
+        ),
+
+        pk=asignacion_pk,
+
+        beneficiario=beneficiario,
+
+    )
+
+    desasignar_beneficiario(
+
+        asignacion,
+
+        request.user,
+
+    )
+
+    messages.success(
+
+        request,
+
+        "Programa desasignado correctamente."
+
+    )
+
+    return redirect(
+
+        "core:beneficiario_detalle",
+
+        pk=beneficiario.pk,
 
     )

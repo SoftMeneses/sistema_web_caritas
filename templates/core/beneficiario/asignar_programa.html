@@ -1,0 +1,152 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}
+
+Asignar Programa
+
+{% endblock %}
+
+{% block page_title %}
+
+Asignar Programa
+
+{% endblock %}
+
+{% block breadcrumb %}
+
+<nav aria-label="breadcrumb">
+
+    <ol class="breadcrumb">
+
+        <li class="breadcrumb-item">
+
+            <a href="{% url 'core:dashboard' %}">
+
+                Dashboard
+
+            </a>
+
+        </li>
+
+        <li class="breadcrumb-item">
+
+            <a href="{% url 'core:beneficiario_lista' %}">
+
+                Beneficiarios
+
+            </a>
+
+        </li>
+
+        <li class="breadcrumb-item">
+
+            <a href="{% url 'core:beneficiario_detalle' beneficiario.pk %}">
+
+                {{ beneficiario.nombre }} {{ beneficiario.apellido }}
+
+            </a>
+
+        </li>
+
+        <li class="breadcrumb-item active">
+
+            Asignar programa
+
+        </li>
+
+    </ol>
+
+</nav>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="card app-card">
+
+    <div class="card-header">
+
+        Asignar programa al beneficiario
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="alert alert-info">
+
+            <i class="bi bi-info-circle me-1"></i>
+
+            Beneficiario:
+
+            <strong>
+
+                {{ beneficiario.nombre }} {{ beneficiario.apellido }}
+
+            </strong>
+
+        </div>
+
+        <form method="post"
+              autocomplete="off"
+              class="app-form">
+
+            {% csrf_token %}
+
+            <div class="row g-4">
+
+                <div class="col-12">
+
+                    <label for="{{ form.programa.id_for_label }}"
+                           class="form-label">
+
+                        Programa
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    {{ form.programa }}
+
+                    {% if form.programa.errors %}
+
+                        <div class="invalid-feedback d-block">
+
+                            {{ form.programa.errors.0 }}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            <div class="app-form-actions d-flex justify-content-end gap-2">
+
+                <a href="{% url 'core:beneficiario_detalle' beneficiario.pk %}"
+                   class="btn btn-secondary">
+
+                    <i class="bi bi-x-circle me-1"></i>
+
+                    Cancelar
+
+                </a>
+
+                <button type="submit"
+                        class="btn btn-primary btn-icon">
+
+                    <i class="bi bi-person-plus"></i>
+
+                    Asignar Programa
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

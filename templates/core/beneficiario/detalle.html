@@ -212,6 +212,129 @@ Detalle del Beneficiario
 
         </div>
 
+        <div class="row mt-4">
+
+            <div class="col-12">
+            
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                
+                    <span class="detail-label">
+                    
+                        <i class="bi bi-diagram-3 me-1"></i>
+                    
+                        Programas asignados
+                    
+                    </span>
+                
+                    {% if beneficiario.estado %}
+                
+                        <a href="{% url 'core:beneficiario_asignar_programa' beneficiario.pk %}"
+                           class="btn btn-primary btn-sm">
+                
+                            <i class="bi bi-plus-circle me-1"></i>
+                
+                            Asignar programa
+                
+                        </a>
+                    
+                    {% endif %}
+                    
+                </div>
+            
+                {% if programas_asignados %}
+            
+                    <div class="table-responsive">
+                    
+                        <table class="table table-hover app-table">
+                        
+                            <thead>
+                            
+                                <tr>
+                                
+                                    <th>Programa</th>
+                                
+                                    <th>Fecha de asignación</th>
+                                
+                                    <th class="text-center" style="width: 120px;">
+                                    
+                                        Acción
+                                    
+                                    </th>
+                                
+                                </tr>
+                            
+                            </thead>
+                        
+                            <tbody>
+                            
+                                {% for asignacion in programas_asignados %}
+                            
+                                    <tr>
+                                    
+                                        <td>
+                                        
+                                            <a href="{% url 'core:programa_detalle' asignacion.programa.pk %}">
+                                            
+                                                {{ asignacion.programa.nombre }}
+                                            
+                                            </a>
+                                        
+                                        </td>
+                                    
+                                        <td>
+                                        
+                                            {{ asignacion.fecha_asignacion|date:"d/m/Y H:i" }}
+                                        
+                                        </td>
+                                    
+                                        <td class="text-center">
+                                        
+                                            <button
+                                                type="button"
+                                                class="btn btn-outline-danger btn-sm btn-desactivar"
+                                                title="Desasignar"
+                                                aria-label="Desasignar programa"
+                                        
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#confirmModal"
+                                                
+                                                data-url="{% url 'core:beneficiario_desasignar_programa' beneficiario.pk asignacion.pk %}"                                                
+                                                data-name="{{ asignacion.programa.nombre }}"
+                                                data-entity="programa"
+                                                data-message="¿Está seguro de desasignar este programa?">
+                                        
+                                                <i class="bi bi-person-dash"></i>
+                                        
+                                            </button>
+                                        
+                                        </td>
+                                    
+                                    </tr>
+                                
+                                {% endfor %}
+                                
+                            </tbody>
+                        
+                        </table>
+                    
+                    </div>
+                
+                {% else %}
+                
+                    <div class="alert alert-light border">
+                    
+                        <i class="bi bi-info-circle me-1"></i>
+                    
+                        Este beneficiario no tiene programas asignados actualmente.
+                    
+                    </div>
+                
+                {% endif %}
+                
+            </div>
+        
+        </div>
+
         <div class="app-form-actions d-flex justify-content-end gap-2">
 
             <a href="{% url 'core:beneficiario_lista' %}"
@@ -237,5 +360,7 @@ Detalle del Beneficiario
     </div>
 
 </div>
+
+{% include "includes/components/confirm_modal.html" with confirm_url="#" title="Desasignar programa" message="" confirm_text="Desasignar" confirm_class="btn-danger" confirm_icon="bi bi-exclamation-triangle-fill text-warning fs-1" %}
 
 {% endblock %}
