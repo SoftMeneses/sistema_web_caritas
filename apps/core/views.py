@@ -18,6 +18,7 @@ from apps.core.forms import (
     ActividadForm,
     BeneficiarioForm,
     ProgramaBeneficiarioForm,
+    InsumoForm,
 
 )
 
@@ -46,6 +47,12 @@ from .services import (
     obtener_programas_beneficiario,
     asignar_beneficiario,
     desasignar_beneficiario,
+
+    obtener_insumos,
+    crear_insumo,
+    obtener_insumo,
+    actualizar_insumo,
+    desactivar_insumo,
 
 )
 
@@ -865,4 +872,197 @@ def beneficiario_desasignar_programa(
 
         pk=beneficiario.pk,
 
+    )
+
+
+# ==============================================================================
+# Insumos
+# ==============================================================================
+
+
+@login_required
+def insumo_lista(request):
+    """
+    Muestra el listado paginado de insumos.
+    """
+
+    contexto = obtener_insumos(request)
+
+    contexto["usuario"] = request.user
+
+    return render(
+
+        request,
+
+        "core/insumo/lista.html",
+
+        contexto,
+
+    )
+
+
+@login_required
+def insumo_crear(request):
+    """
+    Gestiona la creación de un nuevo insumo.
+    """
+
+    if request.method == "POST":
+
+        formulario = InsumoForm(
+            request.POST,
+        )
+
+        if formulario.is_valid():
+
+            crear_insumo(
+                formulario,
+                request.user,
+            )
+
+            messages.success(
+                request,
+                "Insumo registrado correctamente.",
+            )
+
+            return redirect(
+                "core:insumo_lista",
+            )
+
+    else:
+
+        formulario = InsumoForm()
+
+    contexto = {
+
+        "form": formulario,
+
+        "modo": "crear",
+
+    }
+
+    return render(
+
+        request,
+
+        "core/insumo/form.html",
+
+        contexto,
+
+    )
+
+
+@login_required
+def insumo_detalle(request, pk):
+    """
+    Muestra el detalle de un insumo.
+    """
+
+    insumo = obtener_insumo(pk)
+
+    contexto = {
+
+        "insumo": insumo,
+
+    }
+
+    return render(
+
+        request,
+
+        "core/insumo/detalle.html",
+
+        contexto,
+
+    )
+
+
+@login_required
+def insumo_editar(request, pk):
+    """
+    Gestiona la edición de un insumo existente.
+    """
+
+    insumo = obtener_insumo(pk)
+
+    if request.method == "POST":
+
+        formulario = InsumoForm(
+
+            request.POST,
+
+            instance=insumo,
+
+        )
+
+        if formulario.is_valid():
+
+            actualizar_insumo(
+                formulario,
+                request.user,
+            )
+
+            messages.success(
+
+                request,
+
+                "Insumo actualizado correctamente.",
+
+            )
+
+            return redirect(
+                "core:insumo_lista",
+            )
+
+    else:
+
+        formulario = InsumoForm(
+            instance=insumo,
+        )
+
+    contexto = {
+
+        "form": formulario,
+
+        "modo": "editar",
+
+        "insumo": insumo,
+
+    }
+
+    return render(
+
+        request,
+
+        "core/insumo/form.html",
+
+        contexto,
+
+    )
+
+
+@login_required
+@require_POST
+def insumo_desactivar(request, pk):
+    """
+    Realiza la desactivación lógica de un insumo.
+    """
+
+    insumo = obtener_insumo(pk)
+
+    desactivar_insumo(
+        insumo,
+        request.user,
+    )
+
+    messages.success(
+
+        request,
+
+        "Insumo desactivado correctamente.",
+
+    )
+
+    return redirect(
+        "core:insumo_lista",
     )

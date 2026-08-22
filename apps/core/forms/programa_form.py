@@ -33,6 +33,18 @@ class ProgramaForm(BaseStyledModelForm):
 
             },
 
+            "usuario_responsable": {
+
+                "required": "Debe seleccionar un responsable.",
+
+            },
+
+            "fecha_inicio": {
+
+                "required": "Debe seleccionar una fecha de inicio.",
+
+            },
+
         }
 
         widgets = {

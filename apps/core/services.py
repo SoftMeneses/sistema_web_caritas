@@ -13,6 +13,7 @@ from apps.core.models import (
      Beneficiario,
      Programa,
      ProgramaBeneficiario,
+     Insumo,
 )
 
 from apps.core.models.choices import (
@@ -991,3 +992,214 @@ def obtener_programas_beneficiario(beneficiario):
             "programa__nombre",
         )
     )
+
+
+# ==============================================================================
+# Insumos
+# ==============================================================================
+
+def obtener_insumos(request):
+
+    """
+    Obtiene el listado paginado de insumos aplicando:
+
+    - filtro por estado
+    - búsqueda
+    - ordenamiento
+    - paginación
+    """
+
+    params = request.GET.copy()
+
+    params.pop(
+        "page",
+        None,
+    )
+
+    status = request.GET.get(
+        "status",
+        "activo",
+    )
+
+    queryset = Insumo.objects.all()
+
+    if status == "activo":
+
+        queryset = queryset.filter(
+            estado=True,
+        )
+
+    elif status == "inactivo":
+
+        queryset = queryset.filter(
+            estado=False,
+        )
+
+    elif status == "todos":
+
+        pass
+
+    q = request.GET.get(
+        "q",
+        "",
+    ).strip()
+
+    if q:
+
+        queryset = queryset.filter(
+            Q(nombre__icontains=q)
+            |
+            Q(descripcion__icontains=q)
+        )
+
+    queryset = queryset.order_by(
+        "nombre",
+    )
+
+    paginator = Paginator(
+        queryset,
+        10,
+    )
+
+    page_number = request.GET.get(
+        "page",
+    )
+
+    page_obj = paginator.get_page(
+        page_number,
+    )
+
+    return {
+
+        "insumos": page_obj,
+
+        "page_obj": page_obj,
+
+        "search_value": q,
+
+        "status_value": status,
+
+        "visible_pages": obtener_paginas_visibles(
+            page_obj
+        ),
+
+        "query_string": params.urlencode(),
+
+    }
+
+
+@transaction.atomic
+def crear_insumo(formulario, usuario_actual):
+
+    """
+    Guarda un nuevo insumo y registra la acción
+    realizada por el usuario.
+    """
+
+    insumo = formulario.save()
+
+    registrar_auditoria(
+
+        usuario=usuario_actual,
+
+        tabla="insumos",
+
+        operacion=OperacionAuditoria.INSERT,
+
+        accion=AccionAuditoria.CREAR_INSUMO,
+
+        id_registro=insumo.pk,
+
+        descripcion=(
+            f'Insumo "{insumo.nombre}" creado.'
+        ),
+
+    )
+
+    return insumo
+
+
+def obtener_insumo(pk):
+
+    """
+    Obtiene un insumo por su identificador.
+    """
+
+    return get_object_or_404(
+        Insumo,
+        pk=pk,
+    )
+
+
+@transaction.atomic
+def actualizar_insumo(formulario, usuario_actual):
+
+    """
+    Actualiza la información de un insumo y registra
+    la acción realizada por el usuario.
+
+    El stock actual no es modificado por esta operación.
+    """
+
+    insumo = formulario.save()
+
+    registrar_auditoria(
+
+        usuario=usuario_actual,
+
+        tabla="insumos",
+
+        operacion=OperacionAuditoria.UPDATE,
+
+        accion=AccionAuditoria.EDITAR_INSUMO,
+
+        id_registro=insumo.pk,
+
+        descripcion=(
+            f'Insumo "{insumo.nombre}" actualizado.'
+        ),
+
+    )
+
+    return insumo
+
+
+@transaction.atomic
+def desactivar_insumo(insumo, usuario_actual):
+
+    """
+    Realiza la desactivación lógica del insumo y registra
+    la acción realizada por el usuario.
+    """
+
+    if not insumo.estado:
+
+        return insumo
+
+    insumo.estado = False
+
+    insumo.save(
+        update_fields=[
+            "estado",
+        ]
+    )
+
+    registrar_auditoria(
+
+        usuario=usuario_actual,
+
+        tabla="insumos",
+
+        operacion=OperacionAuditoria.UPDATE,
+
+        accion=AccionAuditoria.DESACTIVAR_INSUMO,
+
+        id_registro=insumo.pk,
+
+        descripcion=(
+            f'Insumo "{insumo.nombre}" desactivado.'
+        ),
+
+    )
+
+    return insumo

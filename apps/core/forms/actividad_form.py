@@ -29,7 +29,17 @@ class ActividadForm(BaseStyledModelForm):
             "nombre": {
 
                 "required": "El nombre de la actividad es obligatorio."
-            }
+            },
+
+            "programa": {
+
+                "required": "Debe seleccionar un programa."
+            },
+
+            "fecha_actividad": {
+
+                "required": "Debe seleccionar la fecha y hora de actividad."
+            },
         }
 
         widgets = {

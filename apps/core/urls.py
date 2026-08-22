@@ -25,6 +25,12 @@ from .views import (
     beneficiario_asignar_programa,
     beneficiario_desasignar_programa,
 
+    insumo_lista,
+    insumo_crear,
+    insumo_detalle,
+    insumo_editar,
+    insumo_desactivar,
+
 )
 
 app_name = "core"
@@ -156,6 +162,41 @@ urlpatterns = [
         "beneficiarios/<int:pk>/programas/<int:asignacion_pk>/desasignar/",
         beneficiario_desasignar_programa,
         name="beneficiario_desasignar_programa",
+    ),
+
+
+    # ==============================================================================
+    # Insumos
+    # ==============================================================================
+
+    path(
+        "insumos/",
+        insumo_lista,
+        name="insumo_lista",
+    ),
+    
+    path(
+        "insumos/nuevo/",
+        insumo_crear,
+        name="insumo_crear",
+    ),
+    
+    path(
+        "insumos/<int:pk>/",
+        insumo_detalle,
+        name="insumo_detalle",
+    ),
+    
+    path(
+        "insumos/<int:pk>/editar/",
+        insumo_editar,
+        name="insumo_editar",
+    ),
+    
+    path(
+        "insumos/<int:pk>/desactivar/",
+        insumo_desactivar,
+        name="insumo_desactivar",
     ),
 
 ]

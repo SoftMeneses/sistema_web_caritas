@@ -4,11 +4,11 @@
 
 {% if modo == "editar" %}
 
-Editar Actividad
+Editar Insumo
 
 {% else %}
 
-Nueva Actividad
+Nuevo Insumo
 
 {% endif %}
 
@@ -18,11 +18,11 @@ Nueva Actividad
 
 {% if modo == "editar" %}
 
-Editar Actividad
+Editar Insumo
 
 {% else %}
 
-Nueva Actividad
+Nuevo Insumo
 
 {% endif %}
 
@@ -46,9 +46,9 @@ Nueva Actividad
 
         <li class="breadcrumb-item">
 
-            <a href="{% url 'core:actividad_lista' %}">
+            <a href="{% url 'core:insumo_lista' %}">
 
-                Actividades
+                Insumos
 
             </a>
 
@@ -62,7 +62,7 @@ Nueva Actividad
 
             {% else %}
 
-                Nueva
+                Nuevo
 
             {% endif %}
 
@@ -82,11 +82,11 @@ Nueva Actividad
 
         {% if modo == "editar" %}
 
-            Editar información de la actividad
+            Editar información del insumo
 
         {% else %}
 
-            Información de la nueva actividad
+            Información del nuevo insumo
 
         {% endif %}
 
@@ -130,51 +130,22 @@ Nueva Actividad
 
                 <div class="col-md-6">
 
-                    <label for="{{ form.programa.id_for_label }}"
+                    <label for="{{ form.unidad_medida.id_for_label }}"
                            class="form-label">
 
-                        Programa
+                        Unidad de medida
 
                         <span class="text-danger">*</span>
 
                     </label>
 
-                    {{ form.programa }}
+                    {{ form.unidad_medida }}
 
-                    {% if form.programa.errors %}
-
-                        <div class="invalid-feedback d-block">
-
-                            {{ form.programa.errors.0 }}
-
-                        </div>
-
-                    {% endif %}
-
-                </div>
-
-            </div>
-
-            <div class="row g-4 mt-1">
-
-                <div class="col-md-6">
-
-                    <label for="{{ form.fecha_actividad.id_for_label }}"
-                           class="form-label">
-
-                        Fecha y hora de la actividad
-
-                        <span class="text-danger">*</span>
-
-                    </label>
-
-                    {{ form.fecha_actividad }}
-
-                    {% if form.fecha_actividad.errors %}
+                    {% if form.unidad_medida.errors %}
 
                         <div class="invalid-feedback d-block">
 
-                            {{ form.fecha_actividad.errors.0 }}
+                            {{ form.unidad_medida.errors.0 }}
 
                         </div>
 
@@ -222,21 +193,11 @@ Nueva Actividad
                         <label class="form-check-label"
                                for="{{ form.estado.id_for_label }}">
 
-                            Actividad activa
+                            Insumo activo
 
                         </label>
 
                     </div>
-
-                    {% if form.estado.errors %}
-
-                        <div class="invalid-feedback d-block">
-
-                            {{ form.estado.errors.0 }}
-
-                        </div>
-
-                    {% endif %}
 
                 </div>
 
@@ -244,7 +205,7 @@ Nueva Actividad
 
             <div class="app-form-actions d-flex justify-content-end gap-2">
 
-                <a href="{% url 'core:actividad_lista' %}"
+                <a href="{% url 'core:insumo_lista' %}"
                    class="btn btn-secondary">
 
                     <i class="bi bi-x-circle me-1"></i>
@@ -260,13 +221,13 @@ Nueva Actividad
 
                         <i class="bi bi-pencil-square"></i>
 
-                        Actualizar Actividad
+                        Actualizar Insumo
 
                     {% else %}
 
                         <i class="bi bi-floppy"></i>
 
-                        Guardar Actividad
+                        Guardar Insumo
 
                     {% endif %}
 

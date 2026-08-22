@@ -1,0 +1,220 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}
+
+Insumos
+
+{% endblock %}
+
+{% block page_title %}
+
+Insumos
+
+{% endblock %}
+
+{% block breadcrumb %}
+
+<nav aria-label="breadcrumb">
+
+    <ol class="breadcrumb">
+
+        <li class="breadcrumb-item">
+
+            <a href="{% url 'core:dashboard' %}">
+
+                Dashboard
+
+            </a>
+
+        </li>
+
+        <li class="breadcrumb-item active">
+
+            Insumos
+
+        </li>
+
+    </ol>
+
+</nav>
+
+{% endblock %}
+
+{% block content %}
+
+{% url 'core:insumo_crear' as insumo_crear_url %}
+
+{% include "includes/components/search_bar.html" with placeholder="Buscar insumo..." button_url=insumo_crear_url button_text="Nuevo Insumo" button_icon="bi bi-plus-circle" show_status_filter=True status_value=status_value %}
+
+<div class="card app-card">
+
+    <div class="card-body">
+
+        {% if insumos %}
+
+            <div class="table-responsive flex-grow-1">
+
+                <table class="table table-hover app-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th style="width: 60px;">#</th>
+
+                            <th scope="col">Insumo</th>
+
+                            <th scope="col">Unidad</th>
+
+                            <th scope="col">Stock actual</th>
+
+                            <th scope="col">Estado</th>
+
+                            <th scope="col"
+                                class="text-center"
+                                style="width: 170px;">
+
+                                Acciones
+
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for insumo in insumos %}
+
+                            <tr>
+
+                                <td>
+
+                                    {{ insumos.start_index|add:forloop.counter0 }}
+
+                                </td>
+
+                                <td>
+
+                                    {{ insumo.nombre }}
+
+                                </td>
+
+                                <td>
+
+                                    {{ insumo.get_unidad_medida_display }}
+
+                                </td>
+
+                                <td>
+
+                                    {{ insumo.stock_actual|floatformat:2 }}
+
+                                </td>
+
+                                <td>
+
+                                    {% if insumo.estado %}
+
+                                        <span class="badge app-badge-active">
+
+                                            Activo
+
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="badge app-badge-inactive">
+
+                                            Inactivo
+
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                                <td class="text-center">
+
+                                    <div class="btn-group btn-group-sm">
+
+                                        <a href="{% url 'core:insumo_detalle' insumo.pk %}"
+                                           class="btn btn-outline-primary"
+                                           title="Ver"
+                                           aria-label="Ver insumo">
+
+                                            <i class="bi bi-eye"></i>
+
+                                        </a>
+
+                                        <a href="{% url 'core:insumo_editar' insumo.pk %}"
+                                           class="btn btn-outline-warning"
+                                           title="Editar"
+                                           aria-label="Editar insumo">
+
+                                            <i class="bi bi-pencil-square"></i>
+
+                                        </a>
+
+                                        {% if insumo.estado %}
+
+                                            <button
+                                                type="button"
+                                                class="btn btn-outline-danger btn-desactivar"
+                                                title="Desactivar"
+                                                aria-label="Desactivar insumo"
+
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#confirmModal"
+
+                                                data-url="{% url 'core:insumo_desactivar' insumo.pk %}"
+                                                data-name="{{ insumo.nombre }}"
+                                                data-entity="insumo"
+                                                data-message="¿Está seguro de desactivar este insumo?">
+
+                                                <i class="bi bi-trash"></i>
+
+                                            </button>
+
+                                        {% else %}
+
+                                            <button
+                                                class="btn btn-outline-secondary"
+                                                disabled
+                                                title="Insumo inactivo">
+
+                                                <i class="bi bi-trash"></i>
+
+                                            </button>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% include "includes/components/pagination.html" %}
+
+        {% else %}
+
+            {% include "includes/components/empty_state.html" with title="No existen insumos registrados." message="Comience creando el primer insumo del sistema." button_url=insumo_crear_url button_text="Nuevo Insumo" button_icon="bi bi-plus-circle" %}
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% include "includes/components/confirm_modal.html" with confirm_url="#" title="Desactivar insumo" message="" confirm_text="Desactivar" confirm_class="btn-danger" confirm_icon="bi bi-exclamation-triangle-fill text-warning fs-1" %}
+
+{% endblock %}

@@ -97,3 +97,18 @@ class AccionAuditoria(models.TextChoices):
         "DESASIGNAR_BENEFICIARIO",
         "Desasignar beneficiario",
     )
+
+    CREAR_INSUMO = (
+        "CREAR_INSUMO",
+        "Crear insumo",
+    )
+    
+    EDITAR_INSUMO = (
+        "EDITAR_INSUMO",
+        "Editar insumo",
+    )
+    
+    DESACTIVAR_INSUMO = (
+        "DESACTIVAR_INSUMO",
+        "Desactivar insumo",
+    )

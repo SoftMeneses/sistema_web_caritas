@@ -88,6 +88,7 @@ Nuevo Programa
 
         <form method="post"
               autocomplete="off"
+              novalidate
               class="app-form">
 
             {% csrf_token %}
@@ -132,6 +133,16 @@ Nuevo Programa
 
                     {{ form.usuario_responsable }}
 
+                    {% if form.usuario_responsable.errors %}
+
+                        <div class="invalid-feedback d-block">
+                            
+                            {{ form.usuario_responsable.errors.0 }}
+                        
+                        </div>
+                    
+                    {% endif %}
+
                 </div>
 
             </div>
@@ -150,6 +161,16 @@ Nuevo Programa
                     </label>
 
                     {{ form.fecha_inicio }}
+
+                    {% if form.fecha_inicio.errors %}
+
+                        <div class="invalid-feedback d-block">
+                            
+                            {{ form.fecha_inicio.errors.0 }}
+                        
+                        </div>
+                    
+                    {% endif %}
                 
                 </div>
 
