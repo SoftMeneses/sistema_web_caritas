@@ -112,3 +112,13 @@ class AccionAuditoria(models.TextChoices):
         "DESACTIVAR_INSUMO",
         "Desactivar insumo",
     )
+
+    REGISTRAR_ENTRADA_INSUMO = (
+        "REGISTRAR_ENTRADA_INSUMO",
+        "Registrar entrada de insumo",
+    )
+    
+    REGISTRAR_SALIDA_INSUMO = (
+        "REGISTRAR_SALIDA_INSUMO",
+        "Registrar salida de insumo",
+    )

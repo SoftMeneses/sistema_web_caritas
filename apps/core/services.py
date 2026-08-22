@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Q
@@ -14,11 +15,13 @@ from apps.core.models import (
      Programa,
      ProgramaBeneficiario,
      Insumo,
+     MovimientoInsumo,
 )
 
 from apps.core.models.choices import (
     OperacionAuditoria,
     AccionAuditoria,
+    TipoMovimiento,
 )
 
 
@@ -1131,6 +1134,22 @@ def obtener_insumo(pk):
     )
 
 
+def obtener_movimientos_insumo(insumo):
+
+    return (
+        MovimientoInsumo.objects
+        .filter(
+            insumo=insumo
+        )
+        .select_related(
+            "usuario_responsable",
+        )
+        .order_by(
+            "-fecha_movimiento",
+        )
+    )
+
+
 @transaction.atomic
 def actualizar_insumo(formulario, usuario_actual):
 
@@ -1203,3 +1222,65 @@ def desactivar_insumo(insumo, usuario_actual):
     )
 
     return insumo
+
+
+@transaction.atomic
+def registrar_movimiento_insumo(
+    formulario,
+    usuario_actual,
+):
+    """
+    Registra un movimiento de inventario.
+
+    El stock_actual no se modifica desde Django.
+    La actualización corresponde a los triggers SQL.
+    """
+
+    movimiento = formulario.save(
+        commit=False
+    )
+
+    movimiento.usuario_responsable = usuario_actual
+
+    movimiento.save()
+
+    if movimiento.tipo_movimiento == TipoMovimiento.ENTRADA:
+
+        accion = (
+            AccionAuditoria.REGISTRAR_ENTRADA_INSUMO
+        )
+
+        descripcion = (
+            f"Entrada de {movimiento.cantidad} "
+            f"{movimiento.insumo.get_unidad_medida_display()} "
+            f'de "{movimiento.insumo.nombre}".'
+        )
+
+    elif movimiento.tipo_movimiento == TipoMovimiento.SALIDA:
+
+        accion = (
+            AccionAuditoria.REGISTRAR_SALIDA_INSUMO
+        )
+
+        descripcion = (
+            f"Salida de {movimiento.cantidad} "
+            f"{movimiento.insumo.get_unidad_medida_display()} "
+            f'de "{movimiento.insumo.nombre}".'
+        )
+
+    else:
+
+        raise ValidationError(
+            "Tipo de movimiento no válido."
+        )
+
+    registrar_auditoria(
+        usuario=usuario_actual,
+        tabla="movimientos_insumos",
+        operacion=OperacionAuditoria.INSERT,
+        accion=accion,
+        id_registro=movimiento.pk,
+        descripcion=descripcion,
+    )
+
+    return movimiento

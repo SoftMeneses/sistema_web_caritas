@@ -1,5 +1,6 @@
 # Vistas
 
+from django.core.exceptions import ValidationError
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import (
@@ -19,7 +20,7 @@ from apps.core.forms import (
     BeneficiarioForm,
     ProgramaBeneficiarioForm,
     InsumoForm,
-
+    MovimientoInsumoForm,
 )
 
 from .services import ( 
@@ -51,9 +52,10 @@ from .services import (
     obtener_insumos,
     crear_insumo,
     obtener_insumo,
+    obtener_movimientos_insumo,
     actualizar_insumo,
     desactivar_insumo,
-
+    registrar_movimiento_insumo,
 )
 
 # ==============================================================================
@@ -960,9 +962,13 @@ def insumo_detalle(request, pk):
 
     insumo = obtener_insumo(pk)
 
+    movimientos = obtener_movimientos_insumo(insumo)
+
     contexto = {
 
         "insumo": insumo,
+
+        "movimientos": movimientos,
 
     }
 
@@ -1065,4 +1071,54 @@ def insumo_desactivar(request, pk):
 
     return redirect(
         "core:insumo_lista",
+    )
+
+
+@login_required
+def movimiento_insumo_crear(request):
+
+    if request.method == "POST":
+
+        form = MovimientoInsumoForm(
+            request.POST
+        )
+
+        if form.is_valid():
+
+            try:
+
+                movimiento = registrar_movimiento_insumo(
+                    formulario=form,
+                    usuario_actual=request.user,
+                )
+
+            except ValidationError as exc:
+
+                form.add_error(
+                    None,
+                    exc.message,
+                )
+
+            else:
+
+                messages.success(
+                    request,
+                    "Movimiento de insumo registrado correctamente.",
+                )
+
+                return redirect(
+                    "core:insumo_detalle",
+                    pk=movimiento.insumo.pk,
+                )
+
+    else:
+
+        form = MovimientoInsumoForm()
+
+    return render(
+        request,
+        "core/insumo/movimiento_form.html",
+        {
+            "form": form,
+        },
     )

@@ -192,6 +192,120 @@ Detalle del Insumo
 
         </div>
 
+        <div class="card app-card mt-4">
+
+            <div class="card-header">
+            
+                <i class="bi bi-clock-history me-1"></i>
+            
+                Historial de movimientos
+            
+            </div>
+        
+            <div class="card-body">
+            
+                {% if movimientos %}
+            
+                    <div class="table-responsive">
+                    
+                        <table class="table table-hover app-table">
+                        
+                            <thead>
+                            
+                                <tr>
+                                
+                                    <th>Fecha</th>
+                                
+                                    <th>Tipo</th>
+                                
+                                    <th>Cantidad</th>
+                                
+                                    <th>Usuario</th>
+                                
+                                    <th>Observación</th>
+                                
+                                </tr>
+                            
+                            </thead>
+                        
+                            <tbody>
+                            
+                                {% for movimiento in movimientos %}
+                            
+                                    <tr>
+                                    
+                                        <td>
+                                        
+                                            {{ movimiento.fecha_movimiento|date:"d/m/Y H:i" }}
+                                        
+                                        </td>
+                                    
+                                        <td>
+                                        
+                                            {% if movimiento.tipo_movimiento == "entrada" %}
+                                        
+                                                <span class="badge app-badge-active">
+                                                
+                                                    Entrada
+                                                
+                                                </span>
+                                            
+                                            {% else %}
+                                            
+                                                <span class="badge app-badge-inactive">
+                                                
+                                                    Salida
+                                                
+                                                </span>
+                                            
+                                            {% endif %}
+                                            
+                                        </td>
+                                    
+                                        <td>
+                                        
+                                            {{ movimiento.cantidad|floatformat:2 }}
+                                        
+                                            {{ insumo.get_unidad_medida_display }}
+                                        
+                                        </td>
+                                    
+                                        <td>
+                                        
+                                            {{ movimiento.usuario_responsable.get_full_name|default:movimiento.usuario_responsable.username }}
+                                        
+                                        </td>
+                                    
+                                        <td>
+                                        
+                                            {{ movimiento.observacion|default:"Sin observación." }}
+                                        
+                                        </td>
+                                    
+                                    </tr>
+                                
+                                {% endfor %}
+                                
+                            </tbody>
+                        
+                        </table>
+                    
+                    </div>
+                
+                {% else %}
+                
+                    <p class="text-muted mb-0">
+                    
+                        No existen movimientos registrados para este insumo.
+                    
+                    </p>
+                
+                {% endif %}
+                
+            </div>
+        
+        </div>
+
         <div class="app-form-actions d-flex justify-content-end gap-2">
 
             <a href="{% url 'core:insumo_lista' %}"
@@ -202,6 +316,19 @@ Detalle del Insumo
                 Volver
 
             </a>
+
+            {% if insumo.estado %}
+
+                <a href="{% url 'core:movimiento_insumo_crear' %}"
+                   class="btn btn-success btn-icon">
+
+                    <i class="bi bi-arrow-left-right"></i>
+
+                    Registrar movimiento
+
+                </a>
+
+            {% endif %}
 
             <a href="{% url 'core:insumo_editar' insumo.pk %}"
                class="btn btn-primary btn-icon">

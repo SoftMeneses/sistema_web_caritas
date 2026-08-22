@@ -3,3 +3,4 @@ from .actividad_form import ActividadForm
 from .beneficiario_form import BeneficiarioForm
 from .programa_beneficiario_form import ProgramaBeneficiarioForm
 from .insumo_form import InsumoForm
+from .movimiento_insumo_form import MovimientoInsumoForm

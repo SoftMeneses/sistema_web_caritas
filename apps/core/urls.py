@@ -31,6 +31,8 @@ from .views import (
     insumo_editar,
     insumo_desactivar,
 
+    movimiento_insumo_crear,
+
 )
 
 app_name = "core"
@@ -197,6 +199,12 @@ urlpatterns = [
         "insumos/<int:pk>/desactivar/",
         insumo_desactivar,
         name="insumo_desactivar",
+    ),
+
+    path(
+        "insumos/movimiento/nuevo/",
+        movimiento_insumo_crear,
+        name="movimiento_insumo_crear",
     ),
 
 ]

@@ -1,0 +1,229 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}
+
+Registrar Movimiento de Insumo
+
+{% endblock %}
+
+{% block page_title %}
+
+Registrar Movimiento de Insumo
+
+{% endblock %}
+
+{% block breadcrumb %}
+
+<nav aria-label="breadcrumb">
+
+    <ol class="breadcrumb">
+
+        <li class="breadcrumb-item">
+
+            <a href="{% url 'core:dashboard' %}">
+
+                Dashboard
+
+            </a>
+
+        </li>
+
+        <li class="breadcrumb-item">
+
+            <a href="{% url 'core:insumo_lista' %}">
+
+                Insumos
+
+            </a>
+
+        </li>
+
+        <li class="breadcrumb-item active">
+
+            Registrar movimiento
+
+        </li>
+
+    </ol>
+
+</nav>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="card app-card">
+
+    <div class="card-header">
+
+        Registrar movimiento de inventario
+
+    </div>
+
+    <div class="card-body">
+
+        <form method="post"
+              autocomplete="off"
+              novalidate
+              class="app-form">
+
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+
+                <div class="alert alert-danger">
+
+                    {{ form.non_field_errors.0 }}
+
+                </div>
+
+            {% endif %}
+
+            <div class="row g-4">
+
+                <div class="col-md-6">
+
+                    <label for="{{ form.tipo_movimiento.id_for_label }}"
+                           class="form-label">
+
+                        Tipo de movimiento
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    {{ form.tipo_movimiento }}
+
+                    {% if form.tipo_movimiento.errors %}
+
+                        <div class="invalid-feedback d-block">
+
+                            {{ form.tipo_movimiento.errors.0 }}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <label for="{{ form.insumo.id_for_label }}"
+                           class="form-label">
+
+                        Insumo
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    {{ form.insumo }}
+
+                    {% if form.insumo.errors %}
+
+                        <div class="invalid-feedback d-block">
+
+                            {{ form.insumo.errors.0 }}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            <div class="row g-4 mt-1">
+
+                <div class="col-md-6">
+
+                    <label for="{{ form.cantidad.id_for_label }}"
+                           class="form-label">
+
+                        Cantidad
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    {{ form.cantidad }}
+
+                    {% if form.cantidad.errors %}
+
+                        <div class="invalid-feedback d-block">
+
+                            {{ form.cantidad.errors.0 }}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            <div class="row mt-3">
+
+                <div class="col-12">
+
+                    <label for="{{ form.observacion.id_for_label }}"
+                           class="form-label">
+
+                        Observación
+
+                    </label>
+
+                    {{ form.observacion }}
+
+                    {% if form.observacion.errors %}
+
+                        <div class="invalid-feedback d-block">
+
+                            {{ form.observacion.errors.0 }}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            <div class="alert alert-info mt-4 mb-0">
+
+                <i class="bi bi-info-circle me-1"></i>
+
+                El stock del insumo se actualizará automáticamente
+                al registrar el movimiento.
+
+            </div>
+
+            <div class="app-form-actions d-flex justify-content-end gap-2">
+
+                <a href="{% url 'core:insumo_lista' %}"
+                   class="btn btn-secondary">
+
+                    <i class="bi bi-x-circle me-1"></i>
+
+                    Cancelar
+
+                </a>
+
+                <button type="submit"
+                        class="btn btn-primary btn-icon">
+
+                    <i class="bi bi-arrow-left-right"></i>
+
+                    Registrar Movimiento
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
