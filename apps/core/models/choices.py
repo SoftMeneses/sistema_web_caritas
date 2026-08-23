@@ -122,3 +122,8 @@ class AccionAuditoria(models.TextChoices):
         "REGISTRAR_SALIDA_INSUMO",
         "Registrar salida de insumo",
     )
+
+    REGISTRAR_CONSUMO_INSUMO = (
+        "REGISTRAR_CONSUMO_INSUMO",
+        "Registrar consumo de insumo",
+    )

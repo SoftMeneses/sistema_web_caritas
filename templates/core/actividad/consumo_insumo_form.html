@@ -1,0 +1,196 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}
+
+Registrar Consumo de Insumo
+
+{% endblock %}
+
+{% block page_title %}
+
+Registrar Consumo de Insumo
+
+{% endblock %}
+
+{% block breadcrumb %}
+
+<nav aria-label="breadcrumb">
+
+    <ol class="breadcrumb">
+
+        <li class="breadcrumb-item">
+
+            <a href="{% url 'core:dashboard' %}">
+
+                Dashboard
+
+            </a>
+
+        </li>
+
+        <li class="breadcrumb-item">
+
+            <a href="{% url 'core:actividad_lista' %}">
+
+                Actividades
+
+            </a>
+
+        </li>
+
+        <li class="breadcrumb-item">
+
+            <a href="{% url 'core:actividad_detalle' actividad.pk %}">
+
+                {{ actividad.nombre }}
+
+            </a>
+
+        </li>
+
+        <li class="breadcrumb-item active">
+
+            Registrar consumo
+
+        </li>
+
+    </ol>
+
+</nav>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="card app-card">
+
+    <div class="card-header">
+
+        Registrar consumo de insumo
+
+    </div>
+
+    <div class="card-body app-form">
+
+        <div class="alert alert-info">
+
+            <i class="bi bi-info-circle me-1"></i>
+
+            Actividad:
+
+            <strong>{{ actividad.nombre }}</strong>
+
+        </div>
+
+        {% if form.non_field_errors %}
+
+            <div class="alert alert-danger">
+
+                {{ form.non_field_errors.0 }}
+
+            </div>
+
+        {% endif %}
+
+        <form method="post"
+              autocomplete="off"
+              novalidate>
+
+            {% csrf_token %}
+
+            <div class="row g-4">
+
+                <div class="col-md-6">
+
+                    <label
+                        for="{{ form.insumo.id_for_label }}"
+                        class="form-label">
+
+                        Insumo
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    {{ form.insumo }}
+
+                    {% if form.insumo.errors %}
+
+                        <div class="invalid-feedback d-block">
+
+                            {{ form.insumo.errors.0 }}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <label
+                        for="{{ form.cantidad_usada.id_for_label }}"
+                        class="form-label">
+
+                        Cantidad utilizada
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    {{ form.cantidad_usada }}
+
+                    {% if form.cantidad_usada.errors %}
+
+                        <div class="invalid-feedback d-block">
+
+                            {{ form.cantidad_usada.errors.0 }}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            <div class="alert alert-warning mt-4">
+
+                <i class="bi bi-exclamation-triangle me-1"></i>
+
+                La cantidad registrada se descontará automáticamente
+                del stock disponible del insumo.
+
+            </div>
+
+            <div class="app-form-actions d-flex justify-content-end gap-2">
+
+                <a
+                    href="{% url 'core:actividad_detalle' actividad.pk %}"
+                    class="btn btn-secondary">
+
+                    <i class="bi bi-x-circle me-1"></i>
+
+                    Cancelar
+
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary btn-icon">
+
+                    <i class="bi bi-box-arrow-down"></i>
+
+                    Registrar consumo
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

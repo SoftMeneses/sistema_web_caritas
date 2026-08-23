@@ -246,6 +246,87 @@ Detalle de la Actividad
 
         </div>
 
+        <div class="card app-card mt-4">
+
+            <div class="card-header">
+            
+                <i class="bi bi-box-seam me-1"></i>
+            
+                Insumos utilizados
+            
+            </div>
+        
+            <div class="card-body">
+            
+                {% if consumos %}
+            
+                    <div class="table-responsive">
+                    
+                        <table class="table table-hover app-table">
+                        
+                            <thead>
+                            
+                                <tr>
+                                
+                                    <th>Insumo</th>
+                                
+                                    <th>Cantidad utilizada</th>
+                                
+                                    <th>Unidad de medida</th>
+                                
+                                </tr>
+                            
+                            </thead>
+                        
+                            <tbody>
+                            
+                                {% for consumo in consumos %}
+                            
+                                    <tr>
+                                    
+                                        <td>
+                                        
+                                            {{ consumo.insumo.nombre }}
+                                        
+                                        </td>
+                                    
+                                        <td>
+                                        
+                                            {{ consumo.cantidad_usada|floatformat:2 }}
+                                        
+                                        </td>
+                                    
+                                        <td>
+                                        
+                                            {{ consumo.insumo.get_unidad_medida_display }}
+                                        
+                                        </td>
+                                    
+                                    </tr>
+                                
+                                {% endfor %}
+                                
+                            </tbody>
+                        
+                        </table>
+                    
+                    </div>
+                
+                {% else %}
+                
+                    <p class="text-muted mb-0">
+                    
+                        No se han registrado insumos utilizados
+                        en esta actividad.
+                    
+                    </p>
+                
+                {% endif %}
+                
+            </div>
+        
+        </div>
+
         <div class="app-form-actions d-flex justify-content-end gap-2">
 
             <a href="{% url 'core:actividad_lista' %}"
@@ -282,6 +363,20 @@ Detalle de la Actividad
 
                 </button>
 
+            {% endif %}
+
+            {% if actividad.estado and actividad.programa.estado %}
+
+                <a
+                    href="{% url 'core:consumo_insumo_crear' actividad.pk %}"
+                    class="btn btn-primary btn-icon">
+                        
+                    <i class="bi bi-box-arrow-down"></i>
+                        
+                    Registrar consumo
+                        
+                </a>
+            
             {% endif %}
 
         </div>

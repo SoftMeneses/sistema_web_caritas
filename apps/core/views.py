@@ -21,6 +21,7 @@ from apps.core.forms import (
     ProgramaBeneficiarioForm,
     InsumoForm,
     MovimientoInsumoForm,
+    DetalleActividadInsumoForm,
 )
 
 from .services import ( 
@@ -36,6 +37,7 @@ from .services import (
     obtener_actividades,
     crear_actividad,
     obtener_actividad,
+    obtener_consumos_actividad,
     actualizar_actividad,
     desactivar_actividad,
 
@@ -56,6 +58,7 @@ from .services import (
     actualizar_insumo,
     desactivar_insumo,
     registrar_movimiento_insumo,
+    registrar_consumo_insumo,
 )
 
 # ==============================================================================
@@ -361,9 +364,13 @@ def actividad_detalle(request, pk):
 
     actividad = obtener_actividad(pk)
 
+    consumos = obtener_consumos_actividad(actividad)
+
     contexto = {
 
         "actividad": actividad,
+
+        "consumos": consumos,
 
     }
 
@@ -521,6 +528,90 @@ def actividad_desactivar(request, pk):
 
         "core:actividad_lista"
 
+    )
+
+
+@login_required
+def consumo_insumo_crear(request, pk):
+
+    actividad = obtener_actividad(pk)
+
+    if not actividad.estado:
+
+        messages.error(
+            request,
+            "No se puede registrar consumo "
+            "para una actividad inactiva.",
+        )
+    
+        return redirect(
+            "core:actividad_detalle",
+            pk=actividad.pk,
+        )
+    
+    if not actividad.programa.estado:
+    
+        messages.error(
+            request,
+            "No se puede registrar consumo "
+            "porque la actividad pertenece "
+            "a un programa inactivo.",
+        )
+    
+        return redirect(
+            "core:actividad_detalle",
+            pk=actividad.pk,
+        )
+
+    if request.method == "POST":
+
+        form = DetalleActividadInsumoForm(
+            request.POST,
+            actividad=actividad,
+        )
+
+        if form.is_valid():
+
+            try:
+
+                registrar_consumo_insumo(
+                    formulario=form,
+                    actividad=actividad,
+                    usuario_actual=request.user,
+                )
+
+            except ValidationError as exc:
+
+                form.add_error(
+                    None,
+                    exc.message,
+                )
+
+            else:
+
+                messages.success(
+                    request,
+                    "Consumo de insumo registrado correctamente.",
+                )
+
+                return redirect(
+                    "core:actividad_detalle",
+                    pk=actividad.pk,
+                )
+
+    else:
+
+        form = DetalleActividadInsumoForm(
+            actividad=actividad,
+        )
+
+    return render(
+        request,
+        "core/actividad/consumo_insumo_form.html",
+        {
+            "form": form,
+            "actividad": actividad,
+        },
     )
 
 

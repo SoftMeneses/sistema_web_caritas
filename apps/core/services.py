@@ -16,6 +16,7 @@ from apps.core.models import (
      ProgramaBeneficiario,
      Insumo,
      MovimientoInsumo,
+     DetalleActividadInsumo,
 )
 
 from apps.core.models.choices import (
@@ -495,6 +496,25 @@ def obtener_actividad(pk):
 
         pk=pk,
 
+    )
+
+
+def obtener_consumos_actividad(actividad):
+    """
+    Obtiene los insumos utilizados en una actividad.
+    """
+
+    return (
+        DetalleActividadInsumo.objects
+        .filter(
+            actividad=actividad,
+        )
+        .select_related(
+            "insumo",
+        )
+        .order_by(
+            "insumo__nombre",
+        )
     )
 
 
@@ -1284,3 +1304,72 @@ def registrar_movimiento_insumo(
     )
 
     return movimiento
+
+
+@transaction.atomic
+def registrar_consumo_insumo(
+    formulario,
+    actividad,
+    usuario_actual,
+):
+    """
+    Registra el consumo de un insumo dentro de una actividad.
+
+    El stock_actual no se modifica desde Django.
+    La actualización corresponde al trigger SQL
+    de detalle_actividad_insumo.
+    """
+
+    detalle = formulario.save(
+        commit=False
+    )
+
+    detalle.actividad = actividad
+    insumo = detalle.insumo
+
+    if not actividad.estado:
+
+        raise ValidationError(
+            "No se puede registrar consumo "
+            "para una actividad inactiva."
+        )
+
+    if not actividad.programa.estado:
+
+        raise ValidationError(
+            "No se puede registrar consumo "
+            "porque la actividad pertenece "
+            "a un programa inactivo."
+        )
+
+    if not insumo.estado:
+
+        raise ValidationError(
+            "No se puede registrar consumo "
+            "para un insumo inactivo."
+        )
+
+    detalle.save()
+
+    registrar_auditoria(
+
+        usuario=usuario_actual,
+
+        tabla="detalle_actividad_insumo",
+
+        operacion=OperacionAuditoria.INSERT,
+
+        accion=AccionAuditoria.REGISTRAR_CONSUMO_INSUMO,
+
+        id_registro=detalle.actividad.pk,
+
+        descripcion=(
+            f'Consumo de {detalle.cantidad_usada} '
+            f'{insumo.get_unidad_medida_display()} '
+            f'de "{insumo.nombre}" '
+            f'en la actividad "{actividad.nombre}".'
+        ),
+
+    )
+
+    return detalle

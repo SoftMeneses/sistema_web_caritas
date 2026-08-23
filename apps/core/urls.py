@@ -15,6 +15,7 @@ from .views import (
     actividad_detalle,
     actividad_editar,
     actividad_desactivar,
+    consumo_insumo_crear,
 
     beneficiario_lista,
     beneficiario_crear,
@@ -117,6 +118,12 @@ urlpatterns = [
         "actividades/<int:pk>/desactivar/",
         actividad_desactivar,
         name="actividad_desactivar",
+    ),
+
+    path(
+        "actividades/<int:pk>/insumos/nuevo/",
+        consumo_insumo_crear,
+        name="consumo_insumo_crear",
     ),
 
 
