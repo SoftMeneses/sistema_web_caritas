@@ -17,6 +17,7 @@ from apps.core.models import (
      Insumo,
      MovimientoInsumo,
      DetalleActividadInsumo,
+     ActividadUsuario,
 )
 
 from apps.core.models.choices import (
@@ -515,6 +516,163 @@ def obtener_consumos_actividad(actividad):
         .order_by(
             "insumo__nombre",
         )
+    )
+
+
+def obtener_usuarios_actividad(actividad):
+    """
+    Obtiene los usuarios asignados a una actividad.
+    """
+
+    return (
+        ActividadUsuario.objects
+        .filter(
+            actividad=actividad,
+        )
+        .select_related(
+            "usuario",
+        )
+        .order_by(
+            "usuario__first_name",
+            "usuario__last_name",
+        )
+    )
+
+
+@transaction.atomic
+def asignar_usuario_actividad(
+    formulario,
+    actividad,
+    usuario_actual,
+):
+    """
+    Asigna un usuario a una actividad y registra
+    la operación en auditoría.
+    """
+
+    asignacion = formulario.save(
+        commit=False
+    )
+
+    asignacion.actividad = actividad
+
+    usuario = asignacion.usuario
+
+    if not actividad.estado:
+
+        raise ValidationError(
+            "No se puede asignar un usuario "
+            "a una actividad inactiva."
+        )
+
+    if not actividad.programa.estado:
+
+        raise ValidationError(
+            "No se puede asignar un usuario "
+            "porque la actividad pertenece "
+            "a un programa inactivo."
+        )
+
+    if not usuario.is_active:
+
+        raise ValidationError(
+            "No se puede asignar un usuario inactivo."
+        )
+
+    asignacion.save()
+
+    registrar_auditoria(
+
+        usuario=usuario_actual,
+
+        tabla="actividad_usuario",
+
+        operacion=OperacionAuditoria.INSERT,
+
+        accion=AccionAuditoria.CREAR_ASIGNACION_USUARIO,
+
+        id_registro=asignacion.pk,
+
+        descripcion=(
+            f'Usuario "{usuario}" asignado a la '
+            f'actividad "{actividad.nombre}" '
+            f'con rol "{asignacion.rol_en_actividad}".'
+        ),
+
+    )
+
+    return asignacion
+
+
+def obtener_asignacion_usuario_actividad(
+    pk,
+):
+    """
+    Obtiene una asignación de usuario a actividad.
+    """
+
+    return get_object_or_404(
+        ActividadUsuario.objects.select_related(
+            "actividad",
+            "actividad__programa",
+            "usuario",
+        ),
+        pk=pk,
+    )
+
+
+@transaction.atomic
+def desasignar_usuario_actividad(
+    asignacion,
+    usuario_actual,
+):
+    """
+    Desasigna un usuario de una actividad y registra
+    la operación en auditoría.
+    """
+
+    actividad = asignacion.actividad
+    usuario = asignacion.usuario
+
+    if not actividad.estado:
+
+        raise ValidationError(
+            "No se puede desasignar un usuario "
+            "de una actividad inactiva."
+        )
+
+    if not actividad.programa.estado:
+
+        raise ValidationError(
+            "No se puede desasignar un usuario "
+            "porque la actividad pertenece "
+            "a un programa inactivo."
+        )
+
+    id_asignacion = asignacion.pk
+
+    descripcion = (
+        f'Usuario "{usuario}" desasignado de la '
+        f'actividad "{actividad.nombre}" '
+        f'(rol: "{asignacion.rol_en_actividad}").'
+    )
+
+    asignacion.delete()
+
+    registrar_auditoria(
+
+        usuario=usuario_actual,
+
+        tabla="actividad_usuario",
+
+        operacion=OperacionAuditoria.DELETE,
+
+        accion=AccionAuditoria.DESASIGNAR_USUARIO,
+
+        id_registro=id_asignacion,
+
+        descripcion=descripcion,
+
     )
 
 

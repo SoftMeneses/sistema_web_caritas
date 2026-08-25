@@ -22,6 +22,7 @@ from apps.core.forms import (
     InsumoForm,
     MovimientoInsumoForm,
     DetalleActividadInsumoForm,
+    ActividadUsuarioForm,
 )
 
 from .services import ( 
@@ -38,6 +39,10 @@ from .services import (
     crear_actividad,
     obtener_actividad,
     obtener_consumos_actividad,
+    obtener_usuarios_actividad,
+    asignar_usuario_actividad,
+    obtener_asignacion_usuario_actividad,
+    desasignar_usuario_actividad,
     actualizar_actividad,
     desactivar_actividad,
 
@@ -366,11 +371,15 @@ def actividad_detalle(request, pk):
 
     consumos = obtener_consumos_actividad(actividad)
 
+    usuarios_asignados = obtener_usuarios_actividad(actividad)
+
     contexto = {
 
         "actividad": actividad,
 
         "consumos": consumos,
+
+        "usuarios_asignados": usuarios_asignados,
 
     }
 
@@ -382,6 +391,133 @@ def actividad_detalle(request, pk):
 
         contexto,
 
+    )
+
+
+@login_required
+def actividad_usuario_crear(request, pk):
+    """
+    Asigna un usuario a una actividad.
+    """
+
+    actividad = obtener_actividad(pk)
+
+    if not actividad.estado:
+
+        messages.error(
+            request,
+            "No se puede asignar un usuario "
+            "a una actividad inactiva.",
+        )
+
+        return redirect(
+            "core:actividad_detalle",
+            pk=actividad.pk,
+        )
+
+    if not actividad.programa.estado:
+
+        messages.error(
+            request,
+            "No se puede asignar un usuario "
+            "porque la actividad pertenece "
+            "a un programa inactivo.",
+        )
+
+        return redirect(
+            "core:actividad_detalle",
+            pk=actividad.pk,
+        )
+
+    if request.method == "POST":
+
+        form = ActividadUsuarioForm(
+            request.POST,
+            actividad=actividad,
+        )
+
+        if form.is_valid():
+
+            try:
+
+                asignar_usuario_actividad(
+                    formulario=form,
+                    actividad=actividad,
+                    usuario_actual=request.user,
+                )
+
+            except ValidationError as exc:
+
+                form.add_error(
+                    None,
+                    exc.message,
+                )
+
+            else:
+
+                messages.success(
+                    request,
+                    "Usuario asignado a la actividad correctamente.",
+                )
+
+                return redirect(
+                    "core:actividad_detalle",
+                    pk=actividad.pk,
+                )
+
+    else:
+
+        form = ActividadUsuarioForm(
+            actividad=actividad,
+        )
+
+    return render(
+        request,
+        "core/actividad/usuario_form.html",
+        {
+            "form": form,
+            "actividad": actividad,
+        },
+    )
+
+
+@login_required
+@require_POST
+def actividad_usuario_desasignar(request, pk):
+    """
+    Desasigna un usuario de una actividad.
+    """
+
+    asignacion = obtener_asignacion_usuario_actividad(
+        pk
+    )
+
+    actividad = asignacion.actividad
+
+    try:
+
+        desasignar_usuario_actividad(
+            asignacion=asignacion,
+            usuario_actual=request.user,
+        )
+
+    except ValidationError as exc:
+
+        messages.error(
+            request,
+            exc.message,
+        )
+
+    else:
+
+        messages.success(
+            request,
+            "Usuario desasignado de la actividad correctamente.",
+        )
+
+    return redirect(
+        "core:actividad_detalle",
+        pk=actividad.pk,
     )
 
 

@@ -12,6 +12,8 @@ from .views import (
 
     actividad_lista,
     actividad_crear,
+    actividad_usuario_crear,
+    actividad_usuario_desasignar,
     actividad_detalle,
     actividad_editar,
     actividad_desactivar,
@@ -100,6 +102,18 @@ urlpatterns = [
         "actividades/nuevo/",
         actividad_crear,
         name="actividad_crear",
+    ),
+
+    path(
+            "actividades/<int:pk>/usuarios/nuevo/",
+            actividad_usuario_crear,
+            name="actividad_usuario_crear",
+        ),
+
+    path(
+        "actividad-usuarios/<int:pk>/desasignar/",
+        actividad_usuario_desasignar,
+        name="actividad_usuario_desasignar",
     ),
     
     path(

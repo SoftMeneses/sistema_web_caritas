@@ -93,6 +93,16 @@ class AccionAuditoria(models.TextChoices):
         "Asignar beneficiario",
     )
 
+    CREAR_ASIGNACION_USUARIO = (
+        "CREAR_ASIGNACION_USUARIO",
+        "Asignar usuario a actividad",
+    )
+
+    DESASIGNAR_USUARIO = (
+        "DESASIGNAR_USUARIO",
+        "Desasignar usuario de actividad",
+    )
+
     DESASIGNAR_BENEFICIARIO = (
         "DESASIGNAR_BENEFICIARIO",
         "Desasignar beneficiario",

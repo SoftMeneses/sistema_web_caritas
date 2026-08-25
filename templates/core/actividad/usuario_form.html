@@ -1,0 +1,187 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}
+
+Asignar Usuario a Actividad
+
+{% endblock %}
+
+{% block page_title %}
+
+Asignar Usuario a Actividad
+
+{% endblock %}
+
+{% block breadcrumb %}
+
+<nav aria-label="breadcrumb">
+
+    <ol class="breadcrumb">
+
+        <li class="breadcrumb-item">
+
+            <a href="{% url 'core:dashboard' %}">
+
+                Dashboard
+
+            </a>
+
+        </li>
+
+        <li class="breadcrumb-item">
+
+            <a href="{% url 'core:actividad_lista' %}">
+
+                Actividades
+
+            </a>
+
+        </li>
+
+        <li class="breadcrumb-item">
+
+            <a href="{% url 'core:actividad_detalle' actividad.pk %}">
+
+                {{ actividad.nombre }}
+
+            </a>
+
+        </li>
+
+        <li class="breadcrumb-item active">
+
+            Asignar usuario
+
+        </li>
+
+    </ol>
+
+</nav>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="card app-card">
+
+    <div class="card-header">
+
+        Asignar usuario a actividad
+
+    </div>
+
+    <div class="card-body app-form">
+
+        <div class="alert alert-info">
+
+            <i class="bi bi-info-circle me-1"></i>
+
+            Actividad:
+
+            <strong>{{ actividad.nombre }}</strong>
+
+        </div>
+
+        {% if form.non_field_errors %}
+
+            <div class="alert alert-danger">
+
+                {{ form.non_field_errors.0 }}
+
+            </div>
+
+        {% endif %}
+
+        <form method="post"
+              autocomplete="off"
+              novalidate>
+
+            {% csrf_token %}
+
+            <div class="row g-4">
+
+                <div class="col-md-6">
+
+                    <label
+                        for="{{ form.usuario.id_for_label }}"
+                        class="form-label">
+
+                        Usuario
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    {{ form.usuario }}
+
+                    {% if form.usuario.errors %}
+
+                        <div class="invalid-feedback d-block">
+
+                            {{ form.usuario.errors.0 }}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <label
+                        for="{{ form.rol_en_actividad.id_for_label }}"
+                        class="form-label">
+
+                        Rol en la actividad
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    {{ form.rol_en_actividad }}
+
+                    {% if form.rol_en_actividad.errors %}
+
+                        <div class="invalid-feedback d-block">
+
+                            {{ form.rol_en_actividad.errors.0 }}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            <div class="app-form-actions d-flex justify-content-end gap-2">
+
+                <a
+                    href="{% url 'core:actividad_detalle' actividad.pk %}"
+                    class="btn btn-secondary">
+
+                    <i class="bi bi-x-circle me-1"></i>
+
+                    Cancelar
+
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary btn-icon">
+
+                    <i class="bi bi-person-plus"></i>
+
+                    Asignar usuario
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -250,6 +250,126 @@ Detalle de la Actividad
 
             <div class="card-header">
             
+                <i class="bi bi-people me-1"></i>
+            
+                Usuarios asignados
+            
+            </div>
+        
+            <div class="card-body">
+            
+                {% if usuarios_asignados %}
+            
+                    <div class="table-responsive">
+                    
+                        <table class="table table-hover app-table">
+                        
+                            <thead>
+                            
+                                <tr>
+                                
+                                    <th>Usuario</th>
+                                
+                                    <th>Rol en la actividad</th>
+                                
+                                    <th>Fecha de asignación</th>
+
+                                    <th>Acción</th>
+                                
+                                </tr>
+                            
+                            </thead>
+                        
+                            <tbody>
+                            
+                                {% for asignacion in usuarios_asignados %}
+                            
+                                    <tr>
+                                    
+                                        <td>
+                                        
+                                            {{ asignacion.usuario }}
+                                        
+                                        </td>
+                                    
+                                        <td>
+                                        
+                                            {{ asignacion.rol_en_actividad }}
+                                        
+                                        </td>
+                                    
+                                        <td>
+                                        
+                                            {{ asignacion.fecha_asignacion|date:"d/m/Y H:i" }}
+                                        
+                                        </td>
+
+                                        <td>
+
+                                            {% if actividad.estado and actividad.programa.estado %}
+
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-sm btn-danger btn-icon"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#confirmModal"
+                                                    data-url="{% url 'core:actividad_usuario_desasignar' asignacion.pk %}"
+                                                    data-name="{{ asignacion.usuario }}"
+                                                    data-entity="usuario"
+                                                    data-message="¿Desea desasignar este usuario de la actividad?">
+
+                                                    <i class="bi bi-person-dash"></i>
+
+                                                    Desasignar
+
+                                                </button>
+                                            
+                                            {% else %}
+                                            
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-sm btn-secondary btn-icon"
+                                                    disabled
+                                                    title="La actividad o el programa está inactivo">
+                                            
+                                                    <i class="bi bi-person-dash"></i>
+                                            
+                                                    Desasignar
+                                            
+                                                </button>
+                                            
+                                            {% endif %}
+                                            
+                                        </td>
+                                    
+                                    </tr>
+                                
+                                {% endfor %}
+                                
+                            </tbody>
+                        
+                        </table>
+                    
+                    </div>
+                
+                {% else %}
+                
+                    <p class="text-muted mb-0">
+                    
+                        No hay usuarios asignados a esta actividad.
+                    
+                    </p>
+                
+                {% endif %}
+                
+            </div>
+        
+        </div>
+
+        <div class="card app-card mt-4">
+
+            <div class="card-header">
+            
                 <i class="bi bi-box-seam me-1"></i>
             
                 Insumos utilizados
@@ -368,6 +488,20 @@ Detalle de la Actividad
             {% if actividad.estado and actividad.programa.estado %}
 
                 <a
+                    href="{% url 'core:actividad_usuario_crear' actividad.pk %}"
+                    class="btn btn-primary btn-icon">
+                        
+                    <i class="bi bi-person-plus"></i>
+                        
+                    Asignar usuario
+                        
+                </a>
+            
+            {% endif %}
+
+            {% if actividad.estado and actividad.programa.estado %}
+
+                <a
                     href="{% url 'core:consumo_insumo_crear' actividad.pk %}"
                     class="btn btn-primary btn-icon">
                         
@@ -384,5 +518,7 @@ Detalle de la Actividad
     </div>
 
 </div>
+
+{% include "includes/components/confirm_modal.html" with confirm_url="#" title="Desasignar usuario" message="" confirm_text="Desasignar" confirm_class="btn-danger" confirm_icon="bi bi-person-dash-fill text-warning fs-1" %}
 
 {% endblock %}
