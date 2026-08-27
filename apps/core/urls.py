@@ -6,6 +6,8 @@ from .views import (
 
     programa_lista,
     programa_crear,
+    programa_usuario_crear,
+    programa_usuario_desasignar,
     programa_detalle,
     programa_editar,
     programa_desactivar,
@@ -67,6 +69,18 @@ urlpatterns = [
         "programas/nuevo/",
         programa_crear,
         name="programa_crear",
+    ),
+
+    path(
+        "programas/<int:pk>/usuarios/nuevo/",
+        programa_usuario_crear,
+        name="programa_usuario_crear",
+    ),
+
+    path(
+        "programa-usuarios/<int:pk>/desasignar/",
+        programa_usuario_desasignar,
+        name="programa_usuario_desasignar",
     ),
 
     path(

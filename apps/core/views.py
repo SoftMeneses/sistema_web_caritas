@@ -11,7 +11,10 @@ from django.shortcuts import (
 
 from django.views.decorators.http import require_POST
 
-from apps.core.models import ProgramaBeneficiario
+from apps.core.models import (
+    ProgramaBeneficiario,
+    ProgramaUsuario,
+)
 
 from apps.core.forms import (
 
@@ -23,6 +26,7 @@ from apps.core.forms import (
     MovimientoInsumoForm,
     DetalleActividadInsumoForm,
     ActividadUsuarioForm,
+    ProgramaUsuarioForm,
 )
 
 from .services import ( 
@@ -32,6 +36,10 @@ from .services import (
     obtener_programas,
     crear_programa,
     obtener_programa,
+    obtener_usuarios_programa,
+    obtener_asignacion_usuario_programa,
+    asignar_usuario_programa,
+    desasignar_usuario_programa,
     actualizar_programa,
     desactivar_programa,
 
@@ -164,6 +172,110 @@ def programa_crear(request):
 
 
 @login_required
+def programa_usuario_crear(request, pk):
+    """
+    Gestiona la asignación de un usuario a un programa.
+    """
+
+    programa = obtener_programa(pk)
+
+    if not programa.estado:
+
+        messages.error(
+            request,
+            "No se pueden asignar usuarios a un programa inactivo.",
+        )
+
+        return redirect(
+            "core:programa_detalle",
+            pk=programa.pk,
+        )
+
+    if request.method == "POST":
+
+        formulario = ProgramaUsuarioForm(
+            request.POST,
+            programa=programa,
+        )
+
+        if formulario.is_valid():
+
+            try:
+
+                asignar_usuario_programa(
+                    formulario=formulario,
+                    programa=programa,
+                    usuario_actual=request.user,
+                )
+
+            except ValidationError as exc:
+
+                formulario.add_error(
+                    None,
+                    exc.message,
+                )
+
+            else:
+
+                messages.success(
+                    request,
+                    "Usuario asignado al programa correctamente.",
+                )
+
+                return redirect(
+                    "core:programa_detalle",
+                    pk=programa.pk,
+                )
+
+    else:
+
+        formulario = ProgramaUsuarioForm(
+            programa=programa,
+        )
+
+    contexto = {
+
+        "form": formulario,
+
+        "programa": programa,
+
+    }
+
+    return render(
+        request,
+        "core/programa/usuario_form.html",
+        contexto,
+    )
+
+
+@login_required
+@require_POST
+def programa_usuario_desasignar(request, pk):
+    """
+    Desasigna un usuario de un programa.
+    """
+
+    asignacion = obtener_asignacion_usuario_programa(pk)
+
+    programa = asignacion.programa
+
+    desasignar_usuario_programa(
+        asignacion,
+        request.user,
+    )
+
+    messages.success(
+        request,
+        "Usuario desasignado del programa correctamente."
+    )
+
+    return redirect(
+        "core:programa_detalle",
+        pk=programa.pk,
+    )
+
+
+@login_required
 def programa_detalle(request, pk):
     """
     Muestra el detalle de un programa.
@@ -171,9 +283,13 @@ def programa_detalle(request, pk):
 
     programa = obtener_programa(pk)
 
+    usuarios_asignados = obtener_usuarios_programa(programa)
+
     contexto = {
 
         "programa": programa,
+
+        "usuarios_asignados": usuarios_asignados,
 
     }
 

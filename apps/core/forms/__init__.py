@@ -6,3 +6,4 @@ from .insumo_form import InsumoForm
 from .movimiento_insumo_form import MovimientoInsumoForm
 from .detalle_actividad_insumo_form import DetalleActividadInsumoForm
 from .actividad_usuario_form import ActividadUsuarioForm
+from .programa_usuario_form import ProgramaUsuarioForm

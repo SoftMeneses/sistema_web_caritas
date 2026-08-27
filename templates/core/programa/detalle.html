@@ -212,6 +212,112 @@ Detalle del Programa
         
         </div>
 
+        <div class="card app-card mt-4">
+
+            <div class="card-header">
+            
+                <i class="bi bi-people me-1"></i>
+            
+                Usuarios asignados
+            
+            </div>
+        
+            <div class="card-body">
+            
+                {% if usuarios_asignados %}
+            
+                    <div class="table-responsive">
+                    
+                        <table class="table table-hover app-table">
+                        
+                            <thead>
+                            
+                                <tr>
+                                
+                                    <th>Usuario</th>
+                                
+                                    <th>Rol en el programa</th>
+                                
+                                    <th>Fecha de asignación</th>
+
+                                    <th>Acciones</th>
+                                
+                                </tr>
+                            
+                            </thead>
+                        
+                            <tbody>
+                            
+                                {% for asignacion in usuarios_asignados %}
+                            
+                                    <tr>
+                                    
+                                        <td>
+                                        
+                                            {{ asignacion.usuario.get_full_name|default:asignacion.usuario.username }}
+                                        
+                                        </td>
+                                    
+                                        <td>
+                                        
+                                            {{ asignacion.rol_en_programa }}
+                                        
+                                        </td>
+                                    
+                                        <td>
+                                        
+                                            {{ asignacion.fecha_asignacion|date:"d/m/Y H:i" }}
+                                        
+                                        </td>
+
+                                        <td>
+
+                                            {% if programa.estado %}
+
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-danger btn-sm btn-icon"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#confirmModal"
+                                                    data-url="{% url 'core:programa_usuario_desasignar' asignacion.pk %}"
+                                                    data-name="{{ asignacion.usuario.get_full_name|default:asignacion.usuario.username }}"
+                                                    data-entity="usuario"
+                                                    data-message="¿Está seguro de desasignar este usuario del programa?">
+
+                                                    <i class="bi bi-person-dash"></i>
+
+                                                    Desasignar
+
+                                                </button>
+                                            
+                                            {% endif %}
+                                            
+                                        </td>
+                                    
+                                    </tr>
+                                
+                                {% endfor %}
+                                
+                            </tbody>
+                        
+                        </table>
+                    
+                    </div>
+                
+                {% else %}
+                
+                    <p class="text-muted mb-0">
+                    
+                        No existen usuarios asignados a este programa.
+                    
+                    </p>
+                
+                {% endif %}
+                
+            </div>
+        
+        </div>
+
         <div class="app-form-actions d-flex justify-content-end gap-2">
 
             <a href="{% url 'core:programa_lista' %}"
@@ -222,6 +328,20 @@ Detalle del Programa
                 Volver
             
             </a>
+
+            {% if programa.estado %}
+
+                <a
+                    href="{% url 'core:programa_usuario_crear' programa.pk %}"
+                    class="btn btn-primary btn-icon">
+                    
+                    <i class="bi bi-person-plus me-1"></i>
+                    
+                    Asignar usuario
+                    
+                </a>
+            
+            {% endif %}
 
             <a href="{% url 'core:programa_editar' programa.pk %}"
                 class="btn btn-primary btn-icon">
@@ -237,5 +357,7 @@ Detalle del Programa
     </div>
 
 </div>
+
+{% include "includes/components/confirm_modal.html" with confirm_url="#" title="Desasignar usuario" message="" confirm_text="Desasignar" confirm_class="btn-danger" confirm_icon="bi bi-person-dash-fill text-warning fs-1" %}
 
 {% endblock %}

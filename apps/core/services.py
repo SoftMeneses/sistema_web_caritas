@@ -14,6 +14,7 @@ from apps.core.models import (
      Beneficiario,
      Programa,
      ProgramaBeneficiario,
+     ProgramaUsuario,
      Insumo,
      MovimientoInsumo,
      DetalleActividadInsumo,
@@ -259,6 +260,145 @@ def obtener_programa(pk):
         pk=pk,
 
     )
+
+
+def obtener_usuarios_programa(programa):
+    """
+    Obtiene los usuarios asignados a un programa.
+    """
+
+    return (
+        ProgramaUsuario.objects
+        .filter(
+            programa=programa
+        )
+        .select_related(
+            "usuario",
+            "usuario__rol",
+        )
+        .order_by(
+            "-fecha_asignacion",
+        )
+    )
+
+
+def obtener_asignacion_usuario_programa(pk):
+    """
+    Obtiene una asignación de usuario a programa.
+    """
+
+    return get_object_or_404(
+
+        ProgramaUsuario.objects.select_related(
+
+            "programa",
+            "usuario",
+            "usuario__rol",
+
+        ),
+
+        pk=pk,
+
+    )
+
+
+@transaction.atomic
+def asignar_usuario_programa(
+    formulario,
+    programa,
+    usuario_actual,
+):
+    """
+    Asigna un usuario a un programa y registra
+    la operación realizada en auditoría.
+    """
+
+    if not programa.estado:
+
+        raise ValidationError(
+            "No se pueden asignar usuarios "
+            "a un programa inactivo."
+        )
+
+    asignacion = formulario.save(
+        commit=False
+    )
+
+    asignacion.programa = programa
+
+    asignacion.save()
+
+    registrar_auditoria(
+
+        usuario=usuario_actual,
+
+        tabla="programa_usuario",
+
+        operacion=OperacionAuditoria.INSERT,
+
+        accion=AccionAuditoria.CREAR_ASIGNACION_USUARIO,
+
+        id_registro=asignacion.pk,
+
+        descripcion=(
+            f'Usuario "{asignacion.usuario}" asignado al '
+            f'programa "{programa.nombre}" '
+            f'(rol: "{asignacion.rol_en_programa}").'
+        ),
+
+    )
+
+    return asignacion
+
+
+@transaction.atomic
+def desasignar_usuario_programa(
+    asignacion,
+    usuario_actual,
+):
+    """
+    Desasigna un usuario de un programa y registra
+    la operación en auditoría.
+    """
+
+    programa = asignacion.programa
+
+    usuario = asignacion.usuario
+
+    if not programa.estado:
+
+        raise ValidationError(
+            "No se puede desasignar un usuario "
+            "de un programa inactivo."
+        )
+
+    id_asignacion = asignacion.pk
+
+    descripcion = (
+        f'Usuario "{usuario}" desasignado del '
+        f'programa "{programa.nombre}" '
+        f'(rol: "{asignacion.rol_en_programa}").'
+    )
+
+    asignacion.delete()
+
+    registrar_auditoria(
+
+        usuario=usuario_actual,
+
+        tabla="programa_usuario",
+
+        operacion=OperacionAuditoria.DELETE,
+
+        accion=AccionAuditoria.DESASIGNAR_USUARIO_PROGRAMA,
+
+        id_registro=id_asignacion,
+
+        descripcion=descripcion,
+
+    )
+
+    return id_asignacion
 
 
 @transaction.atomic
