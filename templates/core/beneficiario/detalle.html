@@ -396,6 +396,120 @@ Detalle del Beneficiario
         
         </div>
 
+        <div class="row mt-4">
+
+            <div class="col-12">
+            
+                <span class="detail-label">
+                
+                    <i class="bi bi-clock-history me-1"></i>
+                
+                    Historial de actividad
+                
+                </span>
+            
+                {% if historial_auditoria %}
+            
+                    <div class="table-responsive mt-3">
+                    
+                        <table class="table table-hover app-table">
+                        
+                            <thead>
+                            
+                                <tr>
+                                
+                                    <th>Fecha</th>
+                                
+                                    <th>Operación</th>
+                                
+                                    <th>Acción</th>
+                                
+                                    <th>Usuario</th>
+                                
+                                    <th>Descripción</th>
+                                
+                                </tr>
+                            
+                            </thead>
+                        
+                            <tbody>
+                            
+                                {% for auditoria in historial_auditoria %}
+                            
+                                    <tr>
+                                    
+                                        <td>
+                                            {{ auditoria.fecha_auditoria|date:"d/m/Y H:i" }}
+                                        </td>
+                                    
+                                        <td>
+                                        
+                                            {% if auditoria.operacion == "INSERT" %}
+                                        
+                                                <span class="badge bg-success">
+                                                    {{ auditoria.get_operacion_display }}
+                                                </span>
+                                            
+                                            {% elif auditoria.operacion == "UPDATE" %}
+                                            
+                                                <span class="badge bg-warning text-dark">
+                                                    {{ auditoria.get_operacion_display }}
+                                                </span>
+                                            
+                                            {% elif auditoria.operacion == "DELETE" %}
+                                            
+                                                <span class="badge bg-danger">
+                                                    {{ auditoria.get_operacion_display }}
+                                                </span>
+                                            
+                                            {% else %}
+                                            
+                                                <span class="badge bg-secondary">
+                                                    {{ auditoria.get_operacion_display }}
+                                                </span>
+                                            
+                                            {% endif %}
+                                            
+                                        </td>
+                                    
+                                        <td>
+                                            {{ auditoria.get_accion_display }}
+                                        </td>
+                                    
+                                        <td>
+                                            {{ auditoria.usuario_responsable }}
+                                        </td>
+                                    
+                                        <td>
+                                            {{ auditoria.descripcion }}
+                                        </td>
+                                    
+                                    </tr>
+                                
+                                {% endfor %}
+                                
+                            </tbody>
+                        
+                        </table>
+                    
+                    </div>
+                
+                {% else %}
+                
+                    <div class="alert alert-light border mt-3">
+                    
+                        <i class="bi bi-info-circle me-1"></i>
+                    
+                        No existen acciones registradas para este beneficiario.
+                    
+                    </div>
+                
+                {% endif %}
+                
+            </div>
+        
+        </div>
+
         <div class="app-form-actions d-flex justify-content-end gap-2">
 
             <a href="{% url 'core:beneficiario_lista' %}"

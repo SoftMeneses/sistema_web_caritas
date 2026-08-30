@@ -1,5 +1,7 @@
 from io import BytesIO
 
+from django.utils import timezone
+
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER
 from reportlab.lib.pagesizes import A4
@@ -344,6 +346,218 @@ def generar_pdf_beneficiario(beneficiario, programas_asignados):
     # -------------------------------------------------------------------------
 
     documento.build(elementos)
+
+    buffer.seek(0)
+
+    return buffer
+
+
+def generar_pdf_beneficiarios(beneficiarios):
+    """
+    Genera un PDF con el listado de beneficiarios.
+
+    Incluye:
+    - Fecha de generación.
+    - Cédula.
+    - Nombre completo.
+    - Teléfono.
+    - Estado.
+    - Total de beneficiarios.
+    """
+
+    buffer = BytesIO()
+
+    documento = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        rightMargin=2 * cm,
+        leftMargin=2 * cm,
+        topMargin=2 * cm,
+        bottomMargin=2 * cm,
+    )
+
+    estilos = getSampleStyleSheet()
+
+    estilo_titulo = ParagraphStyle(
+        "TituloListadoBeneficiarios",
+        parent=estilos["Title"],
+        alignment=TA_CENTER,
+        spaceAfter=12,
+    )
+
+    estilo_subtitulo = ParagraphStyle(
+        "SubtituloListadoBeneficiarios",
+        parent=estilos["Heading2"],
+        spaceBefore=8,
+        spaceAfter=8,
+    )
+
+    estilo_normal = estilos["BodyText"]
+
+    elementos = []
+
+    # -------------------------------------------------------------------------
+    # Encabezado
+    # -------------------------------------------------------------------------
+
+    elementos.append(
+        Paragraph(
+            "CARITAS",
+            estilo_titulo,
+        )
+    )
+
+    elementos.append(
+        Paragraph(
+            "Listado de beneficiarios",
+            estilo_subtitulo,
+        )
+    )
+
+    elementos.append(
+        Paragraph(
+            f"Fecha de generación: "
+            f"{timezone.localtime().strftime('%d/%m/%Y %H:%M')}",
+            estilo_normal,
+        )
+    )
+
+    elementos.append(
+        Spacer(
+            1,
+            0.5 * cm,
+        )
+    )
+
+    # -------------------------------------------------------------------------
+    # Tabla de beneficiarios
+    # -------------------------------------------------------------------------
+
+    datos = [
+        [
+            "Cédula",
+            "Nombre completo",
+            "Teléfono",
+            "Estado",
+        ]
+    ]
+
+    for beneficiario in beneficiarios:
+
+        nombre_completo = (
+            f"{beneficiario.nombre} "
+            f"{beneficiario.apellido}"
+        )
+
+        estado = (
+            "Activo"
+            if beneficiario.estado
+            else "Inactivo"
+        )
+
+        datos.append(
+            [
+                beneficiario.cedula,
+                nombre_completo,
+                beneficiario.telefono or "No registrado",
+                estado,
+            ]
+        )
+
+    tabla = Table(
+        datos,
+        colWidths=[
+            3 * cm,
+            6 * cm,
+            4 * cm,
+            3 * cm,
+        ],
+        repeatRows=1,
+    )
+
+    tabla.setStyle(
+        TableStyle(
+            [
+                (
+                    "BACKGROUND",
+                    (0, 0),
+                    (-1, 0),
+                    colors.lightgrey,
+                ),
+                (
+                    "FONTNAME",
+                    (0, 0),
+                    (-1, 0),
+                    "Helvetica-Bold",
+                ),
+                (
+                    "GRID",
+                    (0, 0),
+                    (-1, -1),
+                    0.5,
+                    colors.grey,
+                ),
+                (
+                    "VALIGN",
+                    (0, 0),
+                    (-1, -1),
+                    "TOP",
+                ),
+                (
+                    "LEFTPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    5,
+                ),
+                (
+                    "RIGHTPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    5,
+                ),
+                (
+                    "TOPPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    5,
+                ),
+                (
+                    "BOTTOMPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    5,
+                ),
+            ]
+        )
+    )
+
+    elementos.append(tabla)
+
+    # -------------------------------------------------------------------------
+    # Total
+    # -------------------------------------------------------------------------
+
+    elementos.append(
+        Spacer(
+            1,
+            0.5 * cm,
+        )
+    )
+
+    elementos.append(
+        Paragraph(
+            f"Total de beneficiarios: {len(beneficiarios)}",
+            estilo_normal,
+        )
+    )
+
+    # -------------------------------------------------------------------------
+    # Construcción del documento
+    # -------------------------------------------------------------------------
+
+    documento.build(
+        elementos
+    )
 
     buffer.seek(0)
 

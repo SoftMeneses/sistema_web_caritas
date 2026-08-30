@@ -1067,14 +1067,11 @@ def desactivar_actividad(actividad, usuario_actual):
 
 def obtener_beneficiarios(request):
     """
-    Obtiene el listado de beneficiarios aplicando:
+    Obtiene el listado paginado de beneficiarios.
 
-    - filtro por estado
-    - búsqueda
-    - ordenamiento
-    - paginación
-
-    Retorna el contexto requerido por la vista lista.html.
+    Aplica los filtros mediante
+    obtener_beneficiarios_queryset() y prepara
+    el contexto requerido por lista.html.
     """
 
     params = request.GET.copy()
@@ -1089,56 +1086,13 @@ def obtener_beneficiarios(request):
         "activo",
     )
 
-    queryset = Beneficiario.objects.all()
-
-    if status == "activo":
-
-        queryset = queryset.filter(
-            estado=True,
-        )
-
-    elif status == "inactivo":
-
-        queryset = queryset.filter(
-            estado=False,
-        )
-
-    elif status == "todos":
-
-        pass
-
     q = request.GET.get(
         "q",
         "",
     ).strip()
 
-    if q:
-
-        queryset = queryset.filter(
-
-            Q(cedula__icontains=q)
-
-            |
-
-            Q(nombre__icontains=q)
-
-            |
-
-            Q(apellido__icontains=q)
-
-            |
-
-            Q(telefono__icontains=q)
-
-            |
-
-            Q(direccion__icontains=q)
-
-        )
-
-    queryset = queryset.order_by(
-        "apellido",
-        "nombre",
+    queryset = obtener_beneficiarios_queryset(
+        request
     )
 
     paginator = Paginator(
@@ -1171,6 +1125,66 @@ def obtener_beneficiarios(request):
         "query_string": params.urlencode(),
 
     }
+
+
+def obtener_beneficiarios_queryset(request):
+    """
+    Obtiene los beneficiarios aplicando los filtros
+    utilizados en el listado.
+    """
+
+    status = request.GET.get(
+        "status",
+        "activo",
+    )
+
+    queryset = Beneficiario.objects.all()
+
+    if status == "activo":
+
+        queryset = queryset.filter(
+            estado=True,
+        )
+
+    elif status == "inactivo":
+
+        queryset = queryset.filter(
+            estado=False,
+        )
+
+    q = request.GET.get(
+        "q",
+        "",
+    ).strip()
+
+    if q:
+
+        queryset = queryset.filter(
+
+            Q(cedula__icontains=q)
+
+            |
+
+            Q(nombre__icontains=q)
+
+            |
+
+            Q(apellido__icontains=q)
+
+            |
+
+            Q(telefono__icontains=q)
+
+            |
+
+            Q(direccion__icontains=q)
+
+        )
+
+    return queryset.order_by(
+        "apellido",
+        "nombre",
+    )
 
 
 @transaction.atomic
@@ -1215,6 +1229,22 @@ def obtener_beneficiario(pk):
 
         pk=pk,
 
+    )
+
+
+def obtener_auditoria_beneficiario(beneficiario):
+    """
+    Obtiene el historial de auditoría asociado
+    a un beneficiario.
+    """
+
+    return Auditoria.objects.filter(
+        tabla_afectada="beneficiarios",
+        id_registro=beneficiario.pk,
+    ).select_related(
+        "usuario_responsable"
+    ).order_by(
+        "-fecha_auditoria"
     )
 
 

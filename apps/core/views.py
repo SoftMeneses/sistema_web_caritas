@@ -33,7 +33,10 @@ from apps.core.forms import (
     ProgramaUsuarioForm,
 )
 
-from .pdf_service import generar_pdf_beneficiario
+from .pdf_service import (
+    generar_pdf_beneficiario,
+    generar_pdf_beneficiarios,
+)
 
 from .services import ( 
 
@@ -61,8 +64,10 @@ from .services import (
     desactivar_actividad,
 
     obtener_beneficiarios,
-    crear_beneficiario,
+    obtener_beneficiarios_queryset,
     obtener_beneficiario,
+    crear_beneficiario,
+    obtener_auditoria_beneficiario,
     actualizar_beneficiario,
     desactivar_beneficiario,
 
@@ -902,6 +907,33 @@ def beneficiario_lista(request):
 
 
 @login_required
+def beneficiario_pdf_lista(request):
+    """
+    Genera el PDF del listado de beneficiarios
+    respetando los filtros actuales.
+    """
+
+    beneficiarios = obtener_beneficiarios_queryset(
+        request
+    )
+
+    pdf = generar_pdf_beneficiarios(
+        beneficiarios
+    )
+
+    response = HttpResponse(
+        pdf.getvalue(),
+        content_type="application/pdf",
+    )
+
+    response["Content-Disposition"] = (
+        'inline; filename="beneficiarios.pdf"'
+    )
+
+    return response
+
+
+@login_required
 def beneficiario_crear(request):
     """
     Gestiona la creación de un nuevo beneficiario.
@@ -975,6 +1007,8 @@ def beneficiario_detalle(request, pk):
         )
     )
 
+    historial_auditoria = obtener_auditoria_beneficiario(beneficiario)
+
     contexto = {
 
         "beneficiario": beneficiario,
@@ -982,6 +1016,8 @@ def beneficiario_detalle(request, pk):
         "programas_asignados": programas_asignados,
 
         "url_beneficiario": url_beneficiario,
+
+        "historial_auditoria": historial_auditoria,
 
     }
 

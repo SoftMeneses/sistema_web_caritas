@@ -22,6 +22,7 @@ from .views import (
     consumo_insumo_crear,
 
     beneficiario_lista,
+    beneficiario_pdf_lista,
     beneficiario_crear,
     beneficiario_detalle,
     beneficiario_editar,
@@ -167,6 +168,12 @@ urlpatterns = [
         "beneficiarios/",
         beneficiario_lista,
         name="beneficiario_lista",
+    ),
+
+    path(
+        "beneficiarios/pdf/",
+        beneficiario_pdf_lista,
+        name="beneficiario_pdf_lista",
     ),
     
     path(
