@@ -14,6 +14,7 @@ from django.views.decorators.http import require_POST
 from apps.core.models import (
     ProgramaBeneficiario,
     ProgramaUsuario,
+    Auditoria,
 )
 
 from apps.core.forms import (
@@ -72,6 +73,9 @@ from .services import (
     desactivar_insumo,
     registrar_movimiento_insumo,
     registrar_consumo_insumo,
+
+    obtener_auditorias,
+    obtener_auditoria,
 )
 
 # ==============================================================================
@@ -1463,5 +1467,48 @@ def movimiento_insumo_crear(request):
         "core/insumo/movimiento_form.html",
         {
             "form": form,
+        },
+    )
+
+
+# ==============================================================================
+# Administración - Auditoría
+# ==============================================================================
+
+@login_required
+def auditoria_lista(request):
+    """
+    Muestra el listado paginado de registros de auditoría.
+    """
+
+    contexto = obtener_auditorias(request)
+
+    contexto["usuario"] = request.user
+
+    return render(
+
+        request,
+
+        "core/auditoria/lista.html",
+
+        contexto,
+
+    )
+
+
+@login_required
+def auditoria_detalle(request, pk):
+    """
+    Muestra el detalle de un registro específico de auditoría.
+    """
+
+    auditoria = obtener_auditoria(pk)
+
+    return render(
+        request,
+        "core/auditoria/detalle.html",
+        {
+            "auditoria": auditoria,
+            "usuario": request.user,
         },
     )

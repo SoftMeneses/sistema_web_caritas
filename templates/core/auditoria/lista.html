@@ -1,0 +1,412 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}
+
+Auditoría
+
+{% endblock %}
+
+{% block page_title %}
+
+Auditoría
+
+{% endblock %}
+
+{% block breadcrumb %}
+
+<nav aria-label="breadcrumb">
+
+    <ol class="breadcrumb">
+
+        <li class="breadcrumb-item">
+
+            <a href="{% url 'core:dashboard' %}">
+
+                Dashboard
+
+            </a>
+
+        </li>
+
+        <li class="breadcrumb-item active">
+
+            Auditoría
+
+        </li>
+
+    </ol>
+
+</nav>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="card app-card mb-3">
+
+    <div class="card-body">
+
+        <form method="get">
+
+            <div class="row g-3 align-items-end">
+
+                <div class="col-md-4">
+
+                    <label for="id_q" class="form-label">
+
+                        Buscar
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="q"
+                        id="id_q"
+                        class="form-control"
+                        placeholder="Buscar en auditoría..."
+                        value="{{ search_value }}"
+                    >
+
+                </div>
+
+                <div class="col-md-2">
+
+                    <label for="id_operacion" class="form-label">
+
+                        Operación
+
+                    </label>
+
+                    <select
+                        name="operacion"
+                        id="id_operacion"
+                        class="form-select"
+                    >
+
+                        <option value="">
+
+                            Todas
+
+                        </option>
+
+                        <option
+                            value="INSERT"
+                            {% if operacion_value == "INSERT" %}selected{% endif %}
+                        >
+
+                            Inserción
+
+                        </option>
+
+                        <option
+                            value="UPDATE"
+                            {% if operacion_value == "UPDATE" %}selected{% endif %}
+                        >
+
+                            Actualización
+
+                        </option>
+
+                        <option
+                            value="DELETE"
+                            {% if operacion_value == "DELETE" %}selected{% endif %}
+                        >
+
+                            Eliminación
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <label for="id_accion" class="form-label">
+
+                        Acción
+
+                    </label>
+
+                    <select
+                        name="accion"
+                        id="id_accion"
+                        class="form-select"
+                    >
+
+                        <option value="">
+
+                            Todas
+
+                        </option>
+
+                        {% for valor, etiqueta in acciones_auditoria %}
+
+                            <option
+                                value="{{ valor }}"
+                                {% if accion_value == valor %}selected{% endif %}
+                            >
+
+                                {{ etiqueta }}
+
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <label for="id_tabla" class="form-label">
+
+                        Tabla afectada
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="tabla"
+                        id="id_tabla"
+                        class="form-control"
+                        placeholder="Ej. programas"
+                        value="{{ tabla_value }}"
+                    >
+
+                </div>
+
+                <div class="col-12">
+
+                    <div class="d-flex gap-2">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                        >
+
+                            <i class="bi bi-search me-1"></i>
+
+                            Buscar
+
+                        </button>
+
+                        <a
+                            href="{% url 'core:auditoria_lista' %}"
+                            class="btn btn-outline-secondary"
+                        >
+
+                            <i class="bi bi-arrow-counterclockwise me-1"></i>
+
+                            Limpiar
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<div class="card app-card">
+
+    <div class="card-body">
+
+        {% if auditorias %}
+
+            <div class="table-responsive">
+
+                <table class="table table-hover app-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th style="width: 60px;">
+
+                                #
+
+                            </th>
+
+                            <th>
+
+                                Fecha
+
+                            </th>
+
+                            <th>
+
+                                Tabla
+
+                            </th>
+
+                            <th>
+
+                                Operación
+
+                            </th>
+
+                            <th>
+
+                                Acción
+
+                            </th>
+
+                            <th>
+
+                                Registro
+
+                            </th>
+
+                            <th>
+
+                                Usuario
+
+                            </th>
+
+                            <th>
+
+                                Descripción
+
+                            </th>
+
+                            <th scope="col" class="text-center" style="width: 170px;">
+
+                                Acciones
+
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for auditoria in auditorias %}
+
+                            <tr>
+
+                                <td>
+
+                                    {{ auditorias.start_index|add:forloop.counter0 }}
+
+                                </td>
+
+                                <td class="text-center">
+
+                                    {{ auditoria.fecha_auditoria|date:"d/m/Y H:i" }}
+
+                                </td>
+
+                                <td>
+
+                                    {{ auditoria.tabla_afectada }}
+
+                                </td>
+
+                                <td class="text-center">
+
+                                    {% if auditoria.operacion == "INSERT" %}
+
+                                        <span class="badge bg-success">
+
+                                            {{ auditoria.get_operacion_display }}
+
+                                        </span>
+
+                                    {% elif auditoria.operacion == "UPDATE" %}
+
+                                        <span class="badge bg-warning text-dark">
+
+                                            {{ auditoria.get_operacion_display }}
+
+                                        </span>
+
+                                    {% elif auditoria.operacion == "DELETE" %}
+
+                                        <span class="badge bg-danger">
+
+                                            {{ auditoria.get_operacion_display }}
+
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="badge bg-secondary">
+
+                                            {{ auditoria.get_operacion_display }}
+
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                                <td>
+
+                                    {{ auditoria.get_accion_display }}
+
+                                </td>
+
+                                <td class="text-center">
+
+                                    {{ auditoria.id_registro }}
+
+                                </td>
+
+                                <td>
+
+                                    {{ auditoria.usuario_responsable }}
+
+                                </td>
+
+                                <td>
+
+                                    {{ auditoria.descripcion }}
+
+                                </td>
+
+                                <td class="text-center">
+
+                                    <a
+                                        href="{% url 'core:auditoria_detalle' auditoria.pk %}"
+                                        class="btn btn-outline-primary"
+                                        title="Ver"
+                                        aria-label="Ver auditoría">
+
+                                        <i class="bi bi-eye"></i>
+
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% include "includes/components/pagination.html" %}
+
+        {% else %}
+
+            {% include "includes/components/empty_state.html" with title="No existen registros de auditoría." message="Las acciones realizadas en el sistema aparecerán aquí automáticamente." %}
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

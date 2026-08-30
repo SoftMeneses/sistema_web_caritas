@@ -38,6 +38,9 @@ from .views import (
 
     movimiento_insumo_crear,
 
+    auditoria_lista,
+    auditoria_detalle,
+
 )
 
 app_name = "core"
@@ -240,6 +243,23 @@ urlpatterns = [
         "insumos/movimiento/nuevo/",
         movimiento_insumo_crear,
         name="movimiento_insumo_crear",
+    ),
+
+
+    # ==========================================================================
+    # Administración - Auditoría
+    # ==========================================================================
+
+    path(
+        "auditoria/",
+        auditoria_lista,
+        name="auditoria_lista",
+    ),
+
+    path(
+        "auditoria/<int:pk>/",
+        auditoria_detalle,
+        name="auditoria_detalle",
     ),
 
 ]

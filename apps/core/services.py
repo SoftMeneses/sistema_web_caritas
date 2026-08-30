@@ -19,6 +19,7 @@ from apps.core.models import (
      MovimientoInsumo,
      DetalleActividadInsumo,
      ActividadUsuario,
+     Auditoria,
 )
 
 from apps.core.models.choices import (
@@ -212,6 +213,154 @@ def obtener_paginas_visibles(page_obj):
 
         fin + 1,
 
+    )
+
+
+def obtener_auditorias(request):
+
+    """
+    Obtiene el listado paginado de auditorías aplicando:
+
+    - búsqueda
+    - filtro por operación
+    - filtro por acción
+    - filtro por tabla afectada
+    - ordenamiento
+    - paginación
+
+    Retorna el contexto requerido por la vista de auditoría.
+    """
+
+    acciones_auditoria = AccionAuditoria.choices
+
+    params = request.GET.copy()
+
+    params.pop(
+        "page",
+        None,
+    )
+
+    queryset = (
+        Auditoria.objects
+        .select_related(
+            "usuario_responsable",
+        )
+    )
+
+    q = request.GET.get(
+        "q",
+        "",
+    ).strip()
+
+    if q:
+
+        queryset = queryset.filter(
+
+            Q(tabla_afectada__icontains=q)
+
+            |
+
+            Q(descripcion__icontains=q)
+
+            |
+
+            Q(usuario_responsable__first_name__icontains=q)
+
+            |
+
+            Q(usuario_responsable__last_name__icontains=q)
+
+            |
+
+            Q(usuario_responsable__username__icontains=q)
+
+        )
+
+    operacion = request.GET.get(
+        "operacion",
+        "",
+    )
+
+    if operacion:
+
+        queryset = queryset.filter(
+            operacion=operacion,
+        )
+
+    accion = request.GET.get(
+        "accion",
+        "",
+    )
+
+    if accion:
+
+        queryset = queryset.filter(
+            accion=accion,
+        )
+
+    tabla = request.GET.get(
+        "tabla",
+        "",
+    ).strip()
+
+    if tabla:
+
+        queryset = queryset.filter(
+            tabla_afectada__icontains=tabla,
+        )
+
+    queryset = queryset.order_by(
+        "-fecha_auditoria",
+    )
+
+    paginator = Paginator(
+        queryset,
+        20,
+    )
+
+    page_number = request.GET.get(
+        "page",
+    )
+
+    page_obj = paginator.get_page(
+        page_number,
+    )
+
+    return {
+
+        "auditorias": page_obj,
+
+        "page_obj": page_obj,
+
+        "search_value": q,
+
+        "operacion_value": operacion,
+
+        "accion_value": accion,
+
+        "tabla_value": tabla,
+
+        "acciones_auditoria": AccionAuditoria.choices,
+
+        "visible_pages": obtener_paginas_visibles(
+            page_obj,
+        ),
+
+        "query_string": params.urlencode(),
+
+    }
+
+
+def obtener_auditoria(pk):
+    """
+    Obtiene un registro de auditoría por su identificador.
+    """
+
+    return get_object_or_404(
+        Auditoria.objects.select_related(
+            "usuario_responsable",
+        ),
+        id_auditoria=pk,
     )
 
 
