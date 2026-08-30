@@ -26,6 +26,7 @@ from .views import (
     beneficiario_detalle,
     beneficiario_editar,
     beneficiario_desactivar,
+    beneficiario_pdf,
 
     beneficiario_asignar_programa,
     beneficiario_desasignar_programa,
@@ -178,6 +179,12 @@ urlpatterns = [
         "beneficiarios/<int:pk>/",
         beneficiario_detalle,
         name="beneficiario_detalle",
+    ),
+
+    path(
+        "beneficiarios/<int:pk>/pdf/",
+        beneficiario_pdf,
+        name="beneficiario_pdf",
     ),
     
     path(

@@ -3,6 +3,7 @@
 from django.core.exceptions import ValidationError
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import (
     get_object_or_404, 
     render, 
@@ -31,6 +32,8 @@ from apps.core.forms import (
     ActividadUsuarioForm,
     ProgramaUsuarioForm,
 )
+
+from .pdf_service import generar_pdf_beneficiario
 
 from .services import ( 
 
@@ -991,6 +994,35 @@ def beneficiario_detalle(request, pk):
         contexto,
 
     )
+
+
+@login_required
+def beneficiario_pdf(request, pk):
+    """
+    Genera el PDF de un beneficiario.
+    """
+
+    beneficiario = obtener_beneficiario(pk)
+
+    programas_asignados = obtener_programas_beneficiario(
+        beneficiario
+    )
+
+    pdf = generar_pdf_beneficiario(
+        beneficiario,
+        programas_asignados,
+    )
+
+    response = HttpResponse(
+        pdf.getvalue(),
+        content_type="application/pdf",
+    )
+
+    response["Content-Disposition"] = (
+        f'inline; filename="beneficiario_{beneficiario.pk}.pdf"'
+    )
+
+    return response
 
 
 @login_required
