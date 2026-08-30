@@ -7,7 +7,9 @@ from django.shortcuts import (
     get_object_or_404, 
     render, 
     redirect,
-) 
+)
+
+from django.urls import reverse
 
 from django.views.decorators.http import require_POST
 
@@ -963,11 +965,20 @@ def beneficiario_detalle(request, pk):
         beneficiario
     )
 
+    url_beneficiario = request.build_absolute_uri(
+        reverse(
+            "core:beneficiario_detalle",
+            kwargs={"pk": beneficiario.pk},
+        )
+    )
+
     contexto = {
 
         "beneficiario": beneficiario,
 
         "programas_asignados": programas_asignados,
+
+        "url_beneficiario": url_beneficiario,
 
     }
 

@@ -27,6 +27,11 @@ load_dotenv(BASE_DIR / '.env')
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY')
 
+SITE_URL = os.getenv(
+    'SITE_URL',
+    'http://127.0.0.1:8000',
+)
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 

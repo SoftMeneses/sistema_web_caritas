@@ -52,6 +52,8 @@ Detalle del Beneficiario
 
 {% block content %}
 
+{% load qr_tags %}
+
 <div class="card app-card">
 
     <div class="card-header">
@@ -210,6 +212,65 @@ Detalle del Beneficiario
 
             </div>
 
+        </div>
+
+        <div class="row mt-4">
+
+            <div class="col-12">
+            
+                <div class="card border">
+                
+                    <div class="card-body">
+                    
+                        <div class="row align-items-center">
+                        
+                            <div class="col-md-8">
+                            
+                                <span class="detail-label">
+                                
+                                    <i class="bi bi-qr-code me-1"></i>
+                                
+                                    Código QR del beneficiario
+                                
+                                </span>
+                            
+                                <p class="text-muted mb-2">
+                                
+                                    Escanee este código para acceder directamente
+                                    a la ficha del beneficiario.
+                                
+                                </p>
+                            
+                                <small class="text-muted">
+                                
+                                    El código contiene únicamente la dirección
+                                    web de esta ficha.
+                                
+                                </small>
+                            
+                            </div>
+                        
+                            <div class="col-md-4 text-center">
+                            
+                                {% generar_qr url_beneficiario as qr_beneficiario %}
+                            
+                                <img
+                                    src="{{ qr_beneficiario }}"
+                                    alt="Código QR del beneficiario"
+                                    class="img-fluid"
+                                    style="max-width: 180px;"
+                                >
+                            
+                            </div>
+                        
+                        </div>
+                    
+                    </div>
+                
+                </div>
+            
+            </div>
+        
         </div>
 
         <div class="row mt-4">
