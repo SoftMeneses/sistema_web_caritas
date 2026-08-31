@@ -53,70 +53,93 @@ def obtener_dashboard():
 # ==============================================================================
 
 def obtener_programas(request):
-
     """
-    Obtiene el listado de programas aplicando:
+    Obtiene el listado paginado de programas.
 
-    - filtro por estado
-    - búsqueda
-    - ordenamiento
-    - paginación
-
-    Retorna el contexto requerido por la vista lista.html.
+    Aplica los filtros mediante
+    obtener_programas_queryset() y prepara
+    el contexto requerido por lista.html.
     """
 
     params = request.GET.copy()
 
     params.pop(
-
-        "page", 
-
+        "page",
         None,
-
     )
 
     status = request.GET.get(
-
         "status",
-
         "activo",
+    )
 
+    q = request.GET.get(
+        "q",
+        "",
+    ).strip()
+
+    queryset = obtener_programas_queryset(
+        request
+    )
+
+    paginator = Paginator(
+        queryset,
+        10,
+    )
+
+    page_number = request.GET.get(
+        "page",
+    )
+
+    page_obj = paginator.get_page(
+        page_number,
+    )
+
+    return {
+        "programas": page_obj,
+        "page_obj": page_obj,
+        "search_value": q,
+        "status_value": status,
+        "visible_pages": obtener_paginas_visibles(
+            page_obj
+        ),
+        "query_string": params.urlencode(),
+    }
+
+
+def obtener_programas_queryset(request):
+    """
+    Obtiene los programas aplicando los filtros
+    utilizados en el listado.
+    """
+
+    status = request.GET.get(
+        "status",
+        "activo",
     )
 
     queryset = (
-
         Programa.objects
-
-        .select_related("usuario_responsable")
-
+        .select_related(
+            "usuario_responsable"
+        )
     )
 
     if status == "activo":
 
         queryset = queryset.filter(
-
             estado=True,
-
         )
 
     elif status == "inactivo":
 
         queryset = queryset.filter(
-
             estado=False,
-
         )
 
-    elif status == "todos":
-
-        pass
-
     q = request.GET.get(
-
         "q",
-
         "",
-
     ).strip()
 
     if q:
@@ -131,50 +154,27 @@ def obtener_programas(request):
 
             |
 
-            Q(usuario_responsable__first_name__icontains=q)
+            Q(
+                usuario_responsable__first_name__icontains=q
+            )
 
             |
 
-            Q(usuario_responsable__last_name__icontains=q)
+            Q(
+                usuario_responsable__last_name__icontains=q
+            )
 
             |
 
-            Q(usuario_responsable__username__icontains=q)
+            Q(
+                usuario_responsable__username__icontains=q
+            )
 
         )
 
-    queryset = queryset.order_by(
-    
+    return queryset.order_by(
         "nombre",
-    
     )
-
-    paginator = Paginator(
-
-        queryset,
-
-        10,
-    )
-
-    page_number = request.GET.get("page")
-
-    page_obj = paginator.get_page(page_number)
-
-    return {
-
-        "programas": page_obj,
-
-        "page_obj": page_obj,
-
-        "search_value": q,
-
-        "status_value": status,
-
-        "visible_pages": obtener_paginas_visibles(page_obj),
-
-        "query_string": params.urlencode(),
-
-    }
 
 
 def obtener_paginas_visibles(page_obj):

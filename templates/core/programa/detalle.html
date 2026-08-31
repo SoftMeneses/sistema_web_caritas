@@ -343,6 +343,17 @@ Detalle del Programa
             
             {% endif %}
 
+            <a
+                href="{% url 'core:programa_pdf' programa.pk %}"
+                class="btn btn-danger"
+                target="_blank">
+
+                <i class="bi bi-file-earmark-pdf me-1"></i>
+
+                PDF
+
+            </a>
+
             <a href="{% url 'core:programa_editar' programa.pk %}"
                 class="btn btn-primary btn-icon">
 

@@ -111,6 +111,26 @@ button_icon : Icono Bootstrap.
 
         {% endif %}
 
+        {% if pdf_url %}
+
+            <div class="col-auto ms-2">
+            
+                <a href="{{ pdf_url }}{% if query_string %}?{{ query_string }}{% endif %}"
+                   class="btn btn-primary btn-icon"
+                   target="_blank">
+            
+                    <i class="{{ pdf_icon|default:'bi bi-file-earmark-pdf' }}"
+                       aria-hidden="true">
+                    </i>
+                
+                    {{ pdf_text|default:"Exportar PDF" }}
+                
+                </a>
+            
+            </div>
+
+        {% endif %}
+
     </form>
 
 </div>

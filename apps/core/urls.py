@@ -5,10 +5,12 @@ from .views import (
     dashboard,
 
     programa_lista,
+    programa_pdf_lista,
     programa_crear,
     programa_usuario_crear,
     programa_usuario_desasignar,
     programa_detalle,
+    programa_pdf,
     programa_editar,
     programa_desactivar,
 
@@ -71,6 +73,12 @@ urlpatterns = [
     ),
 
     path(
+        "programas/pdf/",
+        programa_pdf_lista,
+        name="programa_pdf_lista",
+    ),
+
+    path(
         "programas/nuevo/",
         programa_crear,
         name="programa_crear",
@@ -92,6 +100,12 @@ urlpatterns = [
         "programas/<int:pk>/",
         programa_detalle,
         name="programa_detalle",
+    ),
+
+    path(
+        "programas/<int:pk>/pdf/",
+        programa_pdf,
+        name="programa_pdf",
     ),
 
     path(

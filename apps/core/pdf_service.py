@@ -562,3 +562,737 @@ def generar_pdf_beneficiarios(beneficiarios):
     buffer.seek(0)
 
     return buffer
+
+
+def generar_pdf_programas(programas):
+    """
+    Genera un PDF con el listado de programas.
+
+    Incluye:
+    - Fecha de generación.
+    - Nombre del programa.
+    - Responsable.
+    - Fecha de inicio.
+    - Fecha de finalización.
+    - Estado.
+    - Total de programas.
+    """
+
+    buffer = BytesIO()
+
+    documento = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        rightMargin=2 * cm,
+        leftMargin=2 * cm,
+        topMargin=2 * cm,
+        bottomMargin=2 * cm,
+    )
+
+    estilos = getSampleStyleSheet()
+
+    estilo_titulo = ParagraphStyle(
+        "TituloListadoProgramas",
+        parent=estilos["Title"],
+        alignment=TA_CENTER,
+        spaceAfter=12,
+    )
+
+    estilo_subtitulo = ParagraphStyle(
+        "SubtituloListadoProgramas",
+        parent=estilos["Heading2"],
+        spaceBefore=8,
+        spaceAfter=8,
+    )
+
+    estilo_normal = estilos["BodyText"]
+
+    elementos = []
+
+    # -------------------------------------------------------------------------
+    # Encabezado
+    # -------------------------------------------------------------------------
+
+    elementos.append(
+        Paragraph(
+            "CARITAS",
+            estilo_titulo,
+        )
+    )
+
+    elementos.append(
+        Paragraph(
+            "Listado de programas",
+            estilo_subtitulo,
+        )
+    )
+
+    elementos.append(
+        Paragraph(
+            f"Fecha de generación: "
+            f"{timezone.localtime().strftime('%d/%m/%Y %H:%M')}",
+            estilo_normal,
+        )
+    )
+
+    elementos.append(
+        Spacer(
+            1,
+            0.5 * cm,
+        )
+    )
+
+    # -------------------------------------------------------------------------
+    # Tabla de programas
+    # -------------------------------------------------------------------------
+
+    datos = [
+        [
+            "Programa",
+            "Responsable",
+            "Inicio",
+            "Fin",
+            "Estado",
+        ]
+    ]
+
+    for programa in programas:
+
+        responsable = (
+            programa.usuario_responsable.get_full_name()
+            or programa.usuario_responsable.username
+        )
+
+        fecha_fin = (
+            programa.fecha_fin.strftime("%d/%m/%Y")
+            if programa.fecha_fin
+            else "No definida"
+        )
+
+        estado = (
+            "Activo"
+            if programa.estado
+            else "Inactivo"
+        )
+
+        datos.append(
+            [
+                programa.nombre,
+                responsable,
+                programa.fecha_inicio.strftime("%d/%m/%Y"),
+                fecha_fin,
+                estado,
+            ]
+        )
+
+    # -------------------------------------------------------------------------
+    # Tabla
+    # -------------------------------------------------------------------------
+
+    tabla = Table(
+        datos,
+        colWidths=[
+            4.5 * cm,
+            4 * cm,
+            2.5 * cm,
+            2.5 * cm,
+            2.5 * cm,
+        ],
+        repeatRows=1,
+    )
+
+    tabla.setStyle(
+        TableStyle(
+            [
+                (
+                    "BACKGROUND",
+                    (0, 0),
+                    (-1, 0),
+                    colors.lightgrey,
+                ),
+                (
+                    "FONTNAME",
+                    (0, 0),
+                    (-1, 0),
+                    "Helvetica-Bold",
+                ),
+                (
+                    "GRID",
+                    (0, 0),
+                    (-1, -1),
+                    0.5,
+                    colors.grey,
+                ),
+                (
+                    "VALIGN",
+                    (0, 0),
+                    (-1, -1),
+                    "TOP",
+                ),
+                (
+                    "LEFTPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    4,
+                ),
+                (
+                    "RIGHTPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    4,
+                ),
+                (
+                    "TOPPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    5,
+                ),
+                (
+                    "BOTTOMPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    5,
+                ),
+            ]
+        )
+    )
+
+    elementos.append(tabla)
+
+    # -------------------------------------------------------------------------
+    # Total
+    # -------------------------------------------------------------------------
+
+    elementos.append(
+        Spacer(
+            1,
+            0.5 * cm,
+        )
+    )
+
+    elementos.append(
+        Paragraph(
+            f"Total de programas: {len(programas)}",
+            estilo_normal,
+        )
+    )
+
+    # -------------------------------------------------------------------------
+    # Construcción del documento
+    # -------------------------------------------------------------------------
+
+    documento.build(elementos)
+
+    buffer.seek(0)
+
+    return buffer
+
+
+def generar_pdf_programa(programa, usuarios_asignados):
+    """
+    Genera el PDF con la información de un programa.
+
+    Incluye:
+    - Datos generales del programa.
+    - Responsable.
+    - Fechas.
+    - Estado.
+    - Descripción.
+    - Usuarios asignados.
+    """
+
+    buffer = BytesIO()
+
+    documento = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        rightMargin=2 * cm,
+        leftMargin=2 * cm,
+        topMargin=2 * cm,
+        bottomMargin=2 * cm,
+    )
+
+    estilos = getSampleStyleSheet()
+
+    estilo_titulo = ParagraphStyle(
+        "TituloPrograma",
+        parent=estilos["Title"],
+        alignment=TA_CENTER,
+        spaceAfter=12,
+    )
+
+    estilo_subtitulo = ParagraphStyle(
+        "SubtituloPrograma",
+        parent=estilos["Heading2"],
+        spaceBefore=12,
+        spaceAfter=8,
+    )
+
+    estilo_normal = estilos["BodyText"]
+
+    elementos = []
+
+    # -------------------------------------------------------------------------
+    # Encabezado
+    # -------------------------------------------------------------------------
+
+    elementos.append(
+        Paragraph(
+            "CARITAS",
+            estilo_titulo,
+        )
+    )
+
+    elementos.append(
+        Paragraph(
+            "Ficha del programa",
+            estilo_subtitulo,
+        )
+    )
+
+    elementos.append(
+        Spacer(
+            1,
+            0.3 * cm,
+        )
+    )
+
+    # -------------------------------------------------------------------------
+    # Información del programa
+    # -------------------------------------------------------------------------
+
+    responsable = (
+        programa.usuario_responsable.get_full_name()
+        or programa.usuario_responsable.username
+    )
+
+    estado = (
+        "Activo"
+        if programa.estado
+        else "Inactivo"
+    )
+
+    fecha_fin = (
+        programa.fecha_fin.strftime("%d/%m/%Y")
+        if programa.fecha_fin
+        else "No definida"
+    )
+
+    datos_programa = [
+        ["Nombre", programa.nombre],
+        ["Responsable", responsable],
+        [
+            "Fecha de inicio",
+            programa.fecha_inicio.strftime("%d/%m/%Y"),
+        ],
+        ["Fecha de finalización", fecha_fin],
+        ["Estado", estado],
+        [
+            "Descripción",
+            programa.descripcion
+            or "Sin descripción registrada.",
+        ],
+    ]
+
+    tabla_programa = Table(
+        datos_programa,
+        colWidths=[
+            5 * cm,
+            11 * cm,
+        ],
+    )
+
+    tabla_programa.setStyle(
+        TableStyle(
+            [
+                (
+                    "BACKGROUND",
+                    (0, 0),
+                    (0, -1),
+                    colors.lightgrey,
+                ),
+                (
+                    "FONTNAME",
+                    (0, 0),
+                    (0, -1),
+                    "Helvetica-Bold",
+                ),
+                (
+                    "GRID",
+                    (0, 0),
+                    (-1, -1),
+                    0.5,
+                    colors.grey,
+                ),
+                (
+                    "VALIGN",
+                    (0, 0),
+                    (-1, -1),
+                    "TOP",
+                ),
+                (
+                    "LEFTPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    6,
+                ),
+                (
+                    "RIGHTPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    6,
+                ),
+                (
+                    "TOPPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    6,
+                ),
+                (
+                    "BOTTOMPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    6,
+                ),
+            ]
+        )
+    )
+
+    elementos.append(tabla_programa)
+
+    # -------------------------------------------------------------------------
+    # Usuarios asignados
+    # -------------------------------------------------------------------------
+
+    elementos.append(
+        Paragraph(
+            "Usuarios asignados",
+            estilo_subtitulo,
+        )
+    )
+
+    if usuarios_asignados:
+
+        datos_usuarios = [
+            [
+                "Usuario",
+                "Rol en el programa",
+                "Fecha de asignación",
+            ]
+        ]
+
+        for asignacion in usuarios_asignados:
+
+            usuario = (
+                asignacion.usuario.get_full_name()
+                or asignacion.usuario.username
+            )
+
+            datos_usuarios.append(
+                [
+                    usuario,
+                    asignacion.rol_en_programa,
+                    asignacion.fecha_asignacion.strftime(
+                        "%d/%m/%Y %H:%M"
+                    ),
+                ]
+            )
+
+        tabla_usuarios = Table(
+            datos_usuarios,
+            colWidths=[
+                6 * cm,
+                5 * cm,
+                5 * cm,
+            ],
+            repeatRows=1,
+        )
+
+        tabla_usuarios.setStyle(
+            TableStyle(
+                [
+                    (
+                        "BACKGROUND",
+                        (0, 0),
+                        (-1, 0),
+                        colors.lightgrey,
+                    ),
+                    (
+                        "FONTNAME",
+                        (0, 0),
+                        (-1, 0),
+                        "Helvetica-Bold",
+                    ),
+                    (
+                        "GRID",
+                        (0, 0),
+                        (-1, -1),
+                        0.5,
+                        colors.grey,
+                    ),
+                    (
+                        "VALIGN",
+                        (0, 0),
+                        (-1, -1),
+                        "TOP",
+                    ),
+                    (
+                        "LEFTPADDING",
+                        (0, 0),
+                        (-1, -1),
+                        5,
+                    ),
+                    (
+                        "RIGHTPADDING",
+                        (0, 0),
+                        (-1, -1),
+                        5,
+                    ),
+                    (
+                        "TOPPADDING",
+                        (0, 0),
+                        (-1, -1),
+                        5,
+                    ),
+                    (
+                        "BOTTOMPADDING",
+                        (0, 0),
+                        (-1, -1),
+                        5,
+                    ),
+                ]
+            )
+        )
+
+        elementos.append(tabla_usuarios)
+
+    else:
+
+        elementos.append(
+            Paragraph(
+                "No existen usuarios asignados a este programa.",
+                estilo_normal,
+            )
+        )
+
+    # -------------------------------------------------------------------------
+    # Construcción del documento
+    # -------------------------------------------------------------------------
+
+    documento.build(elementos)
+
+    buffer.seek(0)
+
+    return buffer
+
+
+def generar_pdf_programas(programas):
+    """
+    Genera un PDF con el listado de programas.
+
+    Incluye:
+    - Fecha de generación.
+    - Nombre.
+    - Responsable.
+    - Fecha de inicio.
+    - Fecha de finalización.
+    - Estado.
+    - Total de programas.
+    """
+
+    buffer = BytesIO()
+
+    documento = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        rightMargin=2 * cm,
+        leftMargin=2 * cm,
+        topMargin=2 * cm,
+        bottomMargin=2 * cm,
+    )
+
+    estilos = getSampleStyleSheet()
+
+    estilo_titulo = ParagraphStyle(
+        "TituloListadoProgramas",
+        parent=estilos["Title"],
+        alignment=TA_CENTER,
+        spaceAfter=12,
+    )
+
+    estilo_subtitulo = ParagraphStyle(
+        "SubtituloListadoProgramas",
+        parent=estilos["Heading2"],
+        spaceBefore=8,
+        spaceAfter=8,
+    )
+
+    estilo_normal = estilos["BodyText"]
+
+    elementos = []
+
+    # -------------------------------------------------------------------------
+    # Encabezado
+    # -------------------------------------------------------------------------
+
+    elementos.append(
+        Paragraph(
+            "CARITAS",
+            estilo_titulo,
+        )
+    )
+
+    elementos.append(
+        Paragraph(
+            "Listado de programas",
+            estilo_subtitulo,
+        )
+    )
+
+    elementos.append(
+        Paragraph(
+            f"Fecha de generación: "
+            f"{timezone.localtime().strftime('%d/%m/%Y %H:%M')}",
+            estilo_normal,
+        )
+    )
+
+    elementos.append(
+        Spacer(
+            1,
+            0.5 * cm,
+        )
+    )
+
+    # -------------------------------------------------------------------------
+    # Tabla
+    # -------------------------------------------------------------------------
+
+    datos = [
+        [
+            "Programa",
+            "Responsable",
+            "Inicio",
+            "Finalización",
+            "Estado",
+        ]
+    ]
+
+    for programa in programas:
+
+        responsable = (
+            programa.usuario_responsable.get_full_name()
+            or programa.usuario_responsable.username
+        )
+
+        fecha_fin = (
+            programa.fecha_fin.strftime("%d/%m/%Y")
+            if programa.fecha_fin
+            else "No definida"
+        )
+
+        estado = (
+            "Activo"
+            if programa.estado
+            else "Inactivo"
+        )
+
+        datos.append(
+            [
+                programa.nombre,
+                responsable,
+                programa.fecha_inicio.strftime("%d/%m/%Y"),
+                fecha_fin,
+                estado,
+            ]
+        )
+
+    tabla = Table(
+        datos,
+        colWidths=[
+            4 * cm,
+            4 * cm,
+            3 * cm,
+            3 * cm,
+            2 * cm,
+        ],
+        repeatRows=1,
+    )
+
+    tabla.setStyle(
+        TableStyle(
+            [
+                (
+                    "BACKGROUND",
+                    (0, 0),
+                    (-1, 0),
+                    colors.lightgrey,
+                ),
+                (
+                    "FONTNAME",
+                    (0, 0),
+                    (-1, 0),
+                    "Helvetica-Bold",
+                ),
+                (
+                    "GRID",
+                    (0, 0),
+                    (-1, -1),
+                    0.5,
+                    colors.grey,
+                ),
+                (
+                    "VALIGN",
+                    (0, 0),
+                    (-1, -1),
+                    "TOP",
+                ),
+                (
+                    "LEFTPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    4,
+                ),
+                (
+                    "RIGHTPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    4,
+                ),
+                (
+                    "TOPPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    5,
+                ),
+                (
+                    "BOTTOMPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    5,
+                ),
+            ]
+        )
+    )
+
+    elementos.append(tabla)
+
+    elementos.append(
+        Spacer(
+            1,
+            0.5 * cm,
+        )
+    )
+
+    elementos.append(
+        Paragraph(
+            f"Total de programas: {len(datos) - 1}",
+            estilo_normal,
+        )
+    )
+
+    documento.build(elementos)
+
+    buffer.seek(0)
+
+    return buffer

@@ -36,6 +36,8 @@ from apps.core.forms import (
 from .pdf_service import (
     generar_pdf_beneficiario,
     generar_pdf_beneficiarios,
+    generar_pdf_programa,
+    generar_pdf_programas,
 )
 
 from .services import ( 
@@ -43,6 +45,7 @@ from .services import (
     obtener_dashboard,
 
     obtener_programas,
+    obtener_programas_queryset,
     crear_programa,
     obtener_programa,
     obtener_usuarios_programa,
@@ -136,6 +139,33 @@ def programa_lista(request):
         contexto,
 
     )
+
+
+@login_required
+def programa_pdf_lista(request):
+    """
+    Genera el PDF del listado de programas
+    respetando los filtros actuales.
+    """
+
+    programas = obtener_programas_queryset(
+        request
+    )
+
+    pdf = generar_pdf_programas(
+        programas
+    )
+
+    response = HttpResponse(
+        pdf.getvalue(),
+        content_type="application/pdf",
+    )
+
+    response["Content-Disposition"] = (
+        'inline; filename="programas.pdf"'
+    )
+
+    return response
 
 
 @login_required
@@ -316,6 +346,35 @@ def programa_detalle(request, pk):
         contexto,
 
     )
+
+
+@login_required
+def programa_pdf(request, pk):
+    """
+    Genera el PDF de un programa.
+    """
+
+    programa = obtener_programa(pk)
+
+    usuarios_asignados = obtener_usuarios_programa(
+        programa
+    )
+
+    pdf = generar_pdf_programa(
+        programa,
+        usuarios_asignados,
+    )
+
+    response = HttpResponse(
+        pdf.getvalue(),
+        content_type="application/pdf",
+    )
+
+    response["Content-Disposition"] = (
+        f'inline; filename="programa_{programa.pk}.pdf"'
+    )
+
+    return response
 
 
 @login_required

@@ -146,7 +146,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # AUTENTICACIÓN
 # ====================================
 
-LOGIN_URL = "/"
+LOGIN_URL = "/seguridad/"
 
 LOGIN_REDIRECT_URL = "/dashboard/"
 
