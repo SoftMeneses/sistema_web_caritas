@@ -107,9 +107,17 @@ Insumos
                                 </td>
 
                                 <td>
-
                                     {{ insumo.stock_actual|floatformat:2 }}
-
+                                    
+                                    {% if insumo.unidad_medida == 'g' or insumo.unidad_medida == 'mL' %}
+                                        {% if insumo.stock_actual <= 1000 %}
+                                            <span class="badge bg-danger ms-1" title="Nivel de inventario crítico"><i class="bi bi-exclamation-triangle"></i> Bajo</span>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if insumo.stock_actual <= 10 %}
+                                            <span class="badge bg-danger ms-1" title="Nivel de inventario crítico"><i class="bi bi-exclamation-triangle"></i> Bajo</span>
+                                        {% endif %}
+                                    {% endif %}
                                 </td>
 
                                 <td>
