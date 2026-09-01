@@ -72,6 +72,8 @@ Programas
 
                             <th scope="col">Estado</th>
 
+                            <th scope="col" class="text-center">Voluntarios</th>
+
                             <th scope="col" class="text-center" style="width: 170px;">Acciones</th>
 
                         </tr>
@@ -109,17 +111,17 @@ Programas
                                 </td>
 
                                 <td>
-
                                     {% if programa.estado %}
-
                                         <span class="badge app-badge-active">Activo</span>
-
                                     {% else %}
-
                                         <span class="badge app-badge-inactive">Inactivo</span>
-
                                     {% endif %}
-
+                                </td>
+                                
+                                <td class="text-center">
+                                    <span class="badge bg-primary" title="Voluntarios asignados">
+                                        {{ programa.asignaciones_usuarios.count }} <i class="bi bi-people"></i>
+                                    </span>
                                 </td>
 
                                 <td class="text-center">

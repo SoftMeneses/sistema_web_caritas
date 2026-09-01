@@ -72,6 +72,8 @@ Actividades
 
                             <th scope="col">Estado</th>
 
+                            <th scope="col" class="text-center">Voluntarios</th>
+
                             <th scope="col"
                                 class="text-center"
                                 style="width: 170px;">
@@ -140,6 +142,12 @@ Actividades
 
                                     {% endif %}
 
+                                </td>
+
+                                <td class="text-center">
+                                    <span class="badge bg-primary fs-6">
+                                        <i class="bi bi-people"></i> {{ actividad.asignaciones_usuarios.count }}
+                                    </span>
                                 </td>
 
                                 <td class="text-center">
