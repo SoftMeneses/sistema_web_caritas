@@ -618,14 +618,11 @@ def desactivar_programa(programa, usuario_actual):
 
 def obtener_actividades(request):
     """
-    Obtiene el listado de actividades aplicando:
+    Obtiene el listado paginado de actividades.
 
-    - filtro por estado
-    - búsqueda
-    - ordenamiento
-    - paginación
-
-    Retorna el contexto requerido por la vista lista.html.
+    Aplica los filtros mediante
+    obtener_actividades_queryset() y prepara
+    el contexto requerido por lista.html.
     """
 
     params = request.GET.copy()
@@ -640,65 +637,13 @@ def obtener_actividades(request):
         "activo",
     )
 
-    queryset = (
-        Actividad.objects
-        .select_related(
-            "programa",
-            "usuario_creador",
-        )
-    )
-
-    if status == "activo":
-
-        queryset = queryset.filter(
-            estado=True,
-        )
-
-    elif status == "inactivo":
-
-        queryset = queryset.filter(
-            estado=False,
-        )
-
-    elif status == "todos":
-
-        pass
-
     q = request.GET.get(
         "q",
         "",
     ).strip()
 
-    if q:
-
-        queryset = queryset.filter(
-
-            Q(nombre__icontains=q)
-
-            |
-
-            Q(descripcion__icontains=q)
-
-            |
-
-            Q(programa__nombre__icontains=q)
-
-            |
-
-            Q(usuario_creador__first_name__icontains=q)
-
-            |
-
-            Q(usuario_creador__last_name__icontains=q)
-
-            |
-
-            Q(usuario_creador__username__icontains=q)
-
-        )
-
-    queryset = queryset.order_by(
-        "-fecha_actividad",
+    queryset = obtener_actividades_queryset(
+        request
     )
 
     paginator = Paginator(
@@ -731,6 +676,66 @@ def obtener_actividades(request):
         "query_string": params.urlencode(),
 
     }
+
+
+def obtener_actividades_queryset(request):
+    """
+    Obtiene las actividades aplicando los filtros
+    utilizados en el listado.
+    """
+
+    status = request.GET.get(
+        "status",
+        "activo",
+    )
+
+    queryset = (
+        Actividad.objects
+        .select_related(
+            "programa",
+            "usuario_creador",
+        )
+    )
+
+    if status == "activo":
+        queryset = queryset.filter(
+            estado=True,
+        )
+
+    elif status == "inactivo":
+        queryset = queryset.filter(
+            estado=False,
+        )
+
+    q = request.GET.get(
+        "q",
+        "",
+    ).strip()
+
+    if q:
+        queryset = queryset.filter(
+            Q(nombre__icontains=q)
+            |
+            Q(descripcion__icontains=q)
+            |
+            Q(programa__nombre__icontains=q)
+            |
+            Q(
+                usuario_creador__first_name__icontains=q
+            )
+            |
+            Q(
+                usuario_creador__last_name__icontains=q
+            )
+            |
+            Q(
+                usuario_creador__username__icontains=q
+            )
+        )
+
+    return queryset.order_by(
+        "-fecha_actividad",
+    )
 
 
 @transaction.atomic

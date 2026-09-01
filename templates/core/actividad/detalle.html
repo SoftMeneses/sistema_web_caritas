@@ -458,6 +458,16 @@ Detalle de la Actividad
 
             </a>
 
+            <a href="{% url 'core:actividad_pdf_detalle' actividad.pk %}"
+                class="btn btn-danger btn-icon"
+                target="_blank">
+
+                <i class="bi bi-file-earmark-pdf"></i>
+
+                PDF
+
+            </a>
+
             {% if actividad.programa.estado %}
 
                 <a href="{% url 'core:actividad_editar' actividad.pk %}"

@@ -44,7 +44,9 @@ Actividades
 
 {% url 'core:actividad_crear' as actividad_crear_url %}
 
-{% include "includes/components/search_bar.html" with placeholder="Buscar actividad..." button_url=actividad_crear_url button_text="Nueva Actividad" button_icon="bi bi-plus-circle" show_status_filter=True status_value=status_value %}
+{% url 'core:actividad_pdf_lista' as actividad_pdf_lista_url %}
+
+{% include "includes/components/search_bar.html" with placeholder="Buscar actividad..." button_url=actividad_crear_url button_text="Nueva Actividad" button_icon="bi bi-plus-circle" pdf_url=actividad_pdf_lista_url pdf_text="Exportar PDF" pdf_icon="bi bi-file-earmark-pdf" show_status_filter=True status_value=status_value %}
 
 <div class="card app-card">
 

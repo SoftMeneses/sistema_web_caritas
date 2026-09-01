@@ -38,6 +38,8 @@ from .pdf_service import (
     generar_pdf_beneficiarios,
     generar_pdf_programa,
     generar_pdf_programas,
+    generar_pdf_actividades,
+    generar_pdf_actividad,
 )
 
 from .services import ( 
@@ -56,6 +58,7 @@ from .services import (
     desactivar_programa,
 
     obtener_actividades,
+    obtener_actividades_queryset,
     crear_actividad,
     obtener_actividad,
     obtener_consumos_actividad,
@@ -490,6 +493,34 @@ def actividad_lista(request):
 
 
 @login_required
+def actividad_pdf_lista(request):
+    """
+    Genera el PDF del listado de actividades
+    respetando los filtros actuales.
+    """
+
+    actividades = obtener_actividades_queryset(
+        request
+    )
+
+    pdf = generar_pdf_actividades(
+        actividades
+    )
+
+    response = HttpResponse(
+        pdf,
+        content_type="application/pdf",
+    )
+
+    response["Content-Disposition"] = (
+        'inline; filename="actividades.pdf"'
+    )
+
+    return response
+
+
+
+@login_required
 def actividad_crear(request):
     """
     Gestiona la creación de una nueva actividad.
@@ -581,6 +612,41 @@ def actividad_detalle(request, pk):
         contexto,
 
     )
+
+
+@login_required
+def actividad_pdf(request, pk):
+    """
+    Genera el PDF con la información detallada
+    de una actividad.
+    """
+
+    actividad = obtener_actividad(pk)
+
+    consumos = obtener_consumos_actividad(
+        actividad
+    )
+
+    usuarios_asignados = obtener_usuarios_actividad(
+        actividad
+    )
+
+    pdf = generar_pdf_actividad(
+        actividad=actividad,
+        consumos=consumos,
+        usuarios_asignados=usuarios_asignados,
+    )
+
+    response = HttpResponse(
+        pdf,
+        content_type="application/pdf",
+    )
+
+    response["Content-Disposition"] = (
+        f'inline; filename="actividad_{actividad.pk}.pdf"'
+    )
+
+    return response
 
 
 @login_required

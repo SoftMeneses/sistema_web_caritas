@@ -15,10 +15,12 @@ from .views import (
     programa_desactivar,
 
     actividad_lista,
+    actividad_pdf_lista,
     actividad_crear,
     actividad_usuario_crear,
     actividad_usuario_desasignar,
     actividad_detalle,
+    actividad_pdf,
     actividad_editar,
     actividad_desactivar,
     consumo_insumo_crear,
@@ -130,6 +132,12 @@ urlpatterns = [
         actividad_lista,
         name="actividad_lista",
     ),
+
+    path(
+        "actividades/pdf/",
+        actividad_pdf_lista,
+        name="actividad_pdf_lista",
+    ),
     
     path(
         "actividades/nuevo/",
@@ -153,6 +161,12 @@ urlpatterns = [
         "actividades/<int:pk>/",
         actividad_detalle,
         name="actividad_detalle",
+    ),
+
+    path(
+        "actividades/<int:pk>/pdf/",
+        actividad_pdf,
+        name="actividad_pdf_detalle",
     ),
     
     path(
