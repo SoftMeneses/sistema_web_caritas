@@ -1725,3 +1725,477 @@ def generar_pdf_actividad(actividad, usuarios_asignados, consumos):
     buffer.seek(0)
 
     return buffer
+
+
+def generar_pdf_insumos(insumos):
+    """
+    Genera un PDF con el listado de insumos.
+
+    Incluye:
+    - Fecha de generación.
+    - Nombre del insumo.
+    - Descripción.
+    - Unidad de medida.
+    - Stock actual.
+    - Estado.
+    - Total de insumos.
+    """
+
+    buffer = BytesIO()
+
+    documento = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        rightMargin=2 * cm,
+        leftMargin=2 * cm,
+        topMargin=2 * cm,
+        bottomMargin=2 * cm,
+    )
+
+    estilos = getSampleStyleSheet()
+
+    estilo_titulo = ParagraphStyle(
+        "TituloListadoInsumos",
+        parent=estilos["Title"],
+        alignment=TA_CENTER,
+        spaceAfter=12,
+    )
+
+    estilo_subtitulo = ParagraphStyle(
+        "SubtituloListadoInsumos",
+        parent=estilos["Heading2"],
+        spaceBefore=8,
+        spaceAfter=8,
+    )
+
+    estilo_normal = estilos["BodyText"]
+
+    elementos = []
+
+    # -------------------------------------------------------------------------
+    # Encabezado
+    # -------------------------------------------------------------------------
+
+    elementos.append(
+        Paragraph(
+            "CARITAS",
+            estilo_titulo,
+        )
+    )
+
+    elementos.append(
+        Paragraph(
+            "Listado de insumos",
+            estilo_subtitulo,
+        )
+    )
+
+    elementos.append(
+        Paragraph(
+            f"Fecha de generación: "
+            f"{timezone.localtime().strftime('%d/%m/%Y %H:%M')}",
+            estilo_normal,
+        )
+    )
+
+    elementos.append(
+        Spacer(
+            1,
+            0.5 * cm,
+        )
+    )
+
+    # -------------------------------------------------------------------------
+    # Tabla de insumos
+    # -------------------------------------------------------------------------
+
+    datos = [
+        [
+            "Insumo",
+            "Descripción",
+            "Unidad",
+            "Stock actual",
+            "Estado",
+        ]
+    ]
+
+    for insumo in insumos:
+
+        estado = (
+            "Activo"
+            if insumo.estado
+            else "Inactivo"
+        )
+
+        unidad = insumo.get_unidad_medida_display()
+
+        datos.append(
+            [
+                insumo.nombre,
+                insumo.descripcion or "Sin descripción",
+                unidad,
+                f"{insumo.stock_actual:.2f}",
+                estado,
+            ]
+        )
+
+    tabla = Table(
+        datos,
+        colWidths=[
+            3.5 * cm,
+            5 * cm,
+            2.5 * cm,
+            3 * cm,
+            2 * cm,
+        ],
+        repeatRows=1,
+    )
+
+    tabla.setStyle(
+        TableStyle(
+            [
+                (
+                    "BACKGROUND",
+                    (0, 0),
+                    (-1, 0),
+                    colors.lightgrey,
+                ),
+                (
+                    "FONTNAME",
+                    (0, 0),
+                    (-1, 0),
+                    "Helvetica-Bold",
+                ),
+                (
+                    "GRID",
+                    (0, 0),
+                    (-1, -1),
+                    0.5,
+                    colors.grey,
+                ),
+                (
+                    "VALIGN",
+                    (0, 0),
+                    (-1, -1),
+                    "TOP",
+                ),
+                (
+                    "LEFTPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    4,
+                ),
+                (
+                    "RIGHTPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    4,
+                ),
+                (
+                    "TOPPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    5,
+                ),
+                (
+                    "BOTTOMPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    5,
+                ),
+            ]
+        )
+    )
+
+    elementos.append(tabla)
+
+    # -------------------------------------------------------------------------
+    # Total
+    # -------------------------------------------------------------------------
+
+    elementos.append(
+        Spacer(
+            1,
+            0.5 * cm,
+        )
+    )
+
+    elementos.append(
+        Paragraph(
+            f"Total de insumos: {len(insumos)}",
+            estilo_normal,
+        )
+    )
+
+    # -------------------------------------------------------------------------
+    # Construcción del documento
+    # -------------------------------------------------------------------------
+
+    documento.build(
+        elementos
+    )
+
+    buffer.seek(0)
+
+    return buffer
+
+
+def generar_pdf_movimientos_insumo(insumo, movimientos):
+    """
+    Genera un PDF con el historial de movimientos de un insumo.
+
+    Incluye:
+    - Fecha de generación.
+    - Nombre del insumo.
+    - Unidad de medida.
+    - Stock actual.
+    - Tipo de movimiento.
+    - Cantidad.
+    - Fecha del movimiento.
+    - Usuario responsable.
+    - Observación.
+    - Total de movimientos.
+    """
+
+    buffer = BytesIO()
+
+    documento = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        rightMargin=2 * cm,
+        leftMargin=2 * cm,
+        topMargin=2 * cm,
+        bottomMargin=2 * cm,
+    )
+
+    estilos = getSampleStyleSheet()
+
+    estilo_titulo = ParagraphStyle(
+        "TituloMovimientosInsumo",
+        parent=estilos["Title"],
+        alignment=TA_CENTER,
+        spaceAfter=12,
+    )
+
+    estilo_subtitulo = ParagraphStyle(
+        "SubtituloMovimientosInsumo",
+        parent=estilos["Heading2"],
+        spaceBefore=8,
+        spaceAfter=8,
+    )
+
+    estilo_normal = estilos["BodyText"]
+
+    estilo_vacio = ParagraphStyle(
+        "MensajeSinMovimientos",
+        parent=estilos["BodyText"],
+        alignment=TA_CENTER,
+        spaceBefore=20,
+        spaceAfter=20,
+    )
+
+    elementos = []
+
+    # -------------------------------------------------------------------------
+    # Encabezado
+    # -------------------------------------------------------------------------
+
+    elementos.append(
+        Paragraph(
+            "CARITAS",
+            estilo_titulo,
+        )
+    )
+
+    elementos.append(
+        Paragraph(
+            "Historial de movimientos de insumo",
+            estilo_subtitulo,
+        )
+    )
+
+    elementos.append(
+        Paragraph(
+            f"Fecha de generación: "
+            f"{timezone.localtime().strftime('%d/%m/%Y %H:%M')}",
+            estilo_normal,
+        )
+    )
+
+    elementos.append(
+        Paragraph(
+            f"Insumo: {insumo.nombre}",
+            estilo_normal,
+        )
+    )
+
+    elementos.append(
+        Paragraph(
+            f"Unidad de medida: "
+            f"{insumo.get_unidad_medida_display()}",
+            estilo_normal,
+        )
+    )
+
+    elementos.append(
+        Paragraph(
+            f"Stock actual: {insumo.stock_actual:.2f}",
+            estilo_normal,
+        )
+    )
+
+    elementos.append(
+        Spacer(
+            1,
+            0.5 * cm,
+        )
+    )
+
+    # -------------------------------------------------------------------------
+    # Tabla de movimientos
+    # -------------------------------------------------------------------------
+
+    if movimientos:
+
+        datos = [
+            [
+                "Tipo",
+                "Cantidad",
+                "Fecha",
+                "Responsable",
+                "Observación",
+            ]
+        ]
+
+        for movimiento in movimientos:
+
+            usuario_responsable = (
+                movimiento.usuario_responsable.get_full_name()
+                or movimiento.usuario_responsable.username
+            )
+
+            datos.append(
+                [
+                    movimiento.get_tipo_movimiento_display(),
+                    f"{movimiento.cantidad:.2f}",
+                    movimiento.fecha_movimiento.strftime(
+                        "%d/%m/%Y %H:%M"
+                    ),
+                    usuario_responsable,
+                    movimiento.observacion or "Sin observación",
+                ]
+            )
+
+        tabla = Table(
+            datos,
+            colWidths=[
+                2.5 * cm,
+                2.5 * cm,
+                3.2 * cm,
+                3.5 * cm,
+                4.3 * cm,
+            ],
+            repeatRows=1,
+        )
+
+        tabla.setStyle(
+            TableStyle(
+                [
+                    (
+                        "BACKGROUND",
+                        (0, 0),
+                        (-1, 0),
+                        colors.lightgrey,
+                    ),
+                    (
+                        "FONTNAME",
+                        (0, 0),
+                        (-1, 0),
+                        "Helvetica-Bold",
+                    ),
+                    (
+                        "GRID",
+                        (0, 0),
+                        (-1, -1),
+                        0.5,
+                        colors.grey,
+                    ),
+                    (
+                        "VALIGN",
+                        (0, 0),
+                        (-1, -1),
+                        "TOP",
+                    ),
+                    (
+                        "LEFTPADDING",
+                        (0, 0),
+                        (-1, -1),
+                        4,
+                    ),
+                    (
+                        "RIGHTPADDING",
+                        (0, 0),
+                        (-1, -1),
+                        4,
+                    ),
+                    (
+                        "TOPPADDING",
+                        (0, 0),
+                        (-1, -1),
+                        5,
+                    ),
+                    (
+                        "BOTTOMPADDING",
+                        (0, 0),
+                        (-1, -1),
+                        5,
+                    ),
+                ]
+            )
+        )
+
+        elementos.append(tabla)
+
+    else:
+
+        # ---------------------------------------------------------------------
+        # Sin movimientos
+        # ---------------------------------------------------------------------
+
+        elementos.append(
+            Paragraph(
+                "No existen movimientos registrados "
+                "para este insumo.",
+                estilo_vacio,
+            )
+        )
+
+    # -------------------------------------------------------------------------
+    # Total
+    # -------------------------------------------------------------------------
+
+    elementos.append(
+        Spacer(
+            1,
+            0.5 * cm,
+        )
+    )
+
+    elementos.append(
+        Paragraph(
+            f"Total de movimientos: {len(movimientos)}",
+            estilo_normal,
+        )
+    )
+
+    # -------------------------------------------------------------------------
+    # Construcción del documento
+    # -------------------------------------------------------------------------
+
+    documento.build(
+        elementos
+    )
+
+    buffer.seek(0)
+
+    return buffer

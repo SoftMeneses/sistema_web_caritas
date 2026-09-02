@@ -37,12 +37,14 @@ from .views import (
     beneficiario_desasignar_programa,
 
     insumo_lista,
+    insumo_pdf_lista,
     insumo_crear,
     insumo_detalle,
     insumo_editar,
     insumo_desactivar,
 
     movimiento_insumo_crear,
+    movimiento_insumo_pdf,
 
     auditoria_lista,
     auditoria_detalle,
@@ -256,6 +258,12 @@ urlpatterns = [
         insumo_lista,
         name="insumo_lista",
     ),
+
+    path(
+        "insumos/pdf/",
+        insumo_pdf_lista,
+        name="insumo_pdf_lista",
+    ),
     
     path(
         "insumos/nuevo/",
@@ -285,6 +293,12 @@ urlpatterns = [
         "insumos/movimiento/nuevo/",
         movimiento_insumo_crear,
         name="movimiento_insumo_crear",
+    ),
+
+    path(
+        "insumos/<int:pk>/movimientos/pdf/",
+        movimiento_insumo_pdf,
+        name="movimiento_insumo_pdf",
     ),
 
 

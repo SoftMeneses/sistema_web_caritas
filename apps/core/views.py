@@ -40,6 +40,8 @@ from .pdf_service import (
     generar_pdf_programas,
     generar_pdf_actividades,
     generar_pdf_actividad,
+    generar_pdf_insumos,
+    generar_pdf_movimientos_insumo,
 )
 
 from .services import ( 
@@ -82,9 +84,11 @@ from .services import (
     desasignar_beneficiario,
 
     obtener_insumos,
+    obtener_insumos_queryset,
     crear_insumo,
     obtener_insumo,
     obtener_movimientos_insumo,
+    obtener_movimientos_insumo_queryset,
     actualizar_insumo,
     desactivar_insumo,
     registrar_movimiento_insumo,
@@ -1455,6 +1459,33 @@ def insumo_lista(request):
 
 
 @login_required
+def insumo_pdf_lista(request):
+    """
+    Genera el PDF del listado de insumos
+    respetando los filtros actuales.
+    """
+
+    insumos = obtener_insumos_queryset(
+        request
+    )
+
+    pdf = generar_pdf_insumos(
+        insumos
+    )
+
+    response = HttpResponse(
+        pdf,
+        content_type="application/pdf",
+    )
+
+    response["Content-Disposition"] = (
+        'inline; filename="insumos.pdf"'
+    )
+
+    return response
+
+
+@login_required
 def insumo_crear(request):
     """
     Gestiona la creación de un nuevo insumo.
@@ -1673,6 +1704,35 @@ def movimiento_insumo_crear(request):
             "form": form,
         },
     )
+
+
+@login_required
+def movimiento_insumo_pdf(request, pk):
+    """
+    Genera el PDF de los movimientos de un insumo.
+    """
+
+    insumo = obtener_insumo(pk)
+
+    movimientos = obtener_movimientos_insumo_queryset(
+        insumo
+    )
+
+    pdf = generar_pdf_movimientos_insumo(
+        insumo,
+        movimientos
+    )
+
+    response = HttpResponse(
+        pdf,
+        content_type="application/pdf",
+    )
+
+    response["Content-Disposition"] = (
+        'inline; filename="movimientos_insumo.pdf"'
+    )
+
+    return response
 
 
 # ==============================================================================

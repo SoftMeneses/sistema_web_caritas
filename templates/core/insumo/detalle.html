@@ -337,6 +337,16 @@ Detalle del Insumo
 
             {% endif %}
 
+            <a href="{% url 'core:movimiento_insumo_pdf' insumo.pk %}"
+               class="btn btn-danger"
+               target="_blank">
+
+                <i class="bi bi-file-earmark-pdf me-1"></i>
+
+                PDF
+
+            </a>
+
             <a href="{% url 'core:insumo_editar' insumo.pk %}"
                class="btn btn-primary btn-icon">
 

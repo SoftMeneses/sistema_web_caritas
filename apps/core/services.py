@@ -1593,6 +1593,46 @@ def obtener_insumos(request):
     }
 
 
+def obtener_insumos_queryset(request):
+    """
+    Obtiene los insumos aplicando los filtros
+    utilizados en el listado.
+    """
+
+    status = request.GET.get(
+        "status",
+        "activo",
+    )
+
+    queryset = Insumo.objects.all()
+
+    if status == "activo":
+        queryset = queryset.filter(
+            estado=True,
+        )
+
+    elif status == "inactivo":
+        queryset = queryset.filter(
+            estado=False,
+        )
+
+    q = request.GET.get(
+        "q",
+        "",
+    ).strip()
+
+    if q:
+        queryset = queryset.filter(
+            Q(nombre__icontains=q)
+            |
+            Q(descripcion__icontains=q)
+        )
+
+    return queryset.order_by(
+        "nombre",
+    )
+
+
 @transaction.atomic
 def crear_insumo(formulario, usuario_actual):
 
@@ -1644,6 +1684,29 @@ def obtener_movimientos_insumo(insumo):
             insumo=insumo
         )
         .select_related(
+            "usuario_responsable",
+        )
+        .order_by(
+            "-fecha_movimiento",
+        )
+    )
+
+
+def obtener_movimientos_insumo_queryset(insumo):
+    """
+    Obtiene los movimientos de un insumo para exportación.
+
+    Retorna el queryset completo, sin paginación,
+    manteniendo el mismo orden utilizado en el detalle.
+    """
+
+    return (
+        MovimientoInsumo.objects
+        .filter(
+            insumo=insumo
+        )
+        .select_related(
+            "insumo",
             "usuario_responsable",
         )
         .order_by(
