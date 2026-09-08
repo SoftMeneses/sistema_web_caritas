@@ -217,7 +217,6 @@ def obtener_paginas_visibles(page_obj):
 
 
 def obtener_auditorias(request):
-
     """
     Obtiene el listado paginado de auditorías aplicando:
 
@@ -225,6 +224,8 @@ def obtener_auditorias(request):
     - filtro por operación
     - filtro por acción
     - filtro por tabla afectada
+    - filtro por usuario
+    - filtro por rango de fechas
     - ordenamiento
     - paginación
 
@@ -253,27 +254,16 @@ def obtener_auditorias(request):
     ).strip()
 
     if q:
-
         queryset = queryset.filter(
-
             Q(tabla_afectada__icontains=q)
-
             |
-
             Q(descripcion__icontains=q)
-
             |
-
             Q(usuario_responsable__first_name__icontains=q)
-
             |
-
             Q(usuario_responsable__last_name__icontains=q)
-
             |
-
             Q(usuario_responsable__username__icontains=q)
-
         )
 
     operacion = request.GET.get(
@@ -282,7 +272,6 @@ def obtener_auditorias(request):
     )
 
     if operacion:
-
         queryset = queryset.filter(
             operacion=operacion,
         )
@@ -293,7 +282,6 @@ def obtener_auditorias(request):
     )
 
     if accion:
-
         queryset = queryset.filter(
             accion=accion,
         )
@@ -304,9 +292,38 @@ def obtener_auditorias(request):
     ).strip()
 
     if tabla:
-
         queryset = queryset.filter(
             tabla_afectada__icontains=tabla,
+        )
+
+    usuario = request.GET.get(
+        "usuario",
+        "",
+    ).strip()
+
+    if usuario:
+        queryset = queryset.filter(
+            usuario_responsable__username__icontains=usuario,
+        )
+
+    fecha_desde = request.GET.get(
+        "fecha_desde",
+        "",
+    )
+
+    if fecha_desde:
+        queryset = queryset.filter(
+            fecha_auditoria__date__gte=fecha_desde,
+        )
+
+    fecha_hasta = request.GET.get(
+        "fecha_hasta",
+        "",
+    )
+
+    if fecha_hasta:
+        queryset = queryset.filter(
+            fecha_auditoria__date__lte=fecha_hasta,
         )
 
     queryset = queryset.order_by(
@@ -327,27 +344,20 @@ def obtener_auditorias(request):
     )
 
     return {
-
         "auditorias": page_obj,
-
         "page_obj": page_obj,
-
         "search_value": q,
-
         "operacion_value": operacion,
-
         "accion_value": accion,
-
         "tabla_value": tabla,
-
-        "acciones_auditoria": AccionAuditoria.choices,
-
+        "usuario_value": usuario,
+        "fecha_desde_value": fecha_desde,
+        "fecha_hasta_value": fecha_hasta,
+        "acciones_auditoria": acciones_auditoria,
         "visible_pages": obtener_paginas_visibles(
             page_obj,
         ),
-
         "query_string": params.urlencode(),
-
     }
 
 

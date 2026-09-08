@@ -157,7 +157,7 @@ Auditoría
 
                 </div>
 
-                <div class="col-md-3">
+                                    <div class="col-md-3">
 
                     <label for="id_tabla" class="form-label">
 
@@ -175,6 +175,70 @@ Auditoría
                     >
 
                 </div>
+
+            </div>
+
+
+            <div class="row g-3 align-items-end mt-1">
+
+                <div class="col-md-4">
+
+                    <label for="id_usuario" class="form-label">
+
+                        Usuario
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="usuario"
+                        id="id_usuario"
+                        class="form-control"
+                        placeholder="Nombre de usuario"
+                        value="{{ usuario_value }}"
+                    >
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <label for="id_fecha_desde" class="form-label">
+
+                        Fecha desde
+
+                    </label>
+
+                    <input
+                        type="date"
+                        name="fecha_desde"
+                        id="id_fecha_desde"
+                        class="form-control"
+                        value="{{ fecha_desde_value }}"
+                    >
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <label for="id_fecha_hasta" class="form-label">
+
+                        Fecha hasta
+
+                    </label>
+
+                    <input
+                        type="date"
+                        name="fecha_hasta"
+                        id="id_fecha_hasta"
+                        class="form-control"
+                        value="{{ fecha_hasta_value }}"
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="row g-3 mt-1">
 
                 <div class="col-12">
 
