@@ -2199,3 +2199,259 @@ def generar_pdf_movimientos_insumo(insumo, movimientos):
     buffer.seek(0)
 
     return buffer
+
+
+def generar_pdf_auditorias(auditorias):
+    """
+    Genera un PDF con el listado de auditorías.
+
+    Incluye:
+    - Fecha y hora de la auditoría.
+    - Tabla afectada.
+    - Operación realizada.
+    - Acción funcional.
+    - Identificador del registro.
+    - Usuario responsable.
+    - Descripción.
+    - Total de auditorías.
+    """
+
+    buffer = BytesIO()
+
+    documento = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        rightMargin=1.2 * cm,
+        leftMargin=1.2 * cm,
+        topMargin=2 * cm,
+        bottomMargin=2 * cm,
+    )
+
+    estilos = getSampleStyleSheet()
+
+    estilo_titulo = ParagraphStyle(
+        "TituloListadoAuditorias",
+        parent=estilos["Title"],
+        alignment=TA_CENTER,
+        spaceAfter=12,
+    )
+
+    estilo_subtitulo = ParagraphStyle(
+        "SubtituloListadoAuditorias",
+        parent=estilos["Heading2"],
+        spaceBefore=8,
+        spaceAfter=8,
+    )
+
+    estilo_normal = estilos["BodyText"]
+
+    estilo_tabla = ParagraphStyle(
+        "TextoTablaAuditorias",
+        parent=estilos["BodyText"],
+        fontSize=7,
+        leading=9,
+    )
+
+    estilo_encabezado = ParagraphStyle(
+        "EncabezadoTablaAuditorias",
+        parent=estilo_tabla,
+        fontName="Helvetica-Bold",
+        alignment=TA_CENTER,
+    )
+
+    elementos = []
+
+    # -------------------------------------------------------------------------
+    # Encabezado
+    # -------------------------------------------------------------------------
+
+    elementos.append(
+        Paragraph(
+            "CARITAS",
+            estilo_titulo,
+        )
+    )
+
+    elementos.append(
+        Paragraph(
+            "Listado de auditoría",
+            estilo_subtitulo,
+        )
+    )
+
+    elementos.append(
+        Paragraph(
+            f"Fecha de generación: "
+            f"{timezone.localtime().strftime('%d/%m/%Y %H:%M')}",
+            estilo_normal,
+        )
+    )
+
+    elementos.append(
+        Spacer(
+            1,
+            0.5 * cm,
+        )
+    )
+
+    # -------------------------------------------------------------------------
+    # Tabla de auditorías
+    # -------------------------------------------------------------------------
+
+    datos = [
+        [
+            Paragraph("Fecha", estilo_encabezado),
+            Paragraph("Tabla", estilo_encabezado),
+            Paragraph("Operación", estilo_encabezado),
+            Paragraph("Acción", estilo_encabezado),
+            Paragraph("Registro", estilo_encabezado),
+            Paragraph("Usuario", estilo_encabezado),
+            Paragraph("Descripción", estilo_encabezado),
+        ]
+    ]
+
+    for auditoria in auditorias:
+
+        usuario = (
+            auditoria.usuario_responsable.get_full_name()
+            or auditoria.usuario_responsable.username
+        )
+
+        datos.append(
+            [
+                Paragraph(
+                    auditoria.fecha_auditoria.strftime(
+                        "%d/%m/%Y %H:%M"
+                    ),
+                    estilo_tabla,
+                ),
+                Paragraph(
+                    str(auditoria.tabla_afectada),
+                    estilo_tabla,
+                ),
+                Paragraph(
+                    auditoria.get_operacion_display(),
+                    estilo_tabla,
+                ),
+                Paragraph(
+                    auditoria.get_accion_display(),
+                    estilo_tabla,
+                ),
+                Paragraph(
+                    str(auditoria.id_registro),
+                    estilo_tabla,
+                ),
+                Paragraph(
+                    usuario,
+                    estilo_tabla,
+                ),
+                Paragraph(
+                    auditoria.descripcion or "Sin descripción.",
+                    estilo_tabla,
+                ),
+            ]
+        )
+
+    tabla = Table(
+        datos,
+        colWidths=[
+            2.2 * cm,
+            2.1 * cm,
+            2.0 * cm,
+            3.0 * cm,
+            1.5 * cm,
+            2.5 * cm,
+            4.7 * cm,
+        ],
+        repeatRows=1,
+    )
+
+    tabla.setStyle(
+        TableStyle(
+            [
+                (
+                    "BACKGROUND",
+                    (0, 0),
+                    (-1, 0),
+                    colors.lightgrey,
+                ),
+                (
+                    "FONTNAME",
+                    (0, 0),
+                    (-1, 0),
+                    "Helvetica-Bold",
+                ),
+                (
+                    "GRID",
+                    (0, 0),
+                    (-1, -1),
+                    0.5,
+                    colors.grey,
+                ),
+                (
+                    "VALIGN",
+                    (0, 0),
+                    (-1, -1),
+                    "TOP",
+                ),
+                (
+                    "LEFTPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    4,
+                ),
+                (
+                    "RIGHTPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    4,
+                ),
+                (
+                    "TOPPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    4,
+                ),
+                (
+                    "BOTTOMPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    4,
+                ),
+            ]
+        )
+    )
+
+    elementos.append(
+        tabla
+    )
+
+    # -------------------------------------------------------------------------
+    # Total
+    # -------------------------------------------------------------------------
+
+    elementos.append(
+        Spacer(
+            1,
+            0.5 * cm,
+        )
+    )
+
+    elementos.append(
+        Paragraph(
+            f"Total de auditorías: {len(auditorias)}",
+            estilo_normal,
+        )
+    )
+
+    # -------------------------------------------------------------------------
+    # Construcción del documento
+    # -------------------------------------------------------------------------
+
+    documento.build(
+        elementos
+    )
+
+    buffer.seek(0)
+
+    return buffer

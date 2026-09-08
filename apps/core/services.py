@@ -232,14 +232,88 @@ def obtener_auditorias(request):
     Retorna el contexto requerido por la vista de auditoría.
     """
 
-    acciones_auditoria = AccionAuditoria.choices
-
     params = request.GET.copy()
 
     params.pop(
         "page",
         None,
     )
+
+    q = request.GET.get(
+        "q",
+        "",
+    ).strip()
+
+    operacion = request.GET.get(
+        "operacion",
+        "",
+    )
+
+    accion = request.GET.get(
+        "accion",
+        "",
+    )
+
+    tabla = request.GET.get(
+        "tabla",
+        "",
+    ).strip()
+
+    usuario = request.GET.get(
+        "usuario",
+        "",
+    ).strip()
+
+    fecha_desde = request.GET.get(
+        "fecha_desde",
+        "",
+    )
+
+    fecha_hasta = request.GET.get(
+        "fecha_hasta",
+        "",
+    )
+
+    queryset = obtener_auditorias_queryset(
+        request
+    )
+
+    paginator = Paginator(
+        queryset,
+        20,
+    )
+
+    page_number = request.GET.get(
+        "page",
+    )
+
+    page_obj = paginator.get_page(
+        page_number,
+    )
+
+    return {
+        "auditorias": page_obj,
+        "page_obj": page_obj,
+        "search_value": q,
+        "operacion_value": operacion,
+        "accion_value": accion,
+        "tabla_value": tabla,
+        "usuario_value": usuario,
+        "fecha_desde_value": fecha_desde,
+        "fecha_hasta_value": fecha_hasta,
+        "acciones_auditoria": AccionAuditoria.choices,
+        "visible_pages": obtener_paginas_visibles(
+            page_obj,
+        ),
+        "query_string": params.urlencode(),
+    }
+
+
+def obtener_auditorias_queryset(request):
+    """
+    Obtiene las auditorías aplicando los filtros
+    utilizados en el listado.
+    """
 
     queryset = (
         Auditoria.objects
@@ -326,39 +400,9 @@ def obtener_auditorias(request):
             fecha_auditoria__date__lte=fecha_hasta,
         )
 
-    queryset = queryset.order_by(
+    return queryset.order_by(
         "-fecha_auditoria",
     )
-
-    paginator = Paginator(
-        queryset,
-        20,
-    )
-
-    page_number = request.GET.get(
-        "page",
-    )
-
-    page_obj = paginator.get_page(
-        page_number,
-    )
-
-    return {
-        "auditorias": page_obj,
-        "page_obj": page_obj,
-        "search_value": q,
-        "operacion_value": operacion,
-        "accion_value": accion,
-        "tabla_value": tabla,
-        "usuario_value": usuario,
-        "fecha_desde_value": fecha_desde,
-        "fecha_hasta_value": fecha_hasta,
-        "acciones_auditoria": acciones_auditoria,
-        "visible_pages": obtener_paginas_visibles(
-            page_obj,
-        ),
-        "query_string": params.urlencode(),
-    }
 
 
 def obtener_auditoria(pk):

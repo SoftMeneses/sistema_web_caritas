@@ -47,6 +47,7 @@ from .views import (
     movimiento_insumo_pdf,
 
     auditoria_lista,
+    auditoria_pdf,
     auditoria_detalle,
 
 )
@@ -310,6 +311,12 @@ urlpatterns = [
         "auditoria/",
         auditoria_lista,
         name="auditoria_lista",
+    ),
+
+    path(
+        "auditoria/pdf/",
+        auditoria_pdf,
+        name="auditoria_pdf",
     ),
 
     path(

@@ -42,6 +42,7 @@ from .pdf_service import (
     generar_pdf_actividad,
     generar_pdf_insumos,
     generar_pdf_movimientos_insumo,
+    generar_pdf_auditorias,
 )
 
 from .services import ( 
@@ -95,6 +96,7 @@ from .services import (
     registrar_consumo_insumo,
 
     obtener_auditorias,
+    obtener_auditorias_queryset,
     obtener_auditoria,
 )
 
@@ -1758,6 +1760,33 @@ def auditoria_lista(request):
         contexto,
 
     )
+
+
+@login_required
+def auditoria_pdf(request):
+    """
+    Genera el PDF con todas las auditorías que cumplen
+    los filtros recibidos en la solicitud.
+    """
+
+    auditorias = obtener_auditorias_queryset(
+        request
+    )
+
+    pdf = generar_pdf_auditorias(
+        auditorias
+    )
+
+    response = HttpResponse(
+        pdf.getvalue(),
+        content_type="application/pdf",
+    )
+
+    response["Content-Disposition"] = (
+        'inline; filename="auditoria.pdf"'
+    )
+
+    return response
 
 
 @login_required
