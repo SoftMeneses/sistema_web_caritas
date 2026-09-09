@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
-from django.db import transaction
+from django.db import connection, transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
@@ -1844,31 +1844,19 @@ def desactivar_insumo(insumo, usuario_actual):
 
 
 @transaction.atomic
-def registrar_movimiento_insumo(
-    formulario,
-    usuario_actual,
-):
+def registrar_movimiento_insumo(formulario, usuario_actual):
     """
-    Registra un movimiento de inventario.
+    Registra un movimiento de inventario mediante el
+    procedimiento almacenado de MySQL.
 
     El stock_actual no se modifica desde Django.
     La actualización corresponde a los triggers SQL.
     """
 
-    movimiento = formulario.save(
-        commit=False
-    )
-
-    movimiento.usuario_responsable = usuario_actual
-
-    movimiento.save()
+    movimiento = formulario.save(commit=False)
 
     if movimiento.tipo_movimiento == TipoMovimiento.ENTRADA:
-
-        accion = (
-            AccionAuditoria.REGISTRAR_ENTRADA_INSUMO
-        )
-
+        accion = AccionAuditoria.REGISTRAR_ENTRADA_INSUMO
         descripcion = (
             f"Entrada de {movimiento.cantidad} "
             f"{movimiento.insumo.get_unidad_medida_display()} "
@@ -1876,11 +1864,7 @@ def registrar_movimiento_insumo(
         )
 
     elif movimiento.tipo_movimiento == TipoMovimiento.SALIDA:
-
-        accion = (
-            AccionAuditoria.REGISTRAR_SALIDA_INSUMO
-        )
-
+        accion = AccionAuditoria.REGISTRAR_SALIDA_INSUMO
         descripcion = (
             f"Salida de {movimiento.cantidad} "
             f"{movimiento.insumo.get_unidad_medida_display()} "
@@ -1888,10 +1872,32 @@ def registrar_movimiento_insumo(
         )
 
     else:
+        raise ValidationError("Tipo de movimiento no válido.")
 
-        raise ValidationError(
-            "Tipo de movimiento no válido."
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            CALL sp_registrar_movimiento_insumo(
+                %s, %s, %s, %s, %s
+            )
+            """,
+            [
+                movimiento.insumo.pk,
+                movimiento.tipo_movimiento,
+                movimiento.cantidad,
+                movimiento.observacion,
+                usuario_actual.pk,
+            ],
         )
+
+        cursor.execute("SELECT LAST_INSERT_ID()")
+        id_movimiento = cursor.fetchone()[0]
+
+    movimiento = (
+        MovimientoInsumo.objects
+        .select_related("insumo")
+        .get(pk=id_movimiento)
+    )
 
     registrar_auditoria(
         usuario=usuario_actual,
@@ -1906,69 +1912,71 @@ def registrar_movimiento_insumo(
 
 
 @transaction.atomic
-def registrar_consumo_insumo(
-    formulario,
-    actividad,
-    usuario_actual,
-):
+def registrar_consumo_insumo(formulario, actividad, usuario_actual):
     """
-    Registra el consumo de un insumo dentro de una actividad.
+    Registra el consumo de un insumo dentro de una actividad
+    mediante el procedimiento almacenado de MySQL.
 
     El stock_actual no se modifica desde Django.
     La actualización corresponde al trigger SQL
     de detalle_actividad_insumo.
     """
 
-    detalle = formulario.save(
-        commit=False
-    )
-
+    detalle = formulario.save(commit=False)
     detalle.actividad = actividad
+
     insumo = detalle.insumo
 
     if not actividad.estado:
-
         raise ValidationError(
-            "No se puede registrar consumo "
-            "para una actividad inactiva."
+            "No se puede registrar consumo para una actividad inactiva."
         )
 
     if not actividad.programa.estado:
-
         raise ValidationError(
-            "No se puede registrar consumo "
-            "porque la actividad pertenece "
-            "a un programa inactivo."
+            "No se puede registrar consumo porque la actividad pertenece a un programa inactivo."
         )
 
     if not insumo.estado:
-
         raise ValidationError(
-            "No se puede registrar consumo "
-            "para un insumo inactivo."
+            "No se puede registrar consumo para un insumo inactivo."
         )
 
-    detalle.save()
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            CALL sp_registrar_consumo_insumo(
+                %s, %s, %s
+            )
+            """,
+            [
+                actividad.pk,
+                insumo.pk,
+                detalle.cantidad_usada,
+            ],
+        )
+
+        cursor.execute("SELECT LAST_INSERT_ID()")
+        id_detalle = cursor.fetchone()[0]
+
+    detalle = (
+        DetalleActividadInsumo.objects
+        .select_related("actividad", "insumo")
+        .get(pk=id_detalle)
+    )
 
     registrar_auditoria(
-
         usuario=usuario_actual,
-
         tabla="detalle_actividad_insumo",
-
         operacion=OperacionAuditoria.INSERT,
-
         accion=AccionAuditoria.REGISTRAR_CONSUMO_INSUMO,
-
         id_registro=detalle.actividad.pk,
-
         descripcion=(
-            f'Consumo de {detalle.cantidad_usada} '
-            f'{insumo.get_unidad_medida_display()} '
+            f"Consumo de {detalle.cantidad_usada} "
+            f"{insumo.get_unidad_medida_display()} "
             f'de "{insumo.nombre}" '
             f'en la actividad "{actividad.nombre}".'
         ),
-
     )
 
     return detalle
