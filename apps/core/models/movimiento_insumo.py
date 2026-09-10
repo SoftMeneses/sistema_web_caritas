@@ -52,6 +52,13 @@ class MovimientoInsumo(models.Model):
         verbose_name_plural = "Movimientos de Insumos"
 
         ordering = ("-fecha_movimiento",)
+
+        indexes = (
+            models.Index(
+                fields=("insumo", "fecha_movimiento"),
+                name="idx_movimientos_insumo_fecha",
+            ),
+        )
         
 
     def __str__(self):
