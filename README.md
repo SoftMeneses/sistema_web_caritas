@@ -75,19 +75,25 @@ y completar las credenciales de conexión a MySQL.
 python manage.py migrate
 ```
 
-8. Importar los triggers.
+8. Importar los Stored Procedures.
+
+```
+database/procedures/procedures.sql
+```
+
+9. Importar los triggers.
 
 ```
 database/triggers/triggers.sql
 ```
 
-9. Crear un superusuario
+10. Crear un superusuario
 
 ```bash
 python manage.py createsuperuser
 ```
 
-10. Ejecutar el servidor.
+11. Ejecutar el servidor.
 
 ```bash
 python manage.py runserver
@@ -99,11 +105,15 @@ El directorio `database/schema/` contiene el archivo `schema.sql`, correspondien
 
 Este archivo se conserva como referencia y documentación del modelo relacional desarrollado durante la etapa de diseño.
 
-Para el desarrollo del proyecto, la creación y actualización de la estructura de la base de datos se realiza mediante las migraciones de Django. Por ello, únicamente es necesario crear una base de datos vacía y ejecutar:
+Para el desarrollo del proyecto, la estructura de la base de datos se crea y actualiza mediante las migraciones de Django.
 
-```bash
-python manage.py migrate
-```
+Los objetos avanzados de persistencia se mantienen mediante scripts SQL independientes:
+
+- `database/procedures/procedures.sql`: Stored Procedures utilizados para operaciones de inventario.
+- `database/triggers/triggers.sql`: Triggers utilizados para validar operaciones y actualizar el stock de insumos.
+
+Por ello, después de ejecutar las migraciones, es necesario importar ambos archivos SQL en la base de datos `caritas_3`.
+
 
 ## Estado del proyecto
 

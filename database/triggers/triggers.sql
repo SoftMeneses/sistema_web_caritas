@@ -29,7 +29,8 @@ BEGIN
     SELECT stock_actual
     INTO stock_disponible
     FROM insumos
-    WHERE id_insumo = NEW.id_insumo;
+    WHERE id_insumo = NEW.id_insumo
+    FOR UPDATE;
 
     -- Validar stock suficiente
     IF stock_disponible < NEW.cantidad_usada THEN
@@ -91,7 +92,8 @@ BEGIN
         SELECT stock_actual
         INTO stock_disponible
         FROM insumos
-        WHERE id_insumo = NEW.id_insumo;
+        WHERE id_insumo = NEW.id_insumo
+        FOR UPDATE;
 
         IF stock_disponible < NEW.cantidad THEN
             SIGNAL SQLSTATE '45000'
