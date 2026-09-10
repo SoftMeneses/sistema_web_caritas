@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
@@ -386,8 +386,13 @@ def obtener_auditorias_queryset(request):
     )
 
     if fecha_desde:
+        fecha_desde_datetime = datetime.strptime(
+            fecha_desde,
+            "%Y-%m-%d",
+        )
+
         queryset = queryset.filter(
-            fecha_auditoria__date__gte=fecha_desde,
+            fecha_auditoria__gte=fecha_desde_datetime,
         )
 
     fecha_hasta = request.GET.get(
@@ -396,8 +401,17 @@ def obtener_auditorias_queryset(request):
     )
 
     if fecha_hasta:
+        fecha_hasta_datetime = datetime.strptime(
+            fecha_hasta,
+            "%Y-%m-%d",
+        )
+
+        fecha_hasta_datetime = (
+            fecha_hasta_datetime + timedelta(days=1)
+        )
+
         queryset = queryset.filter(
-            fecha_auditoria__date__lte=fecha_hasta,
+            fecha_auditoria__lt=fecha_hasta_datetime,
         )
 
     return queryset.order_by(

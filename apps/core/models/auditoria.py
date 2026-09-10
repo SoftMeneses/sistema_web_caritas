@@ -54,6 +54,17 @@ class Auditoria(models.Model):
         verbose_name_plural = "Auditorías"
 
         ordering = ("-fecha_auditoria",)
+
+        indexes = (
+            models.Index(
+                fields=("fecha_auditoria",),
+                name="idx_auditoria_fecha",
+            ),
+            models.Index(
+                fields=("usuario_responsable",),
+                name="idx_auditoria_usuario",
+            ),
+        )
         
 
     def __str__(self):
