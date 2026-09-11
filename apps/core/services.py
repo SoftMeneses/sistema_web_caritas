@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db import connection, transaction
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.shortcuts import get_object_or_404
 
 from urllib.parse import urlencode
@@ -118,11 +118,10 @@ def obtener_programas_queryset(request):
         "activo",
     )
 
-    queryset = (
-        Programa.objects
-        .select_related(
-            "usuario_responsable"
-        )
+    queryset = Programa.objects.select_related(
+        "usuario_responsable"
+    ).annotate(
+        cantidad_usuarios=Count("asignaciones_usuarios")
     )
 
     if status == "activo":
