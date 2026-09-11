@@ -762,6 +762,9 @@ def obtener_actividades_queryset(request):
             "programa",
             "usuario_creador",
         )
+        .annotate(
+            cantidad_usuarios=Count("asignaciones_usuarios")
+        )
     )
 
     if status == "activo":
