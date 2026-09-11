@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
-from pathlib import Path
 from dotenv import load_dotenv
 import os
 
@@ -50,6 +49,7 @@ INSTALLED_APPS = [
     'apps.core',
     'apps.seguridad',
     'rest_framework',
+    'apps.api',
 ]
 
 MIDDLEWARE = [
@@ -62,7 +62,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'caritas.urls'
+ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
     {
@@ -80,7 +80,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'caritas.wsgi.application'
+WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database
