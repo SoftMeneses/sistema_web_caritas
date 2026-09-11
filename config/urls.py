@@ -33,5 +33,7 @@ urlpatterns = [
     ),
 
     path('', include('apps.core.urls')),
+
+    path('api/', include('apps.api.urls')),
     
 ]
