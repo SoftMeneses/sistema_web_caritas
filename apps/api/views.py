@@ -1,9 +1,13 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
+
+from apps.core.models import Insumo
 
 from apps.core.services import (
     obtener_actividades_queryset,
     obtener_beneficiarios_queryset,
     obtener_insumos_queryset,
+    obtener_movimientos_insumo,
     obtener_programas_queryset,
 )
 
@@ -11,6 +15,7 @@ from .serializers import (
     ActividadSerializer,
     BeneficiarioSerializer,
     InsumoSerializer,
+    MovimientoInsumoSerializer,
     ProgramaSerializer,
 )
 
@@ -43,3 +48,18 @@ class InsumoViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         return obtener_insumos_queryset(self.request)
+
+
+class MovimientoInsumoViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = MovimientoInsumoSerializer
+
+    def get_queryset(self):
+        insumo = get_object_or_404(
+            Insumo,
+            pk=self.kwargs["insumo_id"],
+        )
+
+        return (
+            obtener_movimientos_insumo(insumo)
+            .select_related("insumo")
+        )
