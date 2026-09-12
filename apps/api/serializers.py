@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.core.models import Beneficiario
+from apps.core.models import Beneficiario, Programa
 
 
 class BeneficiarioSerializer(serializers.ModelSerializer):
@@ -19,4 +19,22 @@ class BeneficiarioSerializer(serializers.ModelSerializer):
         read_only_fields = (
             "id_beneficiario",
             "fecha_registro",
+        )
+
+
+class ProgramaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Programa
+        fields = (
+            "id_programa",
+            "nombre",
+            "descripcion",
+            "fecha_inicio",
+            "fecha_fin",
+            "estado",
+            "usuario_responsable",
+        )
+        read_only_fields = (
+            "id_programa",
+            "usuario_responsable",
         )
