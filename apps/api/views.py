@@ -3,12 +3,14 @@ from rest_framework import viewsets
 from apps.core.services import (
     obtener_actividades_queryset,
     obtener_beneficiarios_queryset,
+    obtener_insumos_queryset,
     obtener_programas_queryset,
 )
 
 from .serializers import (
     ActividadSerializer,
     BeneficiarioSerializer,
+    InsumoSerializer,
     ProgramaSerializer,
 )
 
@@ -34,3 +36,10 @@ class ActividadViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         return obtener_actividades_queryset(self.request)
+
+
+class InsumoViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = InsumoSerializer
+
+    def get_queryset(self):
+        return obtener_insumos_queryset(self.request)
