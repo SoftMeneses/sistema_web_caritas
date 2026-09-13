@@ -8,6 +8,7 @@ from apps.core.models import (
     Insumo,
     MovimientoInsumo, 
     Programa, 
+    ProgramaBeneficiario,
 )    
 
 
@@ -132,4 +133,26 @@ class DetalleActividadInsumoSerializer(serializers.ModelSerializer):
             "id",
             "insumo",
             "cantidad_usada",
+        )
+
+
+class ProgramaBeneficiarioSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProgramaBeneficiario
+
+        fields = (
+            "id",
+            "fecha_asignacion",
+            "programa",
+            "beneficiario",
+            "estado",
+        )
+
+        read_only_fields = (
+            "id",
+            "fecha_asignacion",
+            "programa",
+            "beneficiario",
+            "estado",
         )

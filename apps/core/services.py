@@ -1569,6 +1569,18 @@ def obtener_programas_beneficiario(beneficiario):
     )
 
 
+def obtener_beneficiarios_programa(programa):
+    """
+    Obtiene las asignaciones de beneficiarios correspondientes a un programa.
+    """
+
+    return ProgramaBeneficiario.objects.filter(
+        programa=programa
+    ).select_related(
+        "beneficiario"
+    )
+
+
 # ==============================================================================
 # Insumos
 # ==============================================================================

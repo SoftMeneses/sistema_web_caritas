@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 
-from rest_framework import viewsets
+from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -8,11 +8,13 @@ from apps.core.models import (
     Actividad,
     DetalleActividadInsumo,
     Insumo,
+    Programa,
 )
 
 from apps.core.services import (
     obtener_actividades_queryset,
     obtener_usuarios_actividad,
+    obtener_beneficiarios_programa,
     obtener_beneficiarios_queryset,
     obtener_insumos_queryset,
     obtener_movimientos_insumo,
@@ -27,9 +29,8 @@ from .serializers import (
     InsumoSerializer,
     MovimientoInsumoSerializer,
     ProgramaSerializer,
+    ProgramaBeneficiarioSerializer,
 )
-
-from .serializers import BeneficiarioSerializer
 
 
 class BeneficiarioViewSet(viewsets.ReadOnlyModelViewSet):
@@ -109,3 +110,36 @@ class ActividadInsumosAPIView(APIView):
         )
 
         return Response(serializer.data)
+
+
+class ProgramaBeneficiariosAPIView(APIView):
+    """
+    Lista los beneficiarios asignados a un programa.
+    """
+
+    def get(self, request, id_programa):
+        try:
+            programa = Programa.objects.get(
+                id_programa=id_programa
+            )
+        except Programa.DoesNotExist:
+            return Response(
+                {
+                    "detail": "El programa no existe."
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        asignaciones = obtener_beneficiarios_programa(
+            programa
+        )
+
+        serializer = ProgramaBeneficiarioSerializer(
+            asignaciones,
+            many=True,
+        )
+
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK,
+        )

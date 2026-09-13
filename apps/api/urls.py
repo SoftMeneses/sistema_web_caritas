@@ -10,6 +10,7 @@ from .views import (
     InsumoViewSet,
     MovimientoInsumoViewSet,
     ProgramaViewSet,
+    ProgramaBeneficiariosAPIView,
 )
 
 
@@ -38,5 +39,10 @@ urlpatterns = router.urls + [
         "actividades/<int:id_actividad>/insumos/",
         ActividadInsumosAPIView.as_view(),
         name="actividad-insumos",
+    ),
+    path(
+        "programas/<int:id_programa>/beneficiarios/",
+        ProgramaBeneficiariosAPIView.as_view(),
+        name="programa-beneficiarios",
     ),
 ]
