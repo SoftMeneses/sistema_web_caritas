@@ -4,6 +4,7 @@ from apps.core.models import (
     Actividad,
     ActividadUsuario,
     Beneficiario,
+    DetalleActividadInsumo,
     Insumo,
     MovimientoInsumo, 
     Programa, 
@@ -113,4 +114,22 @@ class ActividadUsuarioSerializer(serializers.ModelSerializer):
             "id_actividad_usuario",
             "actividad",
             "usuario",
+        )
+
+
+class DetalleActividadInsumoSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = DetalleActividadInsumo
+
+        fields = (
+            "id",
+            "insumo",
+            "cantidad_usada",
+        )
+
+        read_only_fields = (
+            "id",
+            "insumo",
+            "cantidad_usada",
         )

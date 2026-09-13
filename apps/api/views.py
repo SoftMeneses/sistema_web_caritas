@@ -1,8 +1,12 @@
 from django.shortcuts import get_object_or_404
+
 from rest_framework import viewsets
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from apps.core.models import (
     Actividad,
+    DetalleActividadInsumo,
     Insumo,
 )
 
@@ -19,6 +23,7 @@ from .serializers import (
     ActividadSerializer,
     ActividadUsuarioSerializer,
     BeneficiarioSerializer,
+    DetalleActividadInsumoSerializer,
     InsumoSerializer,
     MovimientoInsumoSerializer,
     ProgramaSerializer,
@@ -80,3 +85,27 @@ class ActividadUsuarioViewSet(viewsets.ReadOnlyModelViewSet):
         )
 
         return obtener_usuarios_actividad(actividad)
+
+
+class ActividadInsumosAPIView(APIView):
+
+    def get(self, request, id_actividad):
+
+        actividad = get_object_or_404(
+            Actividad,
+            pk=id_actividad
+        )
+
+        detalles = (
+            DetalleActividadInsumo.objects
+            .filter(actividad=actividad)
+            .select_related("insumo")
+            .order_by("insumo__nombre")
+        )
+
+        serializer = DetalleActividadInsumoSerializer(
+            detalles,
+            many=True
+        )
+
+        return Response(serializer.data)
