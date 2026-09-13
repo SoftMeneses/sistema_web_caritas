@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from apps.core.models import (
     Actividad,
+    ActividadUsuario,
     Beneficiario,
     Insumo,
     MovimientoInsumo, 
@@ -97,4 +98,19 @@ class MovimientoInsumoSerializer(serializers.ModelSerializer):
             "id_movimiento",
             "fecha_movimiento",
             "usuario_responsable",
+        )
+
+
+class ActividadUsuarioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ActividadUsuario
+        fields = (
+            "id_actividad_usuario",
+            "actividad",
+            "usuario",
+        )
+        read_only_fields = (
+            "id_actividad_usuario",
+            "actividad",
+            "usuario",
         )

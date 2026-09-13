@@ -1,10 +1,14 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 
-from apps.core.models import Insumo
+from apps.core.models import (
+    Actividad,
+    Insumo,
+)
 
 from apps.core.services import (
     obtener_actividades_queryset,
+    obtener_usuarios_actividad,
     obtener_beneficiarios_queryset,
     obtener_insumos_queryset,
     obtener_movimientos_insumo,
@@ -13,6 +17,7 @@ from apps.core.services import (
 
 from .serializers import (
     ActividadSerializer,
+    ActividadUsuarioSerializer,
     BeneficiarioSerializer,
     InsumoSerializer,
     MovimientoInsumoSerializer,
@@ -63,3 +68,15 @@ class MovimientoInsumoViewSet(viewsets.ReadOnlyModelViewSet):
             obtener_movimientos_insumo(insumo)
             .select_related("insumo")
         )
+
+
+class ActividadUsuarioViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = ActividadUsuarioSerializer
+
+    def get_queryset(self):
+        actividad = get_object_or_404(
+            Actividad,
+            pk=self.kwargs["actividad_id"],
+        )
+
+        return obtener_usuarios_actividad(actividad)

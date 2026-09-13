@@ -4,6 +4,7 @@ from rest_framework.routers import DefaultRouter
 
 from .views import (
     ActividadViewSet,
+    ActividadUsuarioViewSet,
     BeneficiarioViewSet,
     InsumoViewSet,
     MovimientoInsumoViewSet,
@@ -26,5 +27,10 @@ urlpatterns = router.urls + [
         "insumos/<int:insumo_id>/movimientos/",
         MovimientoInsumoViewSet.as_view({"get": "list"}),
         name="insumo-movimientos",
+    ),
+    path(
+        "actividades/<int:actividad_id>/usuarios/",
+        ActividadUsuarioViewSet.as_view({"get": "list"}),
+        name="actividad-usuarios",
     ),
 ]
