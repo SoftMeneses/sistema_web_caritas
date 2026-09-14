@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import include, path
 
 from rest_framework.routers import DefaultRouter
 
@@ -6,6 +6,7 @@ from .views import (
     ActividadViewSet,
     ActividadInsumosAPIView,
     ActividadUsuarioViewSet,
+    BeneficiarioProgramasAPIView,
     BeneficiarioViewSet,
     InsumoViewSet,
     MovimientoInsumoViewSet,
@@ -44,5 +45,10 @@ urlpatterns = router.urls + [
         "programas/<int:id_programa>/beneficiarios/",
         ProgramaBeneficiariosAPIView.as_view(),
         name="programa-beneficiarios",
+    ),
+    path(
+        "beneficiarios/<int:id_beneficiario>/programas/",
+        BeneficiarioProgramasAPIView.as_view(),
+        name="beneficiario-programas",
     ),
 ]

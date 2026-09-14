@@ -1,23 +1,31 @@
 from django.shortcuts import get_object_or_404
 
 from rest_framework import status, viewsets
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.core.forms import ProgramaBeneficiarioForm
+
 from apps.core.models import (
     Actividad,
+    Beneficiario,
     DetalleActividadInsumo,
     Insumo,
     Programa,
+    ProgramaBeneficiario,
 )
 
 from apps.core.services import (
+    asignar_beneficiario,
+    desasignar_beneficiario,
     obtener_actividades_queryset,
     obtener_usuarios_actividad,
     obtener_beneficiarios_programa,
     obtener_beneficiarios_queryset,
     obtener_insumos_queryset,
     obtener_movimientos_insumo,
+    obtener_programas_beneficiario,
     obtener_programas_queryset,
 )
 
@@ -142,4 +150,71 @@ class ProgramaBeneficiariosAPIView(APIView):
         return Response(
             serializer.data,
             status=status.HTTP_200_OK,
+        )
+
+
+class BeneficiarioProgramasAPIView(APIView):
+    """
+    Consulta y administra los programas asignados
+    a un beneficiario.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, id_beneficiario):
+        beneficiario = get_object_or_404(
+            Beneficiario,
+            pk=id_beneficiario,
+        )
+
+        asignaciones = obtener_programas_beneficiario(
+            beneficiario
+        )
+
+        serializer = ProgramaBeneficiarioSerializer(
+            asignaciones,
+            many=True,
+        )
+
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK,
+        )
+
+    def post(self, request, id_beneficiario):
+        beneficiario = get_object_or_404(
+            Beneficiario,
+            pk=id_beneficiario,
+        )
+
+        formulario = ProgramaBeneficiarioForm(
+            request.data,
+            beneficiario=beneficiario,
+        )
+
+        if not formulario.is_valid():
+            return Response(
+                {"errors": formulario.errors},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            asignacion = asignar_beneficiario(
+                formulario=formulario,
+                beneficiario=beneficiario,
+                usuario_actual=request.user,
+            )
+        except ValueError as error:
+            return Response(
+                {"detail": str(error)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        serializer = ProgramaBeneficiarioSerializer(
+            asignacion,
+        )
+
+        return Response(
+            serializer.data,
+            status=status.HTTP_201_CREATED,
         )
