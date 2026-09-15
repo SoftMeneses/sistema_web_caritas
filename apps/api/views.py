@@ -9,6 +9,7 @@ from apps.core.forms import ProgramaBeneficiarioForm
 
 from apps.core.models import (
     Actividad,
+    Auditoria,
     Beneficiario,
     DetalleActividadInsumo,
     Insumo,
@@ -31,6 +32,7 @@ from apps.core.services import (
 
 from .serializers import (
     ActividadSerializer,
+    AuditoriaSerializer,
     ActividadUsuarioSerializer,
     BeneficiarioSerializer,
     DetalleActividadInsumoSerializer,
@@ -217,4 +219,15 @@ class BeneficiarioProgramasAPIView(APIView):
         return Response(
             serializer.data,
             status=status.HTTP_201_CREATED,
+        )
+
+
+class AuditoriaViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = AuditoriaSerializer
+
+    def get_queryset(self):
+        return (
+            Auditoria.objects
+            .select_related("usuario_responsable")
+            .order_by("-fecha_auditoria")
         )

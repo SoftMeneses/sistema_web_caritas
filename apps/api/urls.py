@@ -6,6 +6,7 @@ from .views import (
     ActividadViewSet,
     ActividadInsumosAPIView,
     ActividadUsuarioViewSet,
+    AuditoriaViewSet,
     BeneficiarioProgramasAPIView,
     BeneficiarioViewSet,
     InsumoViewSet,
@@ -17,13 +18,36 @@ from .views import (
 
 router = DefaultRouter()
 
-router.register("beneficiarios", BeneficiarioViewSet, basename="beneficiario")
+router.register(
+    "beneficiarios",
+    BeneficiarioViewSet,
+    basename="beneficiario",
+)
 
-router.register("programas", ProgramaViewSet, basename="programa")
+router.register(
+    "programas",
+    ProgramaViewSet,
+    basename="programa",
+)
 
-router.register("actividades", ActividadViewSet, basename="actividad")
+router.register(
+    "actividades",
+    ActividadViewSet,
+    basename="actividad",
+)
 
-router.register("insumos", InsumoViewSet, basename="insumo")
+router.register(
+    "insumos",
+    InsumoViewSet,
+    basename="insumo",
+)
+
+router.register(
+    "auditoria",
+    AuditoriaViewSet,
+    basename="auditoria",
+)
+
 
 urlpatterns = router.urls + [
     path(
@@ -31,21 +55,25 @@ urlpatterns = router.urls + [
         MovimientoInsumoViewSet.as_view({"get": "list"}),
         name="insumo-movimientos",
     ),
+
     path(
         "actividades/<int:actividad_id>/usuarios/",
         ActividadUsuarioViewSet.as_view({"get": "list"}),
         name="actividad-usuarios",
     ),
+
     path(
         "actividades/<int:id_actividad>/insumos/",
         ActividadInsumosAPIView.as_view(),
         name="actividad-insumos",
     ),
+
     path(
         "programas/<int:id_programa>/beneficiarios/",
         ProgramaBeneficiariosAPIView.as_view(),
         name="programa-beneficiarios",
     ),
+
     path(
         "beneficiarios/<int:id_beneficiario>/programas/",
         BeneficiarioProgramasAPIView.as_view(),

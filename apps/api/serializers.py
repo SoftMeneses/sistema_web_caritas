@@ -3,6 +3,7 @@ from rest_framework import serializers
 from apps.core.models import (
     Actividad,
     ActividadUsuario,
+    Auditoria,
     Beneficiario,
     DetalleActividadInsumo,
     Insumo,
@@ -156,3 +157,29 @@ class ProgramaBeneficiarioSerializer(serializers.ModelSerializer):
             "beneficiario",
             "estado",
         )
+
+
+class AuditoriaSerializer(serializers.ModelSerializer):
+    usuario_responsable_nombre = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Auditoria
+        fields = (
+            "id_auditoria",
+            "tabla_afectada",
+            "operacion",
+            "accion",
+            "id_registro",
+            "descripcion",
+            "fecha_auditoria",
+            "usuario_responsable",
+            "usuario_responsable_nombre",
+        )
+
+        read_only_fields = fields
+
+    def get_usuario_responsable_nombre(self, obj):
+        if obj.usuario_responsable:
+            return str(obj.usuario_responsable)
+
+        return None
