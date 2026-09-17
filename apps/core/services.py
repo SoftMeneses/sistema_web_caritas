@@ -32,19 +32,23 @@ from apps.core.models.choices import (
 def obtener_dashboard():
 
     return {
-
-        "usuario": "",
-
         "fecha": datetime.now(),
 
-        "programas": 0,
+        "programas": Programa.objects.filter(
+            estado=True
+        ).count(),
 
-        "actividades": 0,
+        "actividades": Actividad.objects.filter(
+            estado=True
+        ).count(),
 
-        "beneficiarios": 0,
+        "beneficiarios": Beneficiario.objects.filter(
+            estado=True
+        ).count(),
 
-        "inventario": 0,
-
+        "inventario": Insumo.objects.filter(
+            estado=True
+        ).count(),
     }
 
 

@@ -9,6 +9,7 @@ from .views import (
     AuditoriaViewSet,
     BeneficiarioProgramasAPIView,
     BeneficiarioViewSet,
+    dashboard_estadisticas,
     InsumoViewSet,
     MovimientoInsumoViewSet,
     ProgramaViewSet,
@@ -50,6 +51,12 @@ router.register(
 
 
 urlpatterns = router.urls + [
+    path(
+        "dashboard/estadisticas/",
+        dashboard_estadisticas,
+        name="dashboard-estadisticas",
+    ),
+
     path(
         "insumos/<int:insumo_id>/movimientos/",
         MovimientoInsumoViewSet.as_view({"get": "list"}),

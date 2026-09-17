@@ -1,4 +1,5 @@
 {% extends 'layouts/base.html' %}
+{% load static %}
 
 {% block title %}
 Dashboard
@@ -60,7 +61,7 @@ Dashboard
 
                     </h5>
 
-                    <h2>
+                    <h2 id="dashboard-programas">
 
                         {{ programas }}
 
@@ -86,7 +87,7 @@ Dashboard
 
                     </h5>
 
-                    <h2>
+                    <h2 id="dashboard-actividades">
 
                         {{ actividades }}
 
@@ -112,7 +113,7 @@ Dashboard
 
                     </h5>
 
-                    <h2>
+                    <h2 id="dashboard-beneficiarios">
 
                         {{ beneficiarios }}
 
@@ -134,11 +135,11 @@ Dashboard
 
                         <i class="bi bi-box-seam text-warning"></i>
 
-                        Inventario
+                        Insumos
 
                     </h5>
 
-                    <h2>
+                    <h2 id="dashboard-inventario">
 
                         {{ inventario }}
 
@@ -153,5 +154,11 @@ Dashboard
     </div>
 
 </div>
+
+{% endblock %}
+
+{% block js %}
+
+    <script src="{% static 'js/dashboard.js' %}"></script>
 
 {% endblock %}

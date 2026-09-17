@@ -33,6 +33,13 @@ class BeneficiarioSerializer(serializers.ModelSerializer):
 
 
 class ProgramaSerializer(serializers.ModelSerializer):
+
+    usuario_responsable_nombre = serializers.SerializerMethodField()
+
+    cantidad_usuarios = serializers.IntegerField(
+        read_only=True
+    )
+
     class Meta:
         model = Programa
         fields = (
@@ -43,11 +50,21 @@ class ProgramaSerializer(serializers.ModelSerializer):
             "fecha_fin",
             "estado",
             "usuario_responsable",
+            "usuario_responsable_nombre",
+            "cantidad_usuarios",
         )
         read_only_fields = (
             "id_programa",
             "usuario_responsable",
+            "usuario_responsable_nombre",
+            "cantidad_usuarios",
         )
+
+    def get_usuario_responsable_nombre(self, obj):
+        if obj.usuario_responsable:
+            return str(obj.usuario_responsable)
+
+        return None
 
 
 class ActividadSerializer(serializers.ModelSerializer):

@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 
 from rest_framework import status, viewsets
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -21,6 +22,7 @@ from apps.core.services import (
     asignar_beneficiario,
     desasignar_beneficiario,
     obtener_actividades_queryset,
+    obtener_dashboard,
     obtener_usuarios_actividad,
     obtener_beneficiarios_programa,
     obtener_beneficiarios_queryset,
@@ -41,6 +43,19 @@ from .serializers import (
     ProgramaSerializer,
     ProgramaBeneficiarioSerializer,
 )
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def dashboard_estadisticas(request):
+    contexto = obtener_dashboard()
+
+    return Response({
+        "programas": contexto["programas"],
+        "actividades": contexto["actividades"],
+        "beneficiarios": contexto["beneficiarios"],
+        "inventario": contexto["inventario"],
+    })
 
 
 class BeneficiarioViewSet(viewsets.ReadOnlyModelViewSet):
