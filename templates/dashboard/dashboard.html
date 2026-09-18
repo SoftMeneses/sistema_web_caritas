@@ -2,24 +2,27 @@
 {% load static %}
 
 {% block title %}
+
 Dashboard
+
 {% endblock %}
 
 {% block content %}
 
-<div class="container-fluid">
+<div class="container-fluid dashboard-page">
 
-    <div class="row mb-4">
+    <!-- ENCABEZADO DEL DASHBOARD -->
+    <div class="page-header dashboard-header">
 
-        <div class="col">
+        <div>
 
-            <h2 class="fw-bold">
+            <h2 class="page-title mb-1">
 
                 Dashboard
-
             </h2>
 
-            <p class="text-muted">
+
+            <p class="text-muted mb-0">
 
                 Bienvenido {{ usuario }}
 
@@ -27,13 +30,19 @@ Dashboard
 
         </div>
 
-        <div class="col text-end">
+        <div class="dashboard-date text-md-end">
 
-            <p class="mb-0">
+            <span class="dashboard-date-label">
+
+                Fecha de consulta
+
+            </span>
+
+            <strong>
 
                 {{ fecha|date:"d/m/Y" }}
 
-            </p>
+            </strong>
 
             <small>
 
@@ -45,27 +54,50 @@ Dashboard
 
     </div>
 
-    <div class="row g-4">
+    <!-- TARJETAS DE INDICADORES -->
+    <div class="row g-4 dashboard-statistics">
 
-        <div class="col-md-3">
+        <!-- PROGRAMAS -->
+        <div class="col-12 col-sm-6 col-xl-3">
 
-            <div class="card shadow-sm">
+            <div class="app-card dashboard-card dashboard-card-primary">
 
                 <div class="card-body">
 
-                    <h5>
+                    <div class="dashboard-card-top">
 
-                        <i class="bi bi-journal-check text-primary"></i>
+                        <div>
 
-                        Programas
+                            <span class="dashboard-card-label">
 
-                    </h5>
+                                Programas
 
-                    <h2 id="dashboard-programas">
+                            </span>
 
-                        {{ programas }}
+                            <h2
+                                id="dashboard-programas"
+                                class="dashboard-card-value">
 
-                    </h2>
+
+                                {{ programas }}
+
+                            </h2>
+
+                        </div>
+
+                        <div class="dashboard-card-icon">
+
+                            <i class="bi bi-journal-check"></i>
+
+                        </div>
+
+                    </div>
+
+                    <p class="dashboard-card-description mb-0">
+
+                        Programas activos registrados
+
+                    </p>
 
                 </div>
 
@@ -73,25 +105,45 @@ Dashboard
 
         </div>
 
-        <div class="col-md-3">
+        <!-- ACTIVIDADES -->
+        <div class="col-12 col-sm-6 col-xl-3">
 
-            <div class="card shadow-sm">
+            <div class="app-card dashboard-card dashboard-card-success">
 
                 <div class="card-body">
 
-                    <h5>
+                    <div class="dashboard-card-top">
 
-                        <i class="bi bi-calendar-event text-success"></i>
+                        <div>
+                            <span class="dashboard-card-label">
 
-                        Actividades
+                                Actividades
 
-                    </h5>
+                            </span>
 
-                    <h2 id="dashboard-actividades">
+                            <h2
+                                id="dashboard-actividades"
+                                class="dashboard-card-value">
 
-                        {{ actividades }}
+                                {{ actividades }}
 
-                    </h2>
+                            </h2>
+
+                        </div>
+
+                        <div class="dashboard-card-icon">
+
+                            <i class="bi bi-calendar-event"></i>
+
+                        </div>
+
+                    </div>
+
+                    <p class="dashboard-card-description mb-0">
+
+                        Actividades activas registradas
+
+                    </p>
 
                 </div>
 
@@ -99,25 +151,46 @@ Dashboard
 
         </div>
 
-        <div class="col-md-3">
+        <!-- BENEFICIARIOS -->
+        <div class="col-12 col-sm-6 col-xl-3">
 
-            <div class="card shadow-sm">
+            <div class="app-card dashboard-card dashboard-card-danger">
 
                 <div class="card-body">
 
-                    <h5>
+                    <div class="dashboard-card-top">
 
-                        <i class="bi bi-heart-pulse text-danger"></i>
+                        <div>
 
-                        Beneficiarios
+                            <span class="dashboard-card-label">
 
-                    </h5>
+                                Beneficiarios
 
-                    <h2 id="dashboard-beneficiarios">
+                            </span>
 
-                        {{ beneficiarios }}
+                            <h2
+                                id="dashboard-beneficiarios"
+                                class="dashboard-card-value">
 
-                    </h2>
+                                {{ beneficiarios }}
+
+                            </h2>
+
+                        </div>
+
+                        <div class="dashboard-card-icon">
+
+                            <i class="bi bi-heart-pulse"></i>
+
+                        </div>
+
+                    </div>
+
+                    <p class="dashboard-card-description mb-0">
+
+                        Beneficiarios activos registrados
+
+                    </p>
 
                 </div>
 
@@ -125,25 +198,46 @@ Dashboard
 
         </div>
 
-        <div class="col-md-3">
+        <!-- INSUMOS -->
+        <div class="col-12 col-sm-6 col-xl-3">
 
-            <div class="card shadow-sm">
+            <div class="app-card dashboard-card dashboard-card-warning">
 
                 <div class="card-body">
 
-                    <h5>
+                    <div class="dashboard-card-top">
 
-                        <i class="bi bi-box-seam text-warning"></i>
+                        <div>
 
-                        Insumos
+                            <span class="dashboard-card-label">
 
-                    </h5>
+                                Insumos
 
-                    <h2 id="dashboard-inventario">
+                            </span>
 
-                        {{ inventario }}
+                            <h2
+                                id="dashboard-inventario"
+                                class="dashboard-card-value">
 
-                    </h2>
+                                {{ inventario }}
+
+                            </h2>
+
+                        </div>
+
+                        <div class="dashboard-card-icon">
+
+                            <i class="bi bi-box-seam"></i>
+
+                        </div>
+
+                    </div>
+
+                    <p class="dashboard-card-description mb-0">
+
+                        Tipos de insumos registrados
+                        
+                    </p>
 
                 </div>
 

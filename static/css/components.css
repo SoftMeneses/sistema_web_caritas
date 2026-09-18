@@ -427,3 +427,199 @@
 /*==============================================================================
   BREADCRUMB
 ==============================================================================*/
+
+
+/*==============================================================================*
+* DASHBOARD
+*==============================================================================*/
+
+.dashboard-page {
+    width: 100%;
+}
+
+.dashboard-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.dashboard-header .page-title {
+    color: var(--color-primary);
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.dashboard-date {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: .15rem;
+    color: var(--color-text);
+}
+
+.dashboard-date-label {
+    color: #6c757d;
+    font-size: .75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+}
+
+.dashboard-date strong {
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.dashboard-date small {
+    color: #6c757d;
+    font-size: .85rem;
+}
+
+/* TARJETAS DE INDICADORES */
+
+.dashboard-statistics {
+    align-items: stretch;
+}
+
+.dashboard-card {
+    min-height: 185px;
+    overflow: hidden;
+    position: relative;
+    border: none;
+    border-radius: var(--radius-md);
+    background: var(--color-white);
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .08);
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 .65rem 1.25rem rgba(0, 0, 0, .13);
+}
+
+.dashboard-card .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 185px;
+    padding: 1.5rem;
+}
+
+.dashboard-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.dashboard-card-label {
+    display: block;
+    margin-bottom: .5rem;
+    color: #6c757d;
+    font-size: .9rem;
+    font-weight: 600;
+}
+
+.dashboard-card-value {
+    margin: 0;
+    color: var(--color-text);
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.dashboard-card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    border-radius: 14px;
+    font-size: 1.6rem;
+}
+
+.dashboard-card-description {
+    color: #6c757d;
+    font-size: .82rem;
+}
+
+/* COLORES DE LAS TARJETAS */
+
+.dashboard-card-primary {
+    border-left: 5px solid #0d6efd;
+}
+
+.dashboard-card-primary .dashboard-card-icon {
+    background: rgba(13, 110, 253, .12);
+    color: #0d6efd;
+}
+
+.dashboard-card-success {
+    border-left: 5px solid #198754;
+}
+
+.dashboard-card-success .dashboard-card-icon {
+    background: rgba(25, 135, 84, .12);
+    color: #198754;
+}
+
+.dashboard-card-danger {
+    border-left: 5px solid #dc3545;
+}
+
+.dashboard-card-danger .dashboard-card-icon {
+    background: rgba(220, 53, 69, .12);
+    color: #dc3545;
+}
+
+.dashboard-card-warning {
+    border-left: 5px solid #f0ad00;
+}
+
+.dashboard-card-warning .dashboard-card-icon {
+    background: rgba(240, 173, 0, .15);
+    color: #b58100;
+}
+
+/* DISEÑO RESPONSIVO */
+
+@media (max-width: 768px) {
+
+    .dashboard-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .dashboard-date {
+        align-items: flex-start;
+    }
+
+    .dashboard-header .page-title {
+        font-size: 1.5rem;
+    }
+
+}
+
+@media (max-width: 576px) {
+
+    .dashboard-card .card-body {
+        min-height: 160px;
+        padding: 1.25rem;
+    }
+
+    .dashboard-card-value {
+        font-size: 2.2rem;
+    }
+
+    .dashboard-card-icon {
+        width: 46px;
+        height: 46px;
+        font-size: 1.4rem;
+    }
+
+}
