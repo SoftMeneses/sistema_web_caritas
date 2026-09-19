@@ -283,7 +283,7 @@ def obtener_auditorias(request):
 
     paginator = Paginator(
         queryset,
-        20,
+        10,
     )
 
     page_number = request.GET.get(

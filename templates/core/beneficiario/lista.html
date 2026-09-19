@@ -46,9 +46,39 @@ Beneficiarios
 
 {% url 'core:beneficiario_pdf_lista' as beneficiario_pdf_lista_url %}
 
-{% include "includes/components/search_bar.html" with placeholder="Buscar beneficiario..." button_url=beneficiario_crear_url button_text="Nuevo Beneficiario" button_icon="bi bi-plus-circle" pdf_url=beneficiario_pdf_lista_url pdf_text="Exportar PDF" pdf_icon="bi bi-file-earmark-pdf" show_status_filter=True status_value=status_value %}
+<div class="module-toolbar">
 
-<div class="card app-card">
+    {% include "includes/components/search_bar.html" with placeholder="Buscar beneficiario..." button_url=beneficiario_crear_url button_text="Nuevo Beneficiario" button_icon="bi bi-plus-circle" pdf_url=beneficiario_pdf_lista_url pdf_text="Exportar PDF" pdf_icon="bi bi-file-earmark-pdf" show_status_filter=True status_value=status_value %}
+
+</div>
+
+<div class="card app-card module-card">
+
+    <div class="card-header module-card-header">
+
+        <div>
+
+            <h5 class="mb-1">
+
+                Beneficiarios registrados
+
+            </h5>
+
+            <small class="text-muted">
+
+                Gestión y seguimiento de las personas beneficiarias de los programas.
+
+            </small>
+
+        </div>
+
+        <span class="badge rounded-pill module-count-badge">
+
+            {{ beneficiarios.paginator.count }} registrados
+
+        </span>
+
+    </div>
 
     <div class="card-body">
 
@@ -56,7 +86,7 @@ Beneficiarios
 
             <div class="table-responsive flex-grow-1">
 
-                <table class="table table-hover app-table">
+                <table class="table table-hover app-table align-middle">
 
                     <thead>
 
@@ -75,7 +105,9 @@ Beneficiarios
                             <th scope="col">Estado</th>
 
                             <th scope="col" class="text-center" style="width: 170px;">
+
                                 Acciones
+
                             </th>
 
                         </tr>
@@ -88,7 +120,7 @@ Beneficiarios
 
                             <tr>
 
-                                <td>
+                                <td class="text-muted">
 
                                     {{ beneficiarios.start_index|add:forloop.counter0 }}
 
@@ -96,25 +128,41 @@ Beneficiarios
 
                                 <td>
 
-                                    {{ beneficiario.cedula }}
+                                    <div class="table-primary-value">
+
+                                        {{ beneficiario.cedula }}
+
+                                    </div>
 
                                 </td>
 
                                 <td>
 
-                                    {{ beneficiario.apellido }}, {{ beneficiario.nombre }}
+                                    <div class="table-primary-value">
+
+                                        {{ beneficiario.apellido }}, {{ beneficiario.nombre }}
+
+                                    </div>
 
                                 </td>
 
                                 <td>
 
-                                    {{ beneficiario.telefono|default:"No registrado" }}
+                                    <div class="table-secondary-value">
+
+                                        {{ beneficiario.telefono|default:"No registrado" }}
+
+                                    </div>
 
                                 </td>
 
                                 <td>
 
-                                    {{ beneficiario.fecha_registro|date:"d/m/Y" }}
+                                    <div class="table-secondary-value">
+
+                                        {{ beneficiario.fecha_registro|date:"d/m/Y" }}
+
+                                    </div>
 
                                 </td>
 
@@ -142,7 +190,7 @@ Beneficiarios
 
                                 <td class="text-center">
 
-                                    <div class="btn-group btn-group-sm">
+                                    <div class="btn-group btn-group-sm" role="group" aria-label="Acciones del beneficiario">
 
                                         <a href="{% url 'core:beneficiario_detalle' beneficiario.pk %}"
                                            class="btn btn-outline-primary"
@@ -223,4 +271,3 @@ Beneficiarios
 {% include "includes/components/confirm_modal.html" with confirm_url="#" title="Desactivar beneficiario" message="" confirm_text="Desactivar" confirm_class="btn-danger" confirm_icon="bi bi-exclamation-triangle-fill text-warning fs-1" %}
 
 {% endblock %}
-

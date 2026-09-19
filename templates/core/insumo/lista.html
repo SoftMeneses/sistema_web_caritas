@@ -46,9 +46,39 @@ Insumos
 
 {% url 'core:insumo_pdf_lista' as insumo_pdf_lista_url %}
 
-{% include "includes/components/search_bar.html" with placeholder="Buscar insumo..." button_url=insumo_crear_url button_text="Nuevo Insumo" button_icon="bi bi-plus-circle" pdf_url=insumo_pdf_lista_url pdf_text="Exportar PDF" pdf_icon="bi bi-file-earmark-pdf" show_status_filter=True status_value=status_value %}
+<div class="module-toolbar">
 
-<div class="card app-card">
+    {% include "includes/components/search_bar.html" with placeholder="Buscar insumo..." button_url=insumo_crear_url button_text="Nuevo Insumo" button_icon="bi bi-plus-circle" pdf_url=insumo_pdf_lista_url pdf_text="Exportar PDF" pdf_icon="bi bi-file-earmark-pdf" show_status_filter=True status_value=status_value %}
+
+</div>
+
+<div class="card app-card module-card">
+
+    <div class="card-header module-card-header">
+
+        <div>
+
+            <h5 class="mb-1">
+
+                Insumos registrados
+
+            </h5>
+
+            <small class="text-muted">
+
+                Gestión y control de los recursos disponibles para los programas y actividades.
+
+            </small>
+
+        </div>
+
+        <span class="badge rounded-pill module-count-badge">
+
+            {{ insumos.paginator.count }} registrados
+
+        </span>
+
+    </div>
 
     <div class="card-body">
 
@@ -56,7 +86,7 @@ Insumos
 
             <div class="table-responsive flex-grow-1">
 
-                <table class="table table-hover app-table">
+                <table class="table table-hover app-table align-middle">
 
                     <thead>
 
@@ -90,7 +120,7 @@ Insumos
 
                             <tr>
 
-                                <td>
+                                <td class="text-muted">
 
                                     {{ insumos.start_index|add:forloop.counter0 }}
 
@@ -98,28 +128,64 @@ Insumos
 
                                 <td>
 
-                                    {{ insumo.nombre }}
+                                    <div class="table-primary-value">
+
+                                        {{ insumo.nombre }}
+
+                                    </div>
 
                                 </td>
 
                                 <td>
 
-                                    {{ insumo.get_unidad_medida_display }}
+                                    <div class="table-secondary-value">
+
+                                        {{ insumo.get_unidad_medida_display }}
+
+                                    </div>
 
                                 </td>
 
                                 <td>
-                                    {{ insumo.stock_actual|floatformat:2 }}
-                                    
-                                    {% if insumo.unidad_medida == 'g' or insumo.unidad_medida == 'mL' %}
-                                        {% if insumo.stock_actual <= 1000 %}
-                                            <span class="badge bg-danger ms-1" title="Nivel de inventario crítico"><i class="bi bi-exclamation-triangle"></i> Bajo</span>
+
+                                    <div class="table-primary-value">
+
+                                        {{ insumo.stock_actual|floatformat:2 }}
+
+                                        {% if insumo.unidad_medida == 'g' or insumo.unidad_medida == 'mL' %}
+
+                                            {% if insumo.stock_actual <= 1000 %}
+
+                                                <span class="badge bg-danger ms-1"
+                                                      title="Nivel de inventario crítico">
+
+                                                    <i class="bi bi-exclamation-triangle"></i>
+
+                                                    Bajo
+
+                                                </span>
+
+                                            {% endif %}
+
+                                        {% else %}
+
+                                            {% if insumo.stock_actual <= 10 %}
+
+                                                <span class="badge bg-danger ms-1"
+                                                      title="Nivel de inventario crítico">
+
+                                                    <i class="bi bi-exclamation-triangle"></i>
+                                                    
+                                                    Bajo
+
+                                                </span>
+
+                                            {% endif %}
+
                                         {% endif %}
-                                    {% else %}
-                                        {% if insumo.stock_actual <= 10 %}
-                                            <span class="badge bg-danger ms-1" title="Nivel de inventario crítico"><i class="bi bi-exclamation-triangle"></i> Bajo</span>
-                                        {% endif %}
-                                    {% endif %}
+
+                                    </div>
+
                                 </td>
 
                                 <td>
@@ -146,7 +212,9 @@ Insumos
 
                                 <td class="text-center">
 
-                                    <div class="btn-group btn-group-sm">
+                                    <div class="btn-group btn-group-sm"
+                                         role="group"
+                                         aria-label="Acciones del insumo">
 
                                         <a href="{% url 'core:insumo_detalle' insumo.pk %}"
                                            class="btn btn-outline-primary"

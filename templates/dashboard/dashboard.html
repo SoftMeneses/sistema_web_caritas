@@ -247,6 +247,149 @@ Dashboard
 
     </div>
 
+        <!-- ACCIONES RÁPIDAS -->
+    <section class="dashboard-quick-actions">
+
+        <div class="dashboard-section-heading">
+
+            <div>
+                <h4 class="dashboard-section-title">
+                    Acciones rápidas
+                </h4>
+
+                <p class="dashboard-section-description mb-0">
+                    Accede directamente a las operaciones principales del sistema.
+                </p>
+            </div>
+
+        </div>
+
+        <div class="row g-4">
+
+            <!-- NUEVO PROGRAMA -->
+            <div class="col-12 col-sm-6 col-xl-3">
+
+                <a
+                    href="{% url 'core:programa_crear' %}"
+                    class="dashboard-action-card"
+                >
+
+                    <span class="dashboard-action-icon dashboard-action-primary">
+                        <i class="bi bi-plus-circle"></i>
+                    </span>
+
+                    <span class="dashboard-action-content">
+
+                        <strong>
+                            Nuevo programa
+                        </strong>
+
+                        <small>
+                            Registrar un programa
+                        </small>
+
+                    </span>
+
+                    <i class="bi bi-arrow-up-right dashboard-action-arrow"></i>
+
+                </a>
+
+            </div>
+
+            <!-- NUEVA ACTIVIDAD -->
+            <div class="col-12 col-sm-6 col-xl-3">
+
+                <a
+                    href="{% url 'core:actividad_crear' %}"
+                    class="dashboard-action-card"
+                >
+
+                    <span class="dashboard-action-icon dashboard-action-success">
+                        <i class="bi bi-calendar-plus"></i>
+                    </span>
+
+                    <span class="dashboard-action-content">
+
+                        <strong>
+                            Nueva actividad
+                        </strong>
+
+                        <small>
+                            Registrar una actividad
+                        </small>
+
+                    </span>
+
+                    <i class="bi bi-arrow-up-right dashboard-action-arrow"></i>
+
+                </a>
+
+            </div>
+
+            <!-- NUEVO BENEFICIARIO -->
+            <div class="col-12 col-sm-6 col-xl-3">
+
+                <a
+                    href="{% url 'core:beneficiario_crear' %}"
+                    class="dashboard-action-card"
+                >
+
+                    <span class="dashboard-action-icon dashboard-action-danger">
+                        <i class="bi bi-person-plus"></i>
+                    </span>
+
+                    <span class="dashboard-action-content">
+
+                        <strong>
+                            Nuevo beneficiario
+                        </strong>
+
+                        <small>
+                            Registrar un beneficiario
+                        </small>
+
+                    </span>
+
+                    <i class="bi bi-arrow-up-right dashboard-action-arrow"></i>
+
+                </a>
+
+            </div>
+
+            <!-- NUEVO INSUMO -->
+            <div class="col-12 col-sm-6 col-xl-3">
+
+                <a
+                    href="{% url 'core:insumo_crear' %}"
+                    class="dashboard-action-card"
+                >
+
+                    <span class="dashboard-action-icon dashboard-action-warning">
+                        <i class="bi bi-box-seam"></i>
+                    </span>
+
+                    <span class="dashboard-action-content">
+
+                        <strong>
+                            Nuevo insumo
+                        </strong>
+
+                        <small>
+                            Registrar un insumo
+                        </small>
+
+                    </span>
+
+                    <i class="bi bi-arrow-up-right dashboard-action-arrow"></i>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
 </div>
 
 {% endblock %}

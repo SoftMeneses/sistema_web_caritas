@@ -11,7 +11,7 @@
         </h5>
 
         <small class="text-light">
-
+            
             Sistema Web
 
         </small>
@@ -30,13 +30,15 @@
 
         <li class="nav-item">
 
-            <a class="nav-link active" href="{% url 'core:dashboard' %}">
+            <a
+                class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
+                href="{% url 'core:dashboard' %}">
 
                 <i class="bi bi-speedometer2 me-2"></i>
 
                 <span>
 
-                Dashboard
+                    Dashboard
 
                 </span>
 
@@ -60,14 +62,15 @@
 
             <li class="nav-item">
 
-                <a class="nav-link" 
+                <a
+                    class="nav-link {% if request.resolver_match.url_name == 'usuario_lista' %}active{% endif %}"
                     href="{% url 'seguridad:usuario_lista' %}">
 
                     <i class="bi bi-people-fill me-2"></i>
 
                     <span>
 
-                    Usuarios
+                        Usuarios
 
                     </span>
 
@@ -79,14 +82,15 @@
 
         <li class="nav-item">
 
-            <a class="nav-link" 
+            <a
+                class="nav-link {% if request.resolver_match.url_name == 'programa_lista' or request.resolver_match.url_name == 'programa_crear' or request.resolver_match.url_name == 'programa_detalle' or request.resolver_match.url_name == 'programa_editar' %}active{% endif %}"
                 href="{% url 'core:programa_lista' %}">
 
                 <i class="bi bi-journal-check me-2"></i>
 
                 <span>
 
-                Programas
+                    Programas
 
                 </span>
 
@@ -96,14 +100,15 @@
 
         <li class="nav-item">
 
-            <a class="nav-link" 
+            <a
+                class="nav-link {% if request.resolver_match.url_name == 'actividad_lista' or request.resolver_match.url_name == 'actividad_crear' or request.resolver_match.url_name == 'actividad_detalle' or request.resolver_match.url_name == 'actividad_editar' %}active{% endif %}"
                 href="{% url 'core:actividad_lista' %}">
 
                 <i class="bi bi-calendar-event me-2"></i>
 
                 <span>
 
-                Actividades
+                    Actividades
 
                 </span>
 
@@ -113,13 +118,15 @@
 
         <li class="nav-item">
 
-            <a class="nav-link" href="{% url 'core:beneficiario_lista' %}">
+            <a
+                class="nav-link {% if request.resolver_match.url_name == 'beneficiario_lista' or request.resolver_match.url_name == 'beneficiario_crear' or request.resolver_match.url_name == 'beneficiario_detalle' or request.resolver_match.url_name == 'beneficiario_editar' %}active{% endif %}"
+                href="{% url 'core:beneficiario_lista' %}">
 
                 <i class="bi bi-heart-pulse me-2"></i>
 
                 <span>
 
-                Beneficiarios
+                    Beneficiarios
 
                 </span>
 
@@ -141,13 +148,15 @@
 
         <li class="nav-item">
 
-            <a class="nav-link" href="{% url 'core:insumo_lista' %}">
+            <a
+                class="nav-link {% if request.resolver_match.url_name == 'insumo_lista' or request.resolver_match.url_name == 'insumo_crear' or request.resolver_match.url_name == 'insumo_detalle' or request.resolver_match.url_name == 'insumo_editar' %}active{% endif %}"
+                href="{% url 'core:insumo_lista' %}">
 
                 <i class="bi bi-box-seam me-2"></i>
 
                 <span>
 
-                Insumos
+                    Insumos
 
                 </span>
 
@@ -169,14 +178,16 @@
 
         <li class="nav-item">
 
-            <a class="nav-link" href="{% url 'core:auditoria_lista' %}">
+            <a
+                class="nav-link {% if request.resolver_match.url_name == 'auditoria_lista' %}active{% endif %}"
+                href="{% url 'core:auditoria_lista' %}">
 
                 <i class="bi bi-clipboard-data me-2"></i>
 
                 <span>
 
-                Auditoría
-
+                    Auditoría
+                    
                 </span>
 
             </a>

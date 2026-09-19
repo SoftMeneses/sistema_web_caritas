@@ -44,17 +44,47 @@ Usuarios
 
 {% url 'seguridad:usuario_crear' as usuario_crear_url %}
 
-{% include "includes/components/search_bar.html" with placeholder="Buscar usuario..." button_url=usuario_crear_url button_text="Nuevo Usuario" button_icon="bi bi-person-plus" show_status_filter=True status_value=status_value %}
+<div class="module-toolbar">
 
-<div class="card app-card">
+    {% include "includes/components/search_bar.html" with placeholder="Buscar usuario..." button_url=usuario_crear_url button_text="Nuevo Usuario" button_icon="bi bi-person-plus" show_status_filter=True status_value=status_value %}
+
+</div>
+
+<div class="card app-card module-card">
+
+    <div class="card-header module-card-header">
+
+        <div>
+
+            <h5 class="mb-1">
+
+                Usuarios registrados
+
+            </h5>
+
+            <small class="text-muted">
+
+                Gestión de usuarios y control de acceso al sistema.
+
+            </small>
+
+        </div>
+
+        <span class="badge rounded-pill module-count-badge">
+
+            {{ usuarios.paginator.count }} registrados
+
+        </span>
+
+    </div>
 
     <div class="card-body">
 
         {% if usuarios %}
 
             <div class="table-responsive flex-grow-1">
-                
-                <table class="table table-hover app-table">
+
+                <table class="table table-hover app-table align-middle">
 
                     <thead>
 
@@ -70,7 +100,13 @@ Usuarios
 
                             <th scope="col">Estado</th>
 
-                            <th scope="col" class="text-center" style="width: 170px;">Acciones</th>
+                            <th scope="col"
+                                class="text-center"
+                                style="width: 170px;">
+
+                                Acciones
+
+                            </th>
 
                         </tr>
 
@@ -82,7 +118,7 @@ Usuarios
 
                             <tr>
 
-                                <td>
+                                <td class="text-muted">
 
                                     {{ usuarios.start_index|add:forloop.counter0 }}
 
@@ -90,19 +126,31 @@ Usuarios
 
                                 <td>
 
-                                    {{ usuario.get_full_name|default:usuario.username }}
+                                    <div class="table-primary-value">
+
+                                        {{ usuario.get_full_name|default:usuario.username }}
+
+                                    </div>
 
                                 </td>
 
                                 <td>
 
-                                    {{ usuario.username }}
+                                    <div class="table-secondary-value">
+
+                                        {{ usuario.username }}
+
+                                    </div>
 
                                 </td>
 
                                 <td>
 
-                                    {{ usuario.rol.nombre }}
+                                    <div class="table-primary-value">
+
+                                        {{ usuario.rol.nombre }}
+
+                                    </div>
 
                                 </td>
 
@@ -110,11 +158,19 @@ Usuarios
 
                                     {% if usuario.is_active %}
 
-                                        <span class="badge app-badge-active">Activo</span>
+                                        <span class="badge app-badge-active">
+
+                                            Activo
+
+                                        </span>
 
                                     {% else %}
 
-                                        <span class="badge app-badge-inactive">Inactivo</span>
+                                        <span class="badge app-badge-inactive">
+
+                                            Inactivo
+
+                                        </span>
 
                                     {% endif %}
 
@@ -122,21 +178,23 @@ Usuarios
 
                                 <td class="text-center">
 
-                                    <div class="btn-group btn-group-sm">
+                                    <div class="btn-group btn-group-sm"
+                                         role="group"
+                                         aria-label="Acciones del usuario">
 
                                         <a href="{% url 'seguridad:usuario_detalle' usuario.pk %}"
-                                            class="btn btn-outline-primary"
-                                            title="Ver"
-                                            aria-label="Ver usuario">
+                                           class="btn btn-outline-primary"
+                                           title="Ver"
+                                           aria-label="Ver usuario">
 
                                             <i class="bi bi-eye"></i>
 
                                         </a>
 
                                         <a href="{% url 'seguridad:usuario_editar' usuario.pk %}"
-                                            class="btn btn-outline-warning"
-                                            title="Editar"
-                                            aria-label="Editar usuario">
+                                           class="btn btn-outline-warning"
+                                           title="Editar"
+                                           aria-label="Editar usuario">
 
                                             <i class="bi bi-pencil-square"></i>
 
@@ -185,14 +243,14 @@ Usuarios
                     </tbody>
 
                 </table>
-            
+
             </div>
 
             {% include "includes/components/pagination.html" %}
 
         {% else %}
 
-        {% include "includes/components/empty_state.html" with title="No existen usuarios registrados." message="Comience creando el primer usuario del sistema." button_url=usuario_crear_url button_text="Nuevo Usuario" button_icon="bi bi-person-plus" %}
+            {% include "includes/components/empty_state.html" with title="No existen usuarios registrados." message="Comience creando el primer usuario del sistema." button_url=usuario_crear_url button_text="Nuevo Usuario" button_icon="bi bi-person-plus" %}
 
         {% endif %}
 

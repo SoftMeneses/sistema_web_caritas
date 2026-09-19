@@ -28,7 +28,7 @@ Actividades
 
         </li>
 
-        <li class="breadcrumb-item active">
+        <li class="breadcrumb-item active" aria-current="page">
 
             Actividades
 
@@ -46,37 +46,100 @@ Actividades
 
 {% url 'core:actividad_pdf_lista' as actividad_pdf_lista_url %}
 
-{% include "includes/components/search_bar.html" with placeholder="Buscar actividad..." button_url=actividad_crear_url button_text="Nueva Actividad" button_icon="bi bi-plus-circle" pdf_url=actividad_pdf_lista_url pdf_text="Exportar PDF" pdf_icon="bi bi-file-earmark-pdf" show_status_filter=True status_value=status_value %}
+<div class="module-toolbar">
 
-<div class="card app-card">
+    {% include "includes/components/search_bar.html" with placeholder="Buscar actividad..." button_url=actividad_crear_url button_text="Nueva Actividad" button_icon="bi bi-plus-circle" pdf_url=actividad_pdf_lista_url pdf_text="Exportar PDF" pdf_icon="bi bi-file-earmark-pdf" show_status_filter=True status_value=status_value %}
+
+</div>
+
+<div class="card app-card module-card">
+
+    <div class="card-header module-card-header">
+
+        <div>
+
+            <h5 class="mb-1">
+
+                Actividades registradas
+
+            </h5>
+
+            <small class="text-muted">
+
+                Consulta, edita o administra las actividades existentes.
+
+            </small>
+
+        </div>
+
+        {% if actividades %}
+
+            <span class="badge module-count-badge">
+
+                {{ actividades.paginator.count }} registradas
+
+            </span>
+
+        {% endif %}
+
+    </div>
 
     <div class="card-body">
 
         {% if actividades %}
 
-            <div class="table-responsive flex-grow-1">
+            <div class="table-responsive">
 
-                <table class="table table-hover app-table">
+                <table class="table table-hover app-table align-middle">
 
                     <thead>
 
                         <tr>
 
-                            <th style="width: 60px;">#</th>
+                            <th scope="col" style="width: 60px;">
 
-                            <th scope="col">Actividad</th>
+                                #
 
-                            <th scope="col">Programa</th>
+                            </th>
 
-                            <th scope="col">Fecha y hora</th>
+                            <th scope="col">
 
-                            <th scope="col">Creador</th>
+                                Actividad
 
-                            <th scope="col">Estado</th>
+                            </th>
 
-                            <th scope="col" class="text-center">Voluntarios</th>
+                            <th scope="col">
 
-                            <th scope="col"
+                                Programa
+
+                            </th>
+
+                            <th scope="col">
+
+                                Fecha y hora
+
+                            </th>
+
+                            <th scope="col">
+
+                                Creador
+
+                            </th>
+
+                            <th scope="col">
+
+                                Estado
+
+                            </th>
+
+                            <th scope="col" class="text-center">
+
+                                Voluntarios
+
+                            </th>
+
+                            <th
+                                scope="col"
                                 class="text-center"
                                 style="width: 170px;">
 
@@ -94,7 +157,7 @@ Actividades
 
                             <tr>
 
-                                <td>
+                                <td class="text-muted">
 
                                     {{ actividades.start_index|add:forloop.counter0 }}
 
@@ -102,13 +165,21 @@ Actividades
 
                                 <td>
 
-                                    {{ actividad.nombre }}
+                                    <div class="table-primary-value">
+
+                                        {{ actividad.nombre }}
+
+                                    </div>
 
                                 </td>
 
                                 <td>
 
-                                    {{ actividad.programa.nombre }}
+                                    <div class="table-secondary-value">
+
+                                        {{ actividad.programa.nombre }}
+
+                                    </div>
 
                                 </td>
 
@@ -120,7 +191,11 @@ Actividades
 
                                 <td>
 
-                                    {{ actividad.usuario_creador.get_full_name|default:actividad.usuario_creador.username }}
+                                    <div class="table-secondary-value">
+
+                                        {{ actividad.usuario_creador.get_full_name|default:actividad.usuario_creador.username }}
+
+                                    </div>
 
                                 </td>
 
@@ -147,19 +222,31 @@ Actividades
                                 </td>
 
                                 <td class="text-center">
-                                    <span class="badge bg-primary fs-6">
-                                        <i class="bi bi-people"></i> {{ actividad.cantidad_usuarios }}
+
+                                    <span
+                                        class="badge assignment-count"
+                                        title="Personas asignadas a la actividad">
+
+                                        <i class="bi bi-people me-1"></i>
+
+                                        {{ actividad.cantidad_usuarios }}
+
                                     </span>
+
                                 </td>
 
                                 <td class="text-center">
 
-                                    <div class="btn-group btn-group-sm">
+                                    <div
+                                        class="btn-group btn-group-sm"
+                                        role="group"
+                                        aria-label="Acciones de la actividad">
 
-                                        <a href="{% url 'core:actividad_detalle' actividad.pk %}"
-                                           class="btn btn-outline-primary"
-                                           title="Ver"
-                                           aria-label="Ver actividad">
+                                        <a
+                                            href="{% url 'core:actividad_detalle' actividad.pk %}"
+                                            class="btn btn-outline-primary"
+                                            title="Ver actividad"
+                                            aria-label="Ver actividad">
 
                                             <i class="bi bi-eye"></i>
 
@@ -167,10 +254,11 @@ Actividades
 
                                         {% if actividad.programa.estado %}
 
-                                            <a href="{% url 'core:actividad_editar' actividad.pk %}"
-                                               class="btn btn-outline-warning"
-                                               title="Editar"
-                                               aria-label="Editar actividad">
+                                            <a
+                                                href="{% url 'core:actividad_editar' actividad.pk %}"
+                                                class="btn btn-outline-warning"
+                                                title="Editar actividad"
+                                                aria-label="Editar actividad">
 
                                                 <i class="bi bi-pencil-square"></i>
 
@@ -179,6 +267,7 @@ Actividades
                                         {% else %}
 
                                             <button
+                                                type="button"
                                                 class="btn btn-outline-secondary"
                                                 disabled
                                                 title="Programa inactivo"
@@ -195,12 +284,10 @@ Actividades
                                             <button
                                                 type="button"
                                                 class="btn btn-outline-danger btn-desactivar"
-                                                title="Desactivar"
+                                                title="Desactivar actividad"
                                                 aria-label="Desactivar actividad"
-
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#confirmModal"
-
                                                 data-url="{% url 'core:actividad_desactivar' actividad.pk %}"
                                                 data-name="{{ actividad.nombre }}"
                                                 data-entity="actividad">
@@ -212,9 +299,11 @@ Actividades
                                         {% else %}
 
                                             <button
+                                                type="button"
                                                 class="btn btn-outline-secondary"
                                                 disabled
-                                                title="Actividad no disponible para desactivación">
+                                                title="Actividad no disponible para desactivación"
+                                                aria-label="Actividad no disponible para desactivación">
 
                                                 <i class="bi bi-trash"></i>
 

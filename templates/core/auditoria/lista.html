@@ -42,11 +42,31 @@ Auditoría
 
 {% block content %}
 
-<div class="card app-card mb-3">
+<div class="card module-card mb-4">
+
+    <div class="card-header module-card-header">
+
+        <div>
+
+            <h5 class="mb-1">
+
+                Filtros de auditoría
+
+            </h5>
+
+            <small class="text-muted">
+
+                Utilice los filtros para consultar las acciones registradas en el sistema.
+
+            </small>
+
+        </div>
+
+    </div>
 
     <div class="card-body">
 
-        <form method="get">
+        <form method="get" class="app-form">
 
             <div class="row g-3 align-items-end">
 
@@ -157,7 +177,7 @@ Auditoría
 
                 </div>
 
-                                    <div class="col-md-3">
+                <div class="col-md-3">
 
                     <label for="id_tabla" class="form-label">
 
@@ -177,7 +197,6 @@ Auditoría
                 </div>
 
             </div>
-
 
             <div class="row g-3 align-items-end mt-1">
 
@@ -291,7 +310,33 @@ Auditoría
 </div>
 
 
-<div class="card app-card">
+<div class="card app-card module-card">
+
+    <div class="card-header module-card-header">
+
+        <div>
+
+            <h5 class="mb-1">
+
+                Registros de auditoría
+
+            </h5>
+
+            <small class="text-muted">
+
+                Historial de operaciones realizadas en el sistema.
+
+            </small>
+
+        </div>
+
+        <span class="badge rounded-pill module-count-badge">
+
+            {{ auditorias.paginator.count }} registrados
+
+        </span>
+
+    </div>
 
     <div class="card-body">
 
@@ -299,7 +344,7 @@ Auditoría
 
             <div class="table-responsive">
 
-                <table class="table table-hover app-table">
+                <table class="table table-hover app-table align-middle">
 
                     <thead>
 
@@ -353,7 +398,11 @@ Auditoría
 
                             </th>
 
-                            <th scope="col" class="text-center" style="width: 170px;">
+                            <th
+                                scope="col"
+                                class="text-center"
+                                style="width: 100px;"
+                            >
 
                                 Acciones
 
@@ -369,7 +418,7 @@ Auditoría
 
                             <tr>
 
-                                <td>
+                                <td class="text-muted">
 
                                     {{ auditorias.start_index|add:forloop.counter0 }}
 
@@ -377,13 +426,21 @@ Auditoría
 
                                 <td class="text-center">
 
-                                    {{ auditoria.fecha_auditoria|date:"d/m/Y H:i" }}
+                                    <div class="table-secondary-value">
+
+                                        {{ auditoria.fecha_auditoria|date:"d/m/Y H:i" }}
+
+                                    </div>
 
                                 </td>
 
                                 <td>
 
-                                    {{ auditoria.tabla_afectada }}
+                                    <div class="table-primary-value">
+
+                                        {{ auditoria.tabla_afectada }}
+
+                                    </div>
 
                                 </td>
 
@@ -427,25 +484,41 @@ Auditoría
 
                                 <td>
 
-                                    {{ auditoria.get_accion_display }}
+                                    <div class="table-secondary-value">
+
+                                        {{ auditoria.get_accion_display }}
+
+                                    </div>
 
                                 </td>
 
                                 <td class="text-center">
 
-                                    {{ auditoria.id_registro }}
+                                    <div class="table-secondary-value">
+
+                                        {{ auditoria.id_registro }}
+
+                                    </div>
 
                                 </td>
 
                                 <td>
 
-                                    {{ auditoria.usuario_responsable }}
+                                    <div class="table-secondary-value">
+
+                                        {{ auditoria.usuario_responsable }}
+
+                                    </div>
 
                                 </td>
 
                                 <td>
 
-                                    {{ auditoria.descripcion }}
+                                    <div class="table-secondary-value">
+
+                                        {{ auditoria.descripcion }}
+
+                                    </div>
 
                                 </td>
 
@@ -455,7 +528,8 @@ Auditoría
                                         href="{% url 'core:auditoria_detalle' auditoria.pk %}"
                                         class="btn btn-outline-primary"
                                         title="Ver"
-                                        aria-label="Ver auditoría">
+                                        aria-label="Ver auditoría"
+                                    >
 
                                         <i class="bi bi-eye"></i>
 
