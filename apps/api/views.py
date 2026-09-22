@@ -103,6 +103,7 @@ class MovimientoInsumoViewSet(viewsets.ReadOnlyModelViewSet):
 
 class ActividadUsuarioViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ActividadUsuarioSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         actividad = get_object_or_404(

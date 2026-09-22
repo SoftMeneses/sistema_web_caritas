@@ -1,5 +1,7 @@
 {% extends "layouts/base.html" %}
 
+{% load static %}
+
 {% block title %}
 
 Actividades
@@ -223,16 +225,22 @@ Actividades
 
                                 <td class="text-center">
 
-                                    <span
-                                        class="badge assignment-count"
-                                        title="Personas asignadas a la actividad">
+                                    <button
+                                        type="button"
+                                        class="badge assignment-count assignment-count-button border-0"
+                                        title="Ver usuarios asignados"
+                                        aria-label="Ver usuarios asignados a {{ actividad.nombre }}"
+                                        data-actividad-id="{{ actividad.pk }}"
+                                        data-actividad-nombre="{{ actividad.nombre }}"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#usuariosActividadModal">
 
                                         <i class="bi bi-people me-1"></i>
 
                                         {{ actividad.cantidad_usuarios }}
 
-                                    </span>
-
+                                    </button>
+                                
                                 </td>
 
                                 <td class="text-center">
@@ -338,5 +346,78 @@ Actividades
 </div>
 
 {% include "includes/components/confirm_modal.html" with confirm_url="#" title="Desactivar actividad" message="" confirm_text="Desactivar" confirm_class="btn-danger" confirm_icon="bi bi-exclamation-triangle-fill text-warning fs-1" %}
+
+<div
+    class="modal fade"
+    id="usuariosActividadModal"
+    tabindex="-1"
+    aria-labelledby="usuariosActividadModalLabel"
+    aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <div>
+
+                    <h5
+                        class="modal-title"
+                        id="usuariosActividadModalLabel">
+
+                        Usuarios asignados
+
+                    </h5>
+
+                    <small
+                        class="text-muted"
+                        id="usuariosActividadNombre">
+                    </small>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Cerrar">
+                </button>
+
+            </div>
+
+            <div
+                class="modal-body"
+                id="usuariosActividadContenido">
+
+                <div class="text-center py-4">
+
+                    <div
+                        class="spinner-border"
+                        role="status"
+                        aria-hidden="true">
+                    </div>
+
+                    <p class="text-muted mt-2 mb-0">
+
+                        Cargando usuarios...
+                        
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% block js %}
+
+    <script src="{% static 'js/actividad.js' %}"></script>
+
+{% endblock %}
 
 {% endblock %}

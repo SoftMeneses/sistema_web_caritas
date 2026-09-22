@@ -122,18 +122,30 @@ class MovimientoInsumoSerializer(serializers.ModelSerializer):
 
 
 class ActividadUsuarioSerializer(serializers.ModelSerializer):
+
+    usuario_nombre = serializers.SerializerMethodField()
+    usuario_email = serializers.EmailField(
+        source="usuario.email",
+        read_only=True,
+    )
+
     class Meta:
         model = ActividadUsuario
         fields = (
-            "id_actividad_usuario",
             "actividad",
             "usuario",
+            "usuario_nombre",
+            "usuario_email",
         )
         read_only_fields = (
-            "id_actividad_usuario",
             "actividad",
             "usuario",
+            "usuario_nombre",
+            "usuario_email",
         )
+
+    def get_usuario_nombre(self, obj):
+        return obj.usuario.get_full_name() or obj.usuario.username
 
 
 class DetalleActividadInsumoSerializer(serializers.ModelSerializer):
