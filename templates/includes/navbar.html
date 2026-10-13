@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
 
-    <div class="container-fluid">
+    <div class="container-fluid navbar-content">
 
         <button
             id="toggleSidebar"
@@ -13,15 +13,13 @@
 
         <a class="navbar-brand fw-bold" href="#">
 
-            <i class="bi bi-heart-fill me-2"></i>
-
             Sistema Web Cáritas
 
         </a>
 
         {% if user.is_authenticated %}
 
-        <div class="d-flex align-items-center">
+        <div class="navbar-user d-flex align-items-center">
 
             <i class="bi bi-person-circle text-white fs-4 me-2"></i>
 

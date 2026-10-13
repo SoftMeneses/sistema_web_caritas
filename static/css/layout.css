@@ -93,13 +93,16 @@ body{
 
     width: var(--sidebar-width);
 
-    transition: width .35s ease;
+    flex: 0 0 var(--sidebar-width);
 
-    flex-shrink: 0;
+    transition: width .35s ease, flex-basis .35s ease, transform .3s ease;
+
+    min-width: 0;
 
     display: flex;
 
     align-self: stretch;
+
 }
 
 #main-content {
@@ -244,6 +247,21 @@ body{
 
 }
 
+.sidebar-logo {
+
+    display: block;
+
+    width: 90px;
+
+    max-width: 70%;
+
+    height: auto;
+
+    object-fit: contain;
+
+    margin: 0 auto;
+}
+
 /*====================================
   FOOTER
 ====================================*/
@@ -267,19 +285,32 @@ footer{
   progresivamente conforme se desarrollen los distintos módulos del sistema.
 ==============================================================================*/
 
-@media (max-width: 768px) {
-    #sidebar-container {
-        width: var(--sidebar-collapsed-width);
-    }
-
-    .sidebar {
-        height: calc(100vh - var(--navbar-height));
-        max-height: calc(100vh - var(--navbar-height));
-    }
+@media (max-width: 576px) {
 
     #main-content {
-        padding: 1rem;
+
+        padding: .75rem;
+
     }
+
+    .page-title {
+
+        font-size: 1.3rem;
+
+    }
+
+    .card-body {
+
+        padding: 1rem;
+
+    }
+
+    .btn {
+
+        max-width: 100%;
+
+    }
+
 }
 
 /*==============================================================================
@@ -289,9 +320,11 @@ footer{
   maximizar el espacio disponible en el área de trabajo.
 ==============================================================================*/
 
-.sidebar-collapsed{
+#sidebar-container.sidebar-collapsed {
 
-    width:var(--sidebar-collapsed-width)!important;
+    width: var(--sidebar-collapsed-width) !important;
+
+    flex-basis: var(--sidebar-collapsed-width) !important;
 
 }
 
@@ -331,4 +364,236 @@ footer{
 
     margin-right:0 !important;
 
+}
+
+/* =========================================
+   DISEÑO RESPONSIVE: TABLETAS Y MÓVILES
+========================================= */
+
+@media (max-width: 768px) {
+
+    .app-layout > .row {
+
+        display: block;
+
+        width: 100%;
+
+        min-width: 0;
+    }
+
+    #sidebar-container {
+        position: fixed;
+        
+        top: var(--navbar-height);
+        bottom: 0;
+        left: 0;
+        z-index: 1050;
+
+        width: min(280px, 85vw);
+        max-width: 85vw;
+        height: calc(100vh - var(--navbar-height));
+        height: calc(100dvh - var(--navbar-height));
+
+        flex: none;
+        overflow-x: hidden;
+        overflow-y: auto;
+
+        transform: translateX(-105%);
+        transition: transform .3s ease;
+        box-shadow: none;
+    }
+
+    #sidebar-container.sidebar-mobile-open {
+
+        width: min(280px, 85vw);
+
+        transform: translateX(0);
+
+        box-shadow: 4px 0 16px rgba(0, 0, 0, .2);
+    }
+
+    #sidebar-container .sidebar {
+
+        width: 100%;
+
+        min-width: 0;
+    }
+
+    #sidebar-container .sidebar-collapsed {
+
+        width: 100%;
+
+    }
+
+    #main-content {
+        display: flex;
+
+        width: 100%;
+
+        max-width: 100%;
+
+        min-width: 0;
+
+        margin: 0;
+
+        padding: 1rem;
+
+        overflow-x: clip;
+    }
+
+    .page-header,
+    .page-content {
+
+        width: 100%;
+
+        min-width: 0;
+
+        max-width: 100%;
+    }
+
+    .page-title {
+
+        font-size: 1.5rem;
+
+        overflow-wrap: anywhere;
+    }
+}
+
+/* =========================================
+   AJUSTES PARA TELÉFONOS
+========================================= */
+
+@media (max-width: 576px) {
+
+    #main-content {
+
+        padding: .75rem;
+
+    }
+
+    .page-title {
+
+        font-size: 1.3rem;
+
+    }
+
+    .page-header {
+
+        margin-bottom: 1rem;
+
+    }
+
+    .card-body {
+
+        padding: 1rem;
+
+    }
+
+    .page-content > * {
+
+        min-width: 0;
+        max-width: 100%;
+
+    }
+}
+
+
+/* =========================================
+   NAVBAR RESPONSIVE
+========================================= */
+
+@media (max-width: 768px) {
+
+    :root {
+        --navbar-height: 92px;
+    }
+
+    .navbar {
+        height: auto;
+        min-height: var(--navbar-height);
+        padding: 0;
+    }
+
+    .navbar-content {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        padding: .4rem .75rem;
+        gap: .25rem;
+    }
+
+    #toggleSidebar {
+        flex-shrink: 0;
+        margin-right: .25rem !important;
+    }
+
+    .navbar-brand {
+        flex: 1;
+        min-width: 0;
+        margin-right: 0;
+        font-size: .95rem;
+        white-space: nowrap;
+    }
+
+    .navbar-brand i {
+        margin-right: .25rem !important;
+    }
+
+    .navbar-user {
+        display: flex;
+        width: 100%;
+        min-width: 0;
+        justify-content: flex-end;
+        gap: .5rem;
+        padding-top: .25rem;
+    }
+
+    .navbar-user > i {
+        flex-shrink: 0;
+        margin-right: 0 !important;
+    }
+
+    .navbar-user > span {
+        min-width: 0;
+        max-width: 45%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        margin-right: 0 !important;
+        font-size: .85rem;
+    }
+
+    .navbar-user > a {
+        flex-shrink: 0;
+    }
+
+        /* Centrar el título sin desplazar el botón */
+    .navbar-content {
+        position: relative;
+        justify-content: center;
+    }
+
+    .navbar-brand {
+        position: absolute;
+        left: 50%;
+        top: 10px;
+        transform: translateX(-50%);
+        flex: none;
+        width: max-content;
+        max-width: calc(100% - 100px);
+        text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    #toggleSidebar {
+        position: relative;
+        z-index: 1;
+        margin-right: auto !important;
+    }
+
+    .navbar-user {
+        position: relative;
+        width: 100%;
+    }
 }
